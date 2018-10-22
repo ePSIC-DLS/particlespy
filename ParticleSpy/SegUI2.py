@@ -135,9 +135,8 @@ def main(haadf):
     
 if __name__ == '__main__':
     import hyperspy.api as hs
-    haadf_file = "JEOL HAADF IMAGE.dm4"
-    ac_folder = r"Z:\data\2018\cm19688-7\raw\DM\SI data (9)/"
-    haadf = hs.load(ac_folder+haadf_file)
+    filename = "Data/JEOL HAADF Image"
+    haadf = hs.load(filename)
     app = QApplication(sys.argv)
     app.aboutToQuit.connect(app.deleteLater)
     
