@@ -13,7 +13,7 @@ from skimage.filters import threshold_yen, threshold_isodata, threshold_li
 from skimage.filters import threshold_local
 
 from skimage.measure import label, regionprops
-from skimage.morphology import remove_small_objects, watershed
+from skimage.morphology import remove_small_objects, watershed, square, white_tophat
 from skimage.segmentation import clear_border, mark_boundaries
 from skimage.feature import peak_local_max
 
@@ -37,7 +37,9 @@ def process(im, process_param):
         data = im[0].data
     else:
         data = im.data
-        
+    
+    data = rolling_ball(data,process_param["rb_kernel"])
+    
     if process_param["threshold"]!=None:
         labels = threshold(data, process_param)
         
@@ -81,3 +83,10 @@ def p_watershed(thresh_image):
     markers = ndi.label(local_maxi)[0]
     labels = watershed(-distance, markers, mask=thresh_image)
     return(labels)
+    
+def rolling_ball(img,kernelsize=0):
+    if kernelsize == 0:
+        new_img = img
+    else:
+        new_img = white_tophat(img,selem=square(kernelsize))
+    return (new_img)

@@ -5,7 +5,8 @@ Created on Mon Oct 22 15:50:08 2018
 @author: qzo13262
 """
 
-from PyQt5.QtWidgets import QCheckBox, QPushButton, QLabel, QMainWindow, QApplication, QWidget, QVBoxLayout, QComboBox
+from PyQt5.QtWidgets import QCheckBox, QPushButton, QLabel, QMainWindow, QSpinBox
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QComboBox
 from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtCore import Qt
 import sys
@@ -36,20 +37,24 @@ class Application(QMainWindow):
         self.label.setPixmap(pixmap)
         self.label.setGeometry(10,10,self.image.shape[1],self.image.shape[0])
         
-        self.resize(pixmap.width()+130, pixmap.height()+50)
+        self.resize(pixmap.width()+130, pixmap.height()+70)
         
         cb = QCheckBox('Watershed', self)
         cb.move(self.image.shape[1]+20, 40)
         #cb.toggle()
         cb.stateChanged.connect(self.changeWatershed)
         
+        self.sp = QSpinBox(self)
+        self.sp.valueChanged.connect(self.rollingball)
+        self.sp.move(self.image.shape[1]+20, 70)
+        
         updateb = QPushButton('Update',self)
-        updateb.move(self.image.shape[1]+20,self.image.shape[0]-20)
+        updateb.move(self.image.shape[1]+20,110)
         
         updateb.clicked.connect(self.update)
         
         paramsb = QPushButton('Get Params',self)
-        paramsb.move(self.image.shape[1]+20,self.image.shape[0]+10)
+        paramsb.move(self.image.shape[1]+20,140)
         
         paramsb.clicked.connect(self.return_params)
         
@@ -74,6 +79,7 @@ class Application(QMainWindow):
 
         lay.addWidget(self.label)
         lay.addWidget(self.comboBox)
+        lay.addWidget(self.sp)
         self.show()
         
     def getim(self,im_hs):
@@ -96,6 +102,12 @@ class Application(QMainWindow):
             self.params['watershed'] = True
         else:
             self.params['watershed'] = None
+            
+    def rollingball(self):
+        if self.sp.value() == 1:
+            self.params['rb_kernel'] = 0
+        else:
+            self.params['rb_kernel'] = self.sp.value()
             
     def update(self):
         labels = segptcls.process(self.im_hs,self.params)
@@ -130,13 +142,16 @@ class Application(QMainWindow):
             self.params['threshold'] = "local"
     
 def main(haadf):
+    
     ex = Application(haadf)
+    
     return(ex)
     
 if __name__ == '__main__':
     import hyperspy.api as hs
-    filename = "Data/JEOL HAADF Image"
-    haadf = hs.load(filename)
+    haadf_file = "JEOL HAADF IMAGE.dm4"
+    ac_folder = r"Z:\data\2018\cm19688-7\raw\DM\SI data (9)/"
+    haadf = hs.load(ac_folder+haadf_file)
     app = QApplication(sys.argv)
     app.aboutToQuit.connect(app.deleteLater)
     
@@ -144,5 +159,5 @@ if __name__ == '__main__':
     ex = main(haadf)
     
     #ex.show()
-    
     app.exec_()
+    
