@@ -47,6 +47,9 @@ def ParticleAnalysis(acquisition,process_param,particle_list=[],mask=None):
         p_im = np.zeros_like(acquisition.data)
         p_im[labeled==region.label] = acquisition.data[labeled==region.label]
         
+        maskp = np.zeros_like(acquisition.data)
+        maskp[labeled==region.label] = 1
+        
         #origin = ac_number
         #p.set_origin(origin)
         
@@ -57,6 +60,9 @@ def ParticleAnalysis(acquisition,process_param,particle_list=[],mask=None):
         
         #Set zoneaxis
         p.set_zone(zone.find_zoneaxis(p_im))
+        
+        #Set mask
+        p.set_mask(maskp)
         
         particle_list.append(p)
         

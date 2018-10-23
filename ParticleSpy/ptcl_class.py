@@ -19,5 +19,8 @@ class Particle(object):
     def set_zone(self, zone):
         self.zone = zone
         
+    def set_mask(self, mask):
+        self.mask = mask
+        
     def store_im(self,p_im):
         self.image = p_im

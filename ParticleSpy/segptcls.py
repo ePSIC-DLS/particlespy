@@ -18,7 +18,7 @@ from skimage.segmentation import clear_border, mark_boundaries
 from skimage.feature import peak_local_max
 
 def process(im, process_param):
-     """
+    """
     Perform segmentation of an image of particles.
     
     Parameters
