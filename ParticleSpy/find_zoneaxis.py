@@ -13,6 +13,19 @@ from math import isclose
 import matplotlib.pyplot as plt
 
 def find_zoneaxis(im):
+    """
+    Determines whether an atomic resolution image is solely of a major zone axis 
+    (001, 011, 111) for cubic materials.
+    
+    Parameters
+    ----------
+    im: Numpy array
+        Atomic resolution image of sample.
+        
+    Returns
+    -------
+    string: Zone axis of material in image (eg. '011')
+    """
     
     #Get FFT of particle image
     fft = fftim.fft2(im)

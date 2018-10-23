@@ -18,6 +18,20 @@ from skimage.segmentation import clear_border, mark_boundaries
 from skimage.feature import peak_local_max
 
 def process(im, process_param):
+     """
+    Perform segmentation of an image of particles.
+    
+    Parameters
+    ----------
+    im: Hyperpsy signal object
+        Hyperpsy signal object containing a nanoparticle image.
+    process_param: Dictionary of parameters
+        The parameters for segmentation.
+        
+    Returns
+    -------
+    numpy array: Labels corresponding to particles in the image.
+    """
     
     if isinstance(im,(list,)):
         data = im[0].data

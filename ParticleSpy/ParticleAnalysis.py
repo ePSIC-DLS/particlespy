@@ -12,7 +12,28 @@ from skimage.measure import label, regionprops
 import matplotlib.pyplot as plt
 import find_zoneaxis as zone
 
-def ParticleAnalysis(acquisition,process_param,thresh_im=0,particle_list=[],mask=None):
+def ParticleAnalysis(acquisition,process_param,particle_list=[],mask=None):
+    """
+    Perform segmentation and analysis of images of particles.
+    
+    Parameters
+    ----------
+    acquisition: Hyperpsy signal object
+        Hyperpsy signal object containing a nanoparticle image.
+    process_param: Dictionary of parameters
+        The parameters can be input manually in to a dictionary or can be generated
+        using param_generator().
+    particle_list: List
+        List of already analysed particles that the output can be appended
+        to.
+    mask: Numpy array
+        Numpy array of same 2D size as acquisition that contains a mask of presegmented
+        particles.
+        
+    Returns
+    -------
+    list: List of Particle objects.
+    """
     
     if mask == None:
         labeled = seg.process(acquisition,process_param)
@@ -54,6 +75,13 @@ def ParticleAnalysis(acquisition,process_param,thresh_im=0,particle_list=[],mask
     return(particle_list)
     
 def param_generator(threshold='otsu',watershed=None,min_size=None,store_im=None):
+    """
+    Generate a process parameter dictionary.
+        
+    Returns
+    -------
+    dictionary: Parameters contained in dictionary.
+    """
     params = {}
     params['threshold'] = threshold
     params['watershed'] = watershed
@@ -63,6 +91,14 @@ def param_generator(threshold='otsu',watershed=None,min_size=None,store_im=None)
     return(params)
 
 def plot_area(p_list):
+    """
+    Displays a plot of particle areas for analysed particles.
+    
+    Parameters
+    ----------
+    p_list: list
+        List of particle objects.
+    """
     
     areas = []
     
