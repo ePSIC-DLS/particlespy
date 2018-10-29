@@ -13,6 +13,7 @@ import sys
 
 import numpy as np
 from skimage.segmentation import mark_boundaries
+from skimage.util import invert
 
 import segptcls
 import ParticleAnalysis
@@ -26,6 +27,8 @@ class Application(QMainWindow):
         
         self.getim(im_hs)
         self.getparams()
+        
+        offset = 50
 
         #self.central_widget = QWidget()               
         #self.setCentralWidget(self.central_widget)
@@ -34,11 +37,11 @@ class Application(QMainWindow):
         self.label = QLabel(self)
         qi = QImage(self.image.data, self.image.shape[1], self.image.shape[0], self.image.shape[1], QImage.Format_Indexed8)
         pixmap = QPixmap(qi)
-        pixmap2 = pixmap.scaled(256, 256, Qt.KeepAspectRatio)
+        pixmap2 = pixmap.scaled(512, 512, Qt.KeepAspectRatio)
         self.label.setPixmap(pixmap2)
         self.label.setGeometry(10,10,pixmap2.width(),pixmap2.height())
         
-        height = max((pixmap2.height()+50,300))
+        height = max((pixmap2.height()+50,300 + offset)) #300 +50
         
         self.resize(pixmap2.width()+130, height)
         
@@ -73,20 +76,25 @@ class Application(QMainWindow):
         cb.move(pixmap2.width()+20, 145)
         cb.stateChanged.connect(self.changeWatershed)
         
+        cb2 = QCheckBox('Invert', self)
+        cb2.move(pixmap2.width()+20, 145 + offset /2 )
+        cb2.stateChanged.connect(self.changeInvert)
+        
+        
         self.minsizetxt = QLabel(self)
         self.minsizetxt.setText('Min particle size (px)')
-        self.minsizetxt.move(pixmap2.width()+20, 165)
+        self.minsizetxt.move(pixmap2.width()+20, 165+offset)
         
         self.minsizev = QSpinBox(self)
         self.minsizev.valueChanged.connect(self.minsize)
-        self.minsizev.move(pixmap2.width()+20, 190)
+        self.minsizev.move(pixmap2.width()+20, 190+offset)
         
         updateb = QPushButton('Update',self)
-        updateb.move(pixmap2.width()+20,240)
+        updateb.move(pixmap2.width()+20,240+offset)
         updateb.clicked.connect(self.update)
         
         paramsb = QPushButton('Get Params',self)
-        paramsb.move(pixmap2.width()+20,270)
+        paramsb.move(pixmap2.width()+20,270+offset)
         
         paramsb.clicked.connect(self.return_params)
         
@@ -132,6 +140,19 @@ class Application(QMainWindow):
         else:
             self.params['watershed'] = None
             
+    def changeInvert(self, state):
+        if state == Qt.Checked:
+            self.params['invert'] = True
+            qi = QImage(invert(self.image).data, self.image.shape[1], self.image.shape[0], self.image.shape[1], QImage.Format_Indexed8)
+            
+        else:
+            self.params['invert'] = None
+            qi = QImage(self.image.data, self.image.shape[1], self.image.shape[0], self.image.shape[1], QImage.Format_Indexed8)
+        
+        pixmap = QPixmap(qi)
+        pixmap2 = pixmap.scaled(512, 512, Qt.KeepAspectRatio)
+        self.label.setPixmap(pixmap2)
+            
     def rollingball(self):
         if self.sp.value() == 1:
             self.params['rb_kernel'] = 0
@@ -152,7 +173,7 @@ class Application(QMainWindow):
             qi = QImage(labels.data, labels.shape[1], labels.shape[0], labels.shape[1], QImage.Format_Indexed8)
         #qi = QImage(imchoice.data, imchoice.shape[1], imchoice.shape[0], imchoice.shape[1], QImage.Format_Indexed8)
         pixmap = QPixmap(qi)
-        pixmap2 = pixmap.scaled(256, 256, Qt.KeepAspectRatio)
+        pixmap2 = pixmap.scaled(512, 512, Qt.KeepAspectRatio)
         self.label.setPixmap(pixmap2)
         
     def return_params(self,params):

@@ -16,6 +16,7 @@ from skimage.measure import label, regionprops
 from skimage.morphology import remove_small_objects, watershed, square, white_tophat
 from skimage.segmentation import clear_border, mark_boundaries
 from skimage.feature import peak_local_max
+from skimage.util import invert
 
 def process(im, process_param):
     """
@@ -40,6 +41,9 @@ def process(im, process_param):
     
     data = rolling_ball(data,process_param["rb_kernel"])
     
+    if process_param["invert"]!=None:
+        data = invert(data)
+        
     if process_param["threshold"]!=None:
         labels = threshold(data, process_param)
         
@@ -50,11 +54,10 @@ def process(im, process_param):
         
     if process_param["min_size"]!=None:
         remove_small_objects(labels,process_param["min_size"],in_place=True)
-            
+        
     return(labels)
     
 def threshold(data, process_param):
-    
     if process_param["threshold"] == "otsu":
         thresh = threshold_otsu(data)
     if process_param["threshold"] == "mean":
