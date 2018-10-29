@@ -80,7 +80,7 @@ def ParticleAnalysis(acquisition,process_param,particle_list=[],mask=None):
         
     return(particle_list)
     
-def param_generator(threshold='otsu',watershed=None,min_size=None,store_im=None,rb_kernel=0):
+def param_generator(threshold='otsu',watershed=None,invert=None,min_size=None,store_im=None,rb_kernel=0):
     """
     Generate a process parameter dictionary.
         
@@ -91,6 +91,7 @@ def param_generator(threshold='otsu',watershed=None,min_size=None,store_im=None,
     params = {}
     params['threshold'] = threshold
     params['watershed'] = watershed
+    params['invert'] = invert
     params['min_size'] = min_size
     params['store_im'] = store_im
     params['rb_kernel'] = rb_kernel

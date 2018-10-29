@@ -16,6 +16,7 @@ from skimage.measure import label, regionprops
 from skimage.morphology import remove_small_objects, watershed, square, white_tophat
 from skimage.segmentation import clear_border, mark_boundaries
 from skimage.feature import peak_local_max
+from skimage.util import invert
 
 def process(im, process_param):
     """
@@ -50,25 +51,45 @@ def process(im, process_param):
         
     if process_param["min_size"]!=None:
         remove_small_objects(labels,process_param["min_size"],in_place=True)
-            
+    
+    if process_param["invert"]!=None:
+        data = invert(data)
+        
     return(labels)
     
 def threshold(data, process_param):
     
-    if process_param["threshold"] == "otsu":
-        thresh = threshold_otsu(data)
-    if process_param["threshold"] == "mean":
-        thresh = threshold_mean(data)
-    if process_param["threshold"] == "minimum":
-        thresh = threshold_minimum(data)
-    if process_param["threshold"] == "yen":
-        thresh = threshold_yen(data)
-    if process_param["threshold"] == "isodata":
-        thresh = threshold_isodata(data)
-    if process_param["threshold"] == "li":
-        thresh = threshold_li(data)
-    if process_param["threshold"] == "local":
-        thresh = threshold_local(data,21)
+    if process_param["invert"] != None:
+        if process_param["threshold"] == "otsu":
+            thresh = threshold_otsu(invert(data))
+        if process_param["threshold"] == "mean":
+            thresh = threshold_mean(invert(data))
+        if process_param["threshold"] == "minimum":
+            thresh = threshold_minimum(invert(data))
+        if process_param["threshold"] == "yen":
+            thresh = threshold_yen(invert(data))
+        if process_param["threshold"] == "isodata":
+            thresh = threshold_isodata(invert(data))
+        if process_param["threshold"] == "li":
+            thresh = threshold_li(invert(data))
+        if process_param["threshold"] == "local":
+            thresh = threshold_local(invert(data),21)
+    else:
+        if process_param["threshold"] == "otsu":
+            thresh = threshold_otsu(data)
+        if process_param["threshold"] == "mean":
+            thresh = threshold_mean(data)
+        if process_param["threshold"] == "minimum":
+            thresh = threshold_minimum(data)
+        if process_param["threshold"] == "yen":
+            thresh = threshold_yen(data)
+        if process_param["threshold"] == "isodata":
+            thresh = threshold_isodata(data)
+        if process_param["threshold"] == "li":
+            thresh = threshold_li(data)
+        if process_param["threshold"] == "local":
+            thresh = threshold_local(data,21)
+        
             
     mask = data > thresh
     
