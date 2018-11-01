@@ -18,6 +18,9 @@ class Particle(object):
         self.area = area
         self.area_units = units
         
+    def set_circularity(self, circularity):
+        self.circularity = circularity
+        
     def set_zone(self, zone):
         self.zone = zone
         

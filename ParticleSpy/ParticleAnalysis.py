@@ -8,7 +8,8 @@ Created on Tue Jul 31 13:35:23 2018
 import segptcls as seg
 import numpy as np
 from ptcl_class import Particle, Particle_list
-from skimage.measure import label, regionprops
+from skimage.measure import label, regionprops, perimeter
+import matplotlib.pyplot as plt
 import find_zoneaxis as zone
 
 def ParticleAnalysis(acquisition,process_param,particle_list=Particle_list(),mask=None):
@@ -56,6 +57,11 @@ def ParticleAnalysis(acquisition,process_param,particle_list=Particle_list(),mas
         cal_area = region.area*acquisition.axes_manager[0].scale*acquisition.axes_manager[1].scale
         area_units = acquisition.axes_manager[0].units+"^2"
         p.set_area(cal_area,area_units)
+        
+        #Set shape measures
+        peri = perimeter(maskp,neighbourhood=8)
+        circularity = 4*3.14159265*p.area/(peri**2)
+        p.set_circularity(circularity)
         
         #Set zoneaxis
         p.set_zone(zone.find_zoneaxis(p_im))
