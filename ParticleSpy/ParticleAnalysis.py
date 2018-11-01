@@ -7,12 +7,12 @@ Created on Tue Jul 31 13:35:23 2018
 
 import segptcls as seg
 import numpy as np
-from ptcl_class import Particle
+from ptcl_class import Particle, Particle_list
 from skimage.measure import label, regionprops, perimeter
 import matplotlib.pyplot as plt
 import find_zoneaxis as zone
 
-def ParticleAnalysis(acquisition,process_param,particle_list=[],mask=None):
+def ParticleAnalysis(acquisition,process_param,particle_list=Particle_list(),mask=None):
     """
     Perform segmentation and analysis of images of particles.
     
@@ -69,8 +69,6 @@ def ParticleAnalysis(acquisition,process_param,particle_list=[],mask=None):
         #Set mask
         p.set_mask(maskp)
         
-        particle_list.append(p)
-        
         if process_param["store_im"]==True:
             ii = np.where(labeled == region.label)
             
@@ -82,6 +80,8 @@ def ParticleAnalysis(acquisition,process_param,particle_list=[],mask=None):
             
             p_boxed = acquisition.isig[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
             p.store_im(p_boxed)
+        
+        particle_list.append(p)
         
     return(particle_list)
     
@@ -102,22 +102,3 @@ def param_generator(threshold='otsu',watershed=None,invert=None,min_size=None,st
     params['rb_kernel'] = rb_kernel
     
     return(params)
-
-def plot_area(p_list):
-    """
-    Displays a plot of particle areas for analysed particles.
-    
-    Parameters
-    ----------
-    p_list: list
-        List of particle objects.
-    """
-    
-    areas = []
-    
-    for p in p_list:
-        areas.append(p.area)
-        
-    plt.hist(areas)
-    plt.xlabel(p_list[0].area_units)
-    plt.ylabel("No. of particles")
