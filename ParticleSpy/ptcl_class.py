@@ -5,6 +5,8 @@ Created on Tue Jul 31 14:51:58 2018
 @author: qzo13262
 """
 
+import matplotlib.pyplot as plt
+
 class Particle(object):
     """A segmented particle object."""
     
@@ -24,3 +26,26 @@ class Particle(object):
         
     def store_im(self,p_im):
         self.image = p_im
+        
+class Particle_list(object):
+    """A particle list object."""
+    
+    def __init__(self):
+        self.list = []
+    
+    def append(self,particle):
+        self.list.append(particle)
+        
+    def plot_area(self):
+        """
+        Displays a plot of particle areas for analysed particles.
+        """
+        
+        areas = []
+        
+        for p in self.list:
+            areas.append(p.area)
+            
+        plt.hist(areas)
+        plt.xlabel(self.list[0].area_units)
+        plt.ylabel("No. of particles")
