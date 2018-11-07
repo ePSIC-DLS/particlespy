@@ -9,17 +9,18 @@ import segptcls as seg
 import numpy as np
 from ptcl_class import Particle, Particle_list
 from skimage.measure import label, regionprops, perimeter
-import matplotlib.pyplot as plt
 import find_zoneaxis as zone
+import warnings
 
-def ParticleAnalysis(acquisition,process_param,particle_list=Particle_list(),mask=None):
+def ParticleAnalysis(acquisition,parameters,particle_list=Particle_list(),mask=None):
     """
     Perform segmentation and analysis of images of particles.
     
     Parameters
     ----------
-    acquisition: Hyperpsy signal object
-        Hyperpsy signal object containing a nanoparticle image.
+    acquisition: Hyperpsy signal object or list of hyperspy signal objects.
+        Hyperpsy signal object containing a nanoparticle image or a list of signal
+         objects that contains an image at position 0 and other datasets following.
     process_param: Dictionary of parameters
         The parameters can be input manually in to a dictionary or can be generated
         using param_generator().
@@ -35,8 +36,22 @@ def ParticleAnalysis(acquisition,process_param,particle_list=Particle_list(),mas
     list: List of Particle objects.
     """
     
+    #Check if input is list of signal objects or single one
+    if isinstance(acquisition,list):
+        image = acquisition[0]
+        ac_types = []
+        for ac in acquisition:
+            if ac.metadata.Signal.signal_type == 'EDS_TEM':
+                ac_types.append(ac.metadata.Signal.signal_type)
+            else:
+                warnings.warn("You have input data that does not have a defined signal type and therefore will not be processed."+
+                              " You need to define signal_type in the metadata for anything other than the first dataset.")
+    else:
+        image = acquisition
+        ac_types = 'Image only'
+    
     if mask == None:
-        labeled = seg.process(acquisition,process_param)
+        labeled = seg.process(image,parameters)
         #labels = np.unique(labeled).tolist() #some labeled number have been removed by "remove_small_holes" function
     else:
         labeled = label(mask)
@@ -44,18 +59,18 @@ def ParticleAnalysis(acquisition,process_param,particle_list=Particle_list(),mas
     for region in regionprops(labeled): #'count' start with 1, 0 is background
         p = Particle()
         
-        p_im = np.zeros_like(acquisition.data)
-        p_im[labeled==region.label] = acquisition.data[labeled==region.label]
+        p_im = np.zeros_like(image.data)
+        p_im[labeled==region.label] = image.data[labeled==region.label]
         
-        maskp = np.zeros_like(acquisition.data)
+        maskp = np.zeros_like(image.data)
         maskp[labeled==region.label] = 1
         
         #origin = ac_number
         #p.set_origin(origin)
         
         #Set area
-        cal_area = region.area*acquisition.axes_manager[0].scale*acquisition.axes_manager[1].scale
-        area_units = acquisition.axes_manager[0].units+"^2"
+        cal_area = region.area*image.axes_manager[0].scale*image.axes_manager[1].scale
+        area_units = image.axes_manager[0].units+"^2"
         p.set_area(cal_area,area_units)
         
         #Set shape measures
@@ -69,21 +84,50 @@ def ParticleAnalysis(acquisition,process_param,particle_list=Particle_list(),mas
         #Set mask
         p.set_mask(maskp)
         
-        if process_param["store_im"]==True:
-            ii = np.where(labeled == region.label)
+        if parameters.store["store_im"]==True:
+            store_image(p,labeled,image,region)
             
-            box_x_min = np.min(ii[0])
-            box_x_max = np.max(ii[0])
-            box_y_max = np.max(ii[1])
-            box_y_min = np.min(ii[1])
-            pad = 5
-            
-            p_boxed = acquisition.isig[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
-            p.store_im(p_boxed)
+        if isinstance(ac_types,list):
+            for ac in acquisition:
+                if ac.metadata.Signal.signal_type == 'EDS_TEM':
+                    pass
         
         particle_list.append(p)
         
     return(particle_list)
+    
+def store_image(particle,labeled,image,region):
+    ii = np.where(labeled == region.label)
+            
+    box_x_min = np.min(ii[0])
+    box_x_max = np.max(ii[0])
+    box_y_max = np.max(ii[1])
+    box_y_min = np.min(ii[1])
+    pad = 5
+    
+    p_boxed = image.isig[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
+    particle.store_im(p_boxed)
+    
+class parameters(object):
+    """A parameters object."""
+    
+    def generate(self,threshold='otsu',watershed=None,invert=None,min_size=None,store_im=None,rb_kernel=0):
+        self.segment = {}
+        self.segment['threshold'] = threshold
+        self.segment['watershed'] = watershed
+        self.segment['invert'] = invert
+        self.segment['min_size'] = min_size
+        self.segment['rb_kernel'] = rb_kernel
+        
+        self.store = {}
+        self.store['store_im'] = store_im
+        
+    def generate_eds(self,eds_method=None,elements=None, factors=None):
+        self.eds = {}
+        self.eds['method'] = eds_method
+        self.eds['elements'] = elements
+        self.eds['factors'] = factors
+        
     
 def param_generator(threshold='otsu',watershed=None,invert=None,min_size=None,store_im=None,rb_kernel=0):
     """

@@ -126,7 +126,8 @@ class Application(QMainWindow):
         self.image = image
         
     def getparams(self):
-        self.params = ParticleAnalysis.param_generator()
+        self.params = ParticleAnalysis.parameters()
+        self.params.generate()
         
     def changeIm(self):
         if str(self.imBox.currentText()) == "Image":
@@ -136,17 +137,17 @@ class Application(QMainWindow):
         
     def changeWatershed(self, state):
         if state == Qt.Checked:
-            self.params['watershed'] = True
+            self.params.segment['watershed'] = True
         else:
-            self.params['watershed'] = None
+            self.params.segment['watershed'] = None
             
     def changeInvert(self, state):
         if state == Qt.Checked:
-            self.params['invert'] = True
+            self.params.segment['invert'] = True
             qi = QImage(invert(self.image).data, self.image.shape[1], self.image.shape[0], self.image.shape[1], QImage.Format_Indexed8)
             
         else:
-            self.params['invert'] = None
+            self.params.segment['invert'] = None
             qi = QImage(self.image.data, self.image.shape[1], self.image.shape[0], self.image.shape[1], QImage.Format_Indexed8)
         
         pixmap = QPixmap(qi)
@@ -155,12 +156,12 @@ class Application(QMainWindow):
             
     def rollingball(self):
         if self.sp.value() == 1:
-            self.params['rb_kernel'] = 0
+            self.params.segment['rb_kernel'] = 0
         else:
-            self.params['rb_kernel'] = self.sp.value()
+            self.params.segment['rb_kernel'] = self.sp.value()
             
     def minsize(self):
-        self.params['min_size'] = self.minsizev.value()
+        self.params.segment['min_size'] = self.minsizev.value()
             
     def update(self):
         labels = segptcls.process(self.im_hs,self.params)
@@ -177,29 +178,39 @@ class Application(QMainWindow):
         self.label.setPixmap(pixmap2)
         
     def return_params(self,params):
-        print(self.params)
+        print(self.params.segment)
         
     def threshold_choice(self):
         if str(self.comboBox.currentText()) == "Otsu":
-            self.params['threshold'] = "otsu"
+            self.params.segment['threshold'] = "otsu"
         if str(self.comboBox.currentText()) == "Mean":
-            self.params['threshold'] = "mean"
+            self.params.segment['threshold'] = "mean"
         if str(self.comboBox.currentText()) == "Minimum":
-            self.params['threshold'] = "minimum"
+            self.params.segment['threshold'] = "minimum"
         if str(self.comboBox.currentText()) == "Yen":
-            self.params['threshold'] = "yen"
+            self.params.segment['threshold'] = "yen"
         if str(self.comboBox.currentText()) == "Isodata":
-            self.params['threshold'] = "isodata"
+            self.params.segment['threshold'] = "isodata"
         if str(self.comboBox.currentText()) == "Li":
-            self.params['threshold'] = "li"
+            self.params.segment['threshold'] = "li"
         if str(self.comboBox.currentText()) == "Local":
-            self.params['threshold'] = "local"
+            self.params.segment['threshold'] = "local"
     
 def main(haadf):
     
     ex = Application(haadf)
     
     return(ex)
+    
+def SegUI(image):
+    app = QApplication(sys.argv)
+    app.aboutToQuit.connect(app.deleteLater)
+    
+    #params = ParticleAnalysis.param_generator()
+    ex = main(image)
+    
+    #ex.show()
+    app.exec_()
     
 if __name__ == '__main__':
     import hyperspy.api as hs
