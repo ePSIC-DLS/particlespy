@@ -212,6 +212,8 @@ def SegUI(image):
     #ex.show()
     app.exec_()
     
+    return(ex)
+    
 if __name__ == '__main__':
     import hyperspy.api as hs
     filename = "Data/JEOL HAADF Image.dm4"

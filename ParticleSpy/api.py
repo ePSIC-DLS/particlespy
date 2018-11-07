@@ -6,3 +6,4 @@ Created on Mon Nov  5 09:48:31 2018
 """
 
 from ParticleAnalysis import ParticleAnalysis, parameters
+from SegUI import SegUI
