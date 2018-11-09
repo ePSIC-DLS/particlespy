@@ -81,7 +81,7 @@ def threshold(data, process_param):
     
 def p_watershed(thresh_image):
     distance = ndi.distance_transform_edt(thresh_image)
-    local_maxi = peak_local_max(distance, indices=False, footprint=np.ones((3, 3)),
+    local_maxi = peak_local_max(distance, indices=False, footprint=np.ones((20, 20)),
                             labels=thresh_image)
     markers = ndi.label(local_maxi)[0]
     labels = watershed(-distance, markers, mask=thresh_image)

@@ -85,19 +85,22 @@ def ParticleAnalysis(acquisition,parameters,particle_list=Particle_list(),mask=N
         p.set_mask(maskp)
         
         if parameters.store["store_im"]==True:
-            store_image(p,labeled,image,region)
+            store_image(p,image)
             
         if isinstance(ac_types,list):
             for ac in acquisition:
                 if ac.metadata.Signal.signal_type == 'EDS_TEM':
-                    pass
+                    ac.set_elements(parameters.eds['elements'])
+                    ac.add_lines()
+                    if parameters.store["store_maps"]==True:
+                        store_maps(p,ac)
         
         particle_list.append(p)
         
     return(particle_list)
     
-def store_image(particle,labeled,image,region):
-    ii = np.where(labeled == region.label)
+def store_image(particle,image):
+    ii = np.where(particle.mask)
             
     box_x_min = np.min(ii[0])
     box_x_max = np.max(ii[0])
@@ -107,6 +110,21 @@ def store_image(particle,labeled,image,region):
     
     p_boxed = image.isig[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
     particle.store_im(p_boxed)
+    
+def store_maps(particle,ac):
+    maps = ac.get_lines_intensity()
+    
+    for map in maps:
+        ii = np.where(particle.mask)
+                
+        box_x_min = np.min(ii[0])
+        box_x_max = np.max(ii[0])
+        box_y_max = np.max(ii[1])
+        box_y_min = np.min(ii[1])
+        pad = 5
+        
+        p_boxed = map.isig[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
+        particle.store_map(p_boxed,p_boxed.metadata.Sample.elements[0])
     
 class parameters(object):
     """A parameters object."""

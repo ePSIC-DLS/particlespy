@@ -30,6 +30,14 @@ class Particle(object):
     def store_im(self,p_im):
         self.image = p_im
         
+    def store_map(self,p_map,element):
+        try:
+            self.maps
+        except NameError:
+            self.maps = {}
+        
+        self.maps[element] = p_map
+        
 class Particle_list(object):
     """A particle list object."""
     
