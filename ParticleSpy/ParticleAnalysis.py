@@ -11,8 +11,9 @@ from ptcl_class import Particle, Particle_list
 from skimage.measure import label, regionprops, perimeter
 import find_zoneaxis as zone
 import warnings
+import numpy as np
 
-def ParticleAnalysis(acquisition,parameters,particle_list=Particle_list(),mask=None):
+def ParticleAnalysis(acquisition,parameters,particle_list=Particle_list(),mask=np.zeros((1))):
     """
     Perform segmentation and analysis of images of particles.
     
@@ -40,7 +41,7 @@ def ParticleAnalysis(acquisition,parameters,particle_list=Particle_list(),mask=N
     if isinstance(acquisition,list):
         image = acquisition[0]
         ac_types = []
-        for ac in acquisition:
+        for ac in acquisition[1:]:
             if ac.metadata.Signal.signal_type == 'EDS_TEM':
                 ac_types.append(ac.metadata.Signal.signal_type)
             else:
@@ -50,7 +51,7 @@ def ParticleAnalysis(acquisition,parameters,particle_list=Particle_list(),mask=N
         image = acquisition
         ac_types = 'Image only'
     
-    if mask == None:
+    if mask.sum()==0:
         labeled = seg.process(image,parameters)
         #labels = np.unique(labeled).tolist() #some labeled number have been removed by "remove_small_holes" function
     else:
@@ -113,6 +114,7 @@ def store_image(particle,image):
     
 def store_maps(particle,ac):
     maps = ac.get_lines_intensity()
+    particle.maps_gen()
     
     for map in maps:
         ii = np.where(particle.mask)
@@ -123,13 +125,13 @@ def store_maps(particle,ac):
         box_y_min = np.min(ii[1])
         pad = 5
         
-        p_boxed = map.isig[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
+        p_boxed = map.inav[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
         particle.store_map(p_boxed,p_boxed.metadata.Sample.elements[0])
     
 class parameters(object):
     """A parameters object."""
     
-    def generate(self,threshold='otsu',watershed=None,invert=None,min_size=None,store_im=None,rb_kernel=0):
+    def generate(self,threshold='otsu',watershed=None,invert=None,min_size=None,store_im=False,rb_kernel=0):
         self.segment = {}
         self.segment['threshold'] = threshold
         self.segment['watershed'] = watershed
@@ -140,12 +142,13 @@ class parameters(object):
         self.store = {}
         self.store['store_im'] = store_im
         
-    def generate_eds(self,eds_method=None,elements=None, factors=None):
+    def generate_eds(self,eds_method=None,elements=None, factors=None, store_maps=False):
         self.eds = {}
         self.eds['method'] = eds_method
         self.eds['elements'] = elements
         self.eds['factors'] = factors
         
+        self.store['store_maps'] = store_maps
     
 def param_generator(threshold='otsu',watershed=None,invert=None,min_size=None,store_im=None,rb_kernel=0):
     """
