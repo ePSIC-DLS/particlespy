@@ -36,6 +36,13 @@ class Particle(object):
     def store_map(self,p_map,element):
         self.maps[element] = p_map
         
+    def store_spectrum(self,spectrum,stype):
+        self.spectrum = {}
+        self.spectrum[stype] = spectrum
+        
+    def store_composition(self,composition):
+        self.composition = {el.metadata.Sample.elements[0]:el.data for el in composition}
+        
 class Particle_list(object):
     """A particle list object."""
     

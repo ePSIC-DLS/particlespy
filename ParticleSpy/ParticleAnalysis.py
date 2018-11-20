@@ -11,7 +11,6 @@ from ptcl_class import Particle, Particle_list
 from skimage.measure import label, regionprops, perimeter
 import find_zoneaxis as zone
 import warnings
-import numpy as np
 
 def ParticleAnalysis(acquisition,parameters,particle_list=Particle_list(),mask=np.zeros((1))):
     """
@@ -93,8 +92,11 @@ def ParticleAnalysis(acquisition,parameters,particle_list=Particle_list(),mask=n
                 if ac.metadata.Signal.signal_type == 'EDS_TEM':
                     ac.set_elements(parameters.eds['elements'])
                     ac.add_lines()
+                    store_spectrum(p,ac,'EDS')
                     if parameters.store["store_maps"]==True:
                         store_maps(p,ac)
+                    if parameters.eds["factors"]!=None:
+                        get_composition(p,parameters)
         
         particle_list.append(p)
         
@@ -127,6 +129,19 @@ def store_maps(particle,ac):
         
         p_boxed = map.inav[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
         particle.store_map(p_boxed,p_boxed.metadata.Sample.elements[0])
+        
+def store_spectrum(particle,ac,stype):
+    ac_particle = ac.transpose()*particle.mask
+    ac_particle = ac_particle.transpose()
+    ac_particle_spectrum = ac_particle.sum()
+    ac_particle_spectrum.set_signal_type("EDS_TEM")
+    particle.store_spectrum(ac_particle_spectrum,stype)
+        
+def get_composition(particle,params):
+    bw = particle.spectrum['EDS'].estimate_background_windows(line_width=[5.0, 2.0])
+    intensities = particle.spectrum['EDS'].get_lines_intensity(background_windows=bw)
+    atomic_percent = particle.spectrum['EDS'].quantification(intensities, method=params.eds['method'],factors=params.eds['factors'])
+    particle.store_composition(atomic_percent)
     
 class parameters(object):
     """A parameters object."""
@@ -149,21 +164,3 @@ class parameters(object):
         self.eds['factors'] = factors
         
         self.store['store_maps'] = store_maps
-    
-def param_generator(threshold='otsu',watershed=None,invert=None,min_size=None,store_im=None,rb_kernel=0):
-    """
-    Generate a process parameter dictionary.
-        
-    Returns
-    -------
-    dictionary: Parameters contained in dictionary.
-    """
-    params = {}
-    params['threshold'] = threshold
-    params['watershed'] = watershed
-    params['invert'] = invert
-    params['min_size'] = min_size
-    params['store_im'] = store_im
-    params['rb_kernel'] = rb_kernel
-    
-    return(params)
