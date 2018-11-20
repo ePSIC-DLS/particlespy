@@ -138,7 +138,9 @@ def store_spectrum(particle,ac,stype):
     particle.store_spectrum(ac_particle_spectrum,stype)
         
 def get_composition(particle,params):
+    print(particle.spectrum['EDS'])
     bw = particle.spectrum['EDS'].estimate_background_windows(line_width=[5.0, 2.0])
+    print(bw)
     intensities = particle.spectrum['EDS'].get_lines_intensity(background_windows=bw)
     atomic_percent = particle.spectrum['EDS'].quantification(intensities, method=params.eds['method'],factors=params.eds['factors'])
     particle.store_composition(atomic_percent)
