@@ -12,13 +12,13 @@ from skimage.filters import threshold_otsu, threshold_mean, threshold_minimum
 from skimage.filters import threshold_yen, threshold_isodata, threshold_li
 from skimage.filters import threshold_local
 
-from skimage.measure import label, regionprops
+from skimage.measure import label
 from skimage.morphology import remove_small_objects, watershed, square, white_tophat
-from skimage.segmentation import clear_border, mark_boundaries
+from skimage.segmentation import clear_border
 from skimage.feature import peak_local_max
 from skimage.util import invert
 
-def process(im, process_param):
+def process(im, param):
     """
     Perform segmentation of an image of particles.
     
@@ -39,21 +39,24 @@ def process(im, process_param):
     else:
         data = im.data
     
-    data = rolling_ball(data,process_param["rb_kernel"])
+    data = rolling_ball(data,param.segment["rb_kernel"])
     
-    if process_param["invert"]!=None:
+    if param.segment["gaussian"]!=0:
+        data = ndi.gaussian_filter(data,param.segment["gaussian"])
+    
+    if param.segment["invert"]!=False:
         data = invert(data)
         
-    if process_param["threshold"]!=None:
-        labels = threshold(data, process_param)
+    if param.segment["threshold"]!=False:
+        labels = threshold(data, param.segment)
         
     labels = clear_border(labels)
     
-    if process_param["watershed"]!=None:
+    if param.segment["watershed"]!=False:
         labels = p_watershed(labels)
         
-    if process_param["min_size"]!=None:
-        remove_small_objects(labels,process_param["min_size"],in_place=True)
+    if param.segment["min_size"]!=0:
+        remove_small_objects(labels,param.segment["min_size"],in_place=True)
         
     return(labels)
     
@@ -81,7 +84,7 @@ def threshold(data, process_param):
     
 def p_watershed(thresh_image):
     distance = ndi.distance_transform_edt(thresh_image)
-    local_maxi = peak_local_max(distance, indices=False, footprint=np.ones((3, 3)),
+    local_maxi = peak_local_max(distance, indices=False, footprint=np.ones((20, 20)),
                             labels=thresh_image)
     markers = ndi.label(local_maxi)[0]
     labels = watershed(-distance, markers, mask=thresh_image)

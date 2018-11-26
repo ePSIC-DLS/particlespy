@@ -8,17 +8,20 @@ Created on Tue Jul 31 13:35:23 2018
 import segptcls as seg
 import numpy as np
 from ptcl_class import Particle, Particle_list
-from skimage.measure import label, regionprops
+from skimage.measure import label, regionprops, perimeter
 import find_zoneaxis as zone
+import warnings
+import h5py
 
-def ParticleAnalysis(acquisition,process_param,particle_list=Particle_list(),mask=None):
+def ParticleAnalysis(acquisition,parameters,particle_list=Particle_list(),mask=np.zeros((1))):
     """
     Perform segmentation and analysis of images of particles.
     
     Parameters
     ----------
-    acquisition: Hyperpsy signal object
-        Hyperpsy signal object containing a nanoparticle image.
+    acquisition: Hyperpsy signal object or list of hyperspy signal objects.
+        Hyperpsy signal object containing a nanoparticle image or a list of signal
+         objects that contains an image at position 0 and other datasets following.
     process_param: Dictionary of parameters
         The parameters can be input manually in to a dictionary or can be generated
         using param_generator().
@@ -34,8 +37,22 @@ def ParticleAnalysis(acquisition,process_param,particle_list=Particle_list(),mas
     list: List of Particle objects.
     """
     
-    if mask == None:
-        labeled = seg.process(acquisition,process_param)
+    #Check if input is list of signal objects or single one
+    if isinstance(acquisition,list):
+        image = acquisition[0]
+        ac_types = []
+        for ac in acquisition[1:]:
+            if ac.metadata.Signal.signal_type == 'EDS_TEM':
+                ac_types.append(ac.metadata.Signal.signal_type)
+            else:
+                warnings.warn("You have input data that does not have a defined signal type and therefore will not be processed."+
+                              " You need to define signal_type in the metadata for anything other than the first dataset.")
+    else:
+        image = acquisition
+        ac_types = 'Image only'
+    
+    if mask.sum()==0:
+        labeled = seg.process(image,parameters)
         #labels = np.unique(labeled).tolist() #some labeled number have been removed by "remove_small_holes" function
     else:
         labeled = label(mask)
@@ -43,19 +60,24 @@ def ParticleAnalysis(acquisition,process_param,particle_list=Particle_list(),mas
     for region in regionprops(labeled): #'count' start with 1, 0 is background
         p = Particle()
         
-        p_im = np.zeros_like(acquisition.data)
-        p_im[labeled==region.label] = acquisition.data[labeled==region.label]
+        p_im = np.zeros_like(image.data)
+        p_im[labeled==region.label] = image.data[labeled==region.label]
         
-        maskp = np.zeros_like(acquisition.data)
+        maskp = np.zeros_like(image.data)
         maskp[labeled==region.label] = 1
         
         #origin = ac_number
         #p.set_origin(origin)
         
         #Set area
-        cal_area = region.area*acquisition.axes_manager[0].scale*acquisition.axes_manager[1].scale
-        area_units = acquisition.axes_manager[0].units+"^2"
+        cal_area = region.area*image.axes_manager[0].scale*image.axes_manager[1].scale
+        area_units = image.axes_manager[0].units+"^2"
         p.set_area(cal_area,area_units)
+        
+        #Set shape measures
+        peri = perimeter(maskp,neighbourhood=8)
+        circularity = 4*3.14159265*p.area/(peri**2)
+        p.set_circularity(circularity)
         
         #Set zoneaxis
         p.set_zone(zone.find_zoneaxis(p_im))
@@ -63,36 +85,134 @@ def ParticleAnalysis(acquisition,process_param,particle_list=Particle_list(),mas
         #Set mask
         p.set_mask(maskp)
         
-        if process_param["store_im"]==True:
-            ii = np.where(labeled == region.label)
+        if parameters.store["store_im"]==True:
+            store_image(p,image)
             
-            box_x_min = np.min(ii[0])
-            box_x_max = np.max(ii[0])
-            box_y_max = np.max(ii[1])
-            box_y_min = np.min(ii[1])
-            pad = 5
-            
-            p_boxed = acquisition.isig[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
-            p.store_im(p_boxed)
+        if isinstance(ac_types,list):
+            for ac in acquisition:
+                if ac.metadata.Signal.signal_type == 'EDS_TEM':
+                    ac.set_elements(parameters.eds['elements'])
+                    ac.add_lines()
+                    store_spectrum(p,ac,'EDS')
+                    if parameters.store["store_maps"]==True:
+                        store_maps(p,ac)
+                    if parameters.eds["factors"]!=None:
+                        get_composition(p,parameters)
         
         particle_list.append(p)
         
     return(particle_list)
     
-def param_generator(threshold='otsu',watershed=None,invert=None,min_size=None,store_im=None,rb_kernel=0):
-    """
-    Generate a process parameter dictionary.
-        
-    Returns
-    -------
-    dictionary: Parameters contained in dictionary.
-    """
-    params = {}
-    params['threshold'] = threshold
-    params['watershed'] = watershed
-    params['invert'] = invert
-    params['min_size'] = min_size
-    params['store_im'] = store_im
-    params['rb_kernel'] = rb_kernel
+def store_image(particle,image):
+    ii = np.where(particle.mask)
+            
+    box_x_min = np.min(ii[0])
+    box_x_max = np.max(ii[0])
+    box_y_max = np.max(ii[1])
+    box_y_min = np.min(ii[1])
+    pad = 5
     
-    return(params)
+    p_boxed = image.isig[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
+    particle.store_im(p_boxed)
+    
+def store_maps(particle,ac):
+    maps = ac.get_lines_intensity()
+    particle.maps_gen()
+    
+    for map in maps:
+        ii = np.where(particle.mask)
+                
+        box_x_min = np.min(ii[0])
+        box_x_max = np.max(ii[0])
+        box_y_max = np.max(ii[1])
+        box_y_min = np.min(ii[1])
+        pad = 5
+        
+        p_boxed = map.inav[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
+        particle.store_map(p_boxed,p_boxed.metadata.Sample.elements[0])
+        
+def store_spectrum(particle,ac,stype):
+    ac_particle = ac.transpose()*particle.mask
+    ac_particle = ac_particle.transpose()
+    ac_particle_spectrum = ac_particle.sum()
+    ac_particle_spectrum.set_signal_type("EDS_TEM")
+    particle.store_spectrum(ac_particle_spectrum,stype)
+        
+def get_composition(particle,params):
+    print(particle.spectrum['EDS'])
+    bw = particle.spectrum['EDS'].estimate_background_windows(line_width=[5.0, 2.0])
+    print(bw)
+    intensities = particle.spectrum['EDS'].get_lines_intensity(background_windows=bw)
+    atomic_percent = particle.spectrum['EDS'].quantification(intensities, method=params.eds['method'],factors=params.eds['factors'])
+    particle.store_composition(atomic_percent)
+    
+class parameters(object):
+    """A parameters object."""
+    
+    def generate(self,threshold='otsu',watershed=False,invert=False,min_size=0,store_im=False,rb_kernel=0,gaussian=0):
+        self.segment = {}
+        self.segment['threshold'] = threshold
+        self.segment['watershed'] = watershed
+        self.segment['invert'] = invert
+        self.segment['min_size'] = min_size
+        self.segment['rb_kernel'] = rb_kernel
+        self.segment['gaussian'] = gaussian
+        
+        self.store = {}
+        self.store['store_im'] = store_im
+        
+        self.generate_eds()
+        
+    def generate_eds(self,eds_method=False,elements=False, factors=False, store_maps=False):
+        self.eds = {}
+        self.eds['method'] = eds_method
+        self.eds['elements'] = elements
+        self.eds['factors'] = factors
+        
+        self.store['store_maps'] = store_maps
+    
+    def save(self,filename='Parameters/parameters_current.hdf5'):
+        f = h5py.File(filename,'w')
+        
+        segment = f.create_group("segment")
+        store = f.create_group("store")
+        eds = f.create_group("eds")
+        
+        segment.attrs["threshold"] = self.segment['threshold']
+        segment.attrs["watershed"] = self.segment['watershed']
+        segment.attrs["invert"] = self.segment['invert']
+        segment.attrs["min_size"] = self.segment['min_size']
+        segment.attrs["rb_kernel"] = self.segment['rb_kernel']
+        segment.attrs["gaussian"] = self.segment['gaussian']
+        store.attrs['store_im'] = self.store['store_im']
+        store.attrs['store_maps'] = self.store['store_maps']
+        eds.attrs['method'] = self.eds['method']
+        eds.attrs['elements'] = self.eds['elements']
+        eds.attrs['factors'] = self.eds['factors']
+        
+        f.close()
+        
+    def load(self,filename='Parameters/parameters_current.hdf5'):
+        f = h5py.File(filename,'r')
+        
+        segment = f["segment"]
+        store = f["store"]
+        eds = f["eds"]
+        
+        self.segment = {}
+        self.store = {}
+        self.eds = {}
+        
+        self.segment['threshold'] = segment.attrs["threshold"]
+        self.segment['watershed'] = segment.attrs["watershed"]
+        self.segment['invert'] = segment.attrs["invert"]
+        self.segment['min_size'] = segment.attrs["min_size"]
+        self.segment['rb_kernel'] = segment.attrs["rb_kernel"]
+        self.segment['gaussian'] = segment.attrs["gaussian"]
+        self.store['store_im'] = store.attrs['store_im']
+        self.store['store_maps'] = store.attrs['store_maps']
+        self.eds['method'] = eds.attrs['method']
+        self.eds['elements'] = eds.attrs['elements']
+        self.eds['factors'] = eds.attrs['factors']
+        
+        f.close()
