@@ -6,6 +6,7 @@ Created on Tue Jul 31 14:51:58 2018
 """
 
 import matplotlib.pyplot as plt
+from particle_io import save_plist
 
 class Particle(object):
     """A segmented particle object."""
@@ -30,6 +31,19 @@ class Particle(object):
     def store_im(self,p_im):
         self.image = p_im
         
+    def maps_gen(self):
+        self.maps = {}
+        
+    def store_map(self,p_map,element):
+        self.maps[element] = p_map
+        
+    def store_spectrum(self,spectrum,stype):
+        self.spectrum = {}
+        self.spectrum[stype] = spectrum
+        
+    def store_composition(self,composition):
+        self.composition = {el.metadata.Sample.elements[0]:el.data for el in composition}
+        
 class Particle_list(object):
     """A particle list object."""
     
@@ -38,6 +52,9 @@ class Particle_list(object):
     
     def append(self,particle):
         self.list.append(particle)
+        
+    def save(self,filename):
+        save_plist(self,filename)
         
     def plot_area(self):
         """
@@ -50,5 +67,19 @@ class Particle_list(object):
             areas.append(p.area)
             
         plt.hist(areas)
-        plt.xlabel(self.list[0].area_units)
+        plt.xlabel("Area ("+self.list[0].area_units+")")
+        plt.ylabel("No. of particles")
+        
+    def plot_circularity(self):
+        """
+        Displays a plot of particle circularity for analysed particles.
+        """
+        
+        circularities = []
+        
+        for p in self.list:
+            circularities.append(p.circularity)
+            
+        plt.hist(circularities)
+        plt.xlabel("Circularity")
         plt.ylabel("No. of particles")
