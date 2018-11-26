@@ -41,18 +41,21 @@ def process(im, param):
     
     data = rolling_ball(data,param.segment["rb_kernel"])
     
-    if param.segment["invert"]!=None:
+    if param.segment["gaussian"]!=0:
+        data = ndi.gaussian_filter(data,param.segment["gaussian"])
+    
+    if param.segment["invert"]!=False:
         data = invert(data)
         
-    if param.segment["threshold"]!=None:
+    if param.segment["threshold"]!=False:
         labels = threshold(data, param.segment)
         
     labels = clear_border(labels)
     
-    if param.segment["watershed"]!=None:
+    if param.segment["watershed"]!=False:
         labels = p_watershed(labels)
         
-    if param.segment["min_size"]!=None:
+    if param.segment["min_size"]!=0:
         remove_small_objects(labels,param.segment["min_size"],in_place=True)
         
     return(labels)

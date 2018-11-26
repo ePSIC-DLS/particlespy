@@ -28,6 +28,9 @@ class Application(QMainWindow):
         self.getim(im_hs)
         self.getparams()
         
+        self.prev_params = ParticleAnalysis.parameters()
+        self.prev_params.generate()
+        
         offset = 50
 
         #self.central_widget = QWidget()               
@@ -57,9 +60,17 @@ class Application(QMainWindow):
         self.sp.valueChanged.connect(self.rollingball)
         self.sp.move(pixmap2.width()+20, 45)
         
+        self.gausstxt = QLabel(self)
+        self.gausstxt.setText('Gaussian filter kernel size')
+        self.gausstxt.move(pixmap2.width()+20,70)
+        
+        self.gauss = QSpinBox(self)
+        self.gauss.valueChanged.connect(self.gaussian)
+        self.gauss.move(pixmap2.width()+20, 95)
+        
         self.thresh_title = QLabel(self)
         self.thresh_title.setText('Thresholding options')
-        self.thresh_title.move(pixmap2.width()+20, 85)
+        self.thresh_title.move(pixmap2.width()+20, 135)
         
         self.comboBox = QComboBox(self)
         self.comboBox.addItem("Otsu")
@@ -69,32 +80,31 @@ class Application(QMainWindow):
         self.comboBox.addItem("Isodata")
         self.comboBox.addItem("Li")
         self.comboBox.addItem("Local")
-        self.comboBox.move(pixmap2.width()+20, 110)
+        self.comboBox.move(pixmap2.width()+20, 160)
         self.comboBox.activated[str].connect(self.threshold_choice)
         
         cb = QCheckBox('Watershed', self)
-        cb.move(pixmap2.width()+20, 145)
+        cb.move(pixmap2.width()+20, 195)
         cb.stateChanged.connect(self.changeWatershed)
         
         cb2 = QCheckBox('Invert', self)
-        cb2.move(pixmap2.width()+20, 145 + offset /2 )
+        cb2.move(pixmap2.width()+20, 195 + offset /2 )
         cb2.stateChanged.connect(self.changeInvert)
-        
         
         self.minsizetxt = QLabel(self)
         self.minsizetxt.setText('Min particle size (px)')
-        self.minsizetxt.move(pixmap2.width()+20, 165+offset)
+        self.minsizetxt.move(pixmap2.width()+20, 215+offset)
         
         self.minsizev = QSpinBox(self)
         self.minsizev.valueChanged.connect(self.minsize)
-        self.minsizev.move(pixmap2.width()+20, 190+offset)
+        self.minsizev.move(pixmap2.width()+20, 240+offset)
         
         updateb = QPushButton('Update',self)
-        updateb.move(pixmap2.width()+20,240+offset)
+        updateb.move(pixmap2.width()+20,290+offset)
         updateb.clicked.connect(self.update)
         
         paramsb = QPushButton('Get Params',self)
-        paramsb.move(pixmap2.width()+20,270+offset)
+        paramsb.move(pixmap2.width()+20,320+offset)
         
         paramsb.clicked.connect(self.return_params)
         
@@ -115,6 +125,8 @@ class Application(QMainWindow):
         lay.addWidget(self.comboBox)
         lay.addWidget(self.sp)
         lay.addWidget(self.sptxt)
+        lay.addWidget(self.gauss)
+        lay.addWidget(self.gausstxt)
         lay.addWidget(self.imagetxt)
         lay.addWidget(self.minsizev)
         self.show()
@@ -139,7 +151,7 @@ class Application(QMainWindow):
         if state == Qt.Checked:
             self.params.segment['watershed'] = True
         else:
-            self.params.segment['watershed'] = None
+            self.params.segment['watershed'] = False
             
     def changeInvert(self, state):
         if state == Qt.Checked:
@@ -147,7 +159,7 @@ class Application(QMainWindow):
             qi = QImage(invert(self.image).data, self.image.shape[1], self.image.shape[0], self.image.shape[1], QImage.Format_Indexed8)
             
         else:
-            self.params.segment['invert'] = None
+            self.params.segment['invert'] = False
             qi = QImage(self.image.data, self.image.shape[1], self.image.shape[0], self.image.shape[1], QImage.Format_Indexed8)
         
         pixmap = QPixmap(qi)
@@ -160,10 +172,34 @@ class Application(QMainWindow):
         else:
             self.params.segment['rb_kernel'] = self.sp.value()
             
+    def gaussian(self):
+        self.params.segment['gaussian'] = self.gauss.value()
+            
     def minsize(self):
         self.params.segment['min_size'] = self.minsizev.value()
             
     def update(self):
+        labels = segptcls.process(self.im_hs,self.params)
+        labels = np.uint8(labels*(256/labels.max()))
+        if self.imflag=="Image":
+            #b=image
+            b = np.uint8(mark_boundaries(self.image, labels, color=(1,1,1))[:,:,0]*255)
+            qi = QImage(b.data, b.shape[1], b.shape[0], b.shape[1], QImage.Format_Indexed8)
+        if self.imflag=="Labels":
+            qi = QImage(labels.data, labels.shape[1], labels.shape[0], labels.shape[1], QImage.Format_Indexed8)
+        #qi = QImage(imchoice.data, imchoice.shape[1], imchoice.shape[0], imchoice.shape[1], QImage.Format_Indexed8)
+        pixmap = QPixmap(qi)
+        pixmap2 = pixmap.scaled(512, 512, Qt.KeepAspectRatio)
+        self.label.setPixmap(pixmap2)
+        
+        self.prev_params.load()
+        self.prev_params.save(filename='Parameters/parameters_previous.hdf5')
+        
+        self.params.save()
+        
+    def undo(self):
+        self.params.load(filename='Parameters/parameters_previous.hdf5')
+        
         labels = segptcls.process(self.im_hs,self.params)
         labels = np.uint8(labels*(256/labels.max()))
         if self.imflag=="Image":

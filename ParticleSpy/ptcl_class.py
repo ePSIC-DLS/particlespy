@@ -6,6 +6,7 @@ Created on Tue Jul 31 14:51:58 2018
 """
 
 import matplotlib.pyplot as plt
+from particle_io import save_plist
 
 class Particle(object):
     """A segmented particle object."""
@@ -51,6 +52,9 @@ class Particle_list(object):
     
     def append(self,particle):
         self.list.append(particle)
+        
+    def save(self,filename):
+        save_plist(self,filename)
         
     def plot_area(self):
         """

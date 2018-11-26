@@ -11,6 +11,7 @@ from ptcl_class import Particle, Particle_list
 from skimage.measure import label, regionprops, perimeter
 import find_zoneaxis as zone
 import warnings
+import h5py
 
 def ParticleAnalysis(acquisition,parameters,particle_list=Particle_list(),mask=np.zeros((1))):
     """
@@ -148,21 +149,70 @@ def get_composition(particle,params):
 class parameters(object):
     """A parameters object."""
     
-    def generate(self,threshold='otsu',watershed=None,invert=None,min_size=None,store_im=False,rb_kernel=0):
+    def generate(self,threshold='otsu',watershed=False,invert=False,min_size=0,store_im=False,rb_kernel=0,gaussian=0):
         self.segment = {}
         self.segment['threshold'] = threshold
         self.segment['watershed'] = watershed
         self.segment['invert'] = invert
         self.segment['min_size'] = min_size
         self.segment['rb_kernel'] = rb_kernel
+        self.segment['gaussian'] = gaussian
         
         self.store = {}
         self.store['store_im'] = store_im
         
-    def generate_eds(self,eds_method=None,elements=None, factors=None, store_maps=False):
+        self.generate_eds()
+        
+    def generate_eds(self,eds_method=False,elements=False, factors=False, store_maps=False):
         self.eds = {}
         self.eds['method'] = eds_method
         self.eds['elements'] = elements
         self.eds['factors'] = factors
         
         self.store['store_maps'] = store_maps
+    
+    def save(self,filename='Parameters/parameters_current.hdf5'):
+        f = h5py.File(filename,'w')
+        
+        segment = f.create_group("segment")
+        store = f.create_group("store")
+        eds = f.create_group("eds")
+        
+        segment.attrs["threshold"] = self.segment['threshold']
+        segment.attrs["watershed"] = self.segment['watershed']
+        segment.attrs["invert"] = self.segment['invert']
+        segment.attrs["min_size"] = self.segment['min_size']
+        segment.attrs["rb_kernel"] = self.segment['rb_kernel']
+        segment.attrs["gaussian"] = self.segment['gaussian']
+        store.attrs['store_im'] = self.store['store_im']
+        store.attrs['store_maps'] = self.store['store_maps']
+        eds.attrs['method'] = self.eds['method']
+        eds.attrs['elements'] = self.eds['elements']
+        eds.attrs['factors'] = self.eds['factors']
+        
+        f.close()
+        
+    def load(self,filename='Parameters/parameters_current.hdf5'):
+        f = h5py.File(filename,'r')
+        
+        segment = f["segment"]
+        store = f["store"]
+        eds = f["eds"]
+        
+        self.segment = {}
+        self.store = {}
+        self.eds = {}
+        
+        self.segment['threshold'] = segment.attrs["threshold"]
+        self.segment['watershed'] = segment.attrs["watershed"]
+        self.segment['invert'] = segment.attrs["invert"]
+        self.segment['min_size'] = segment.attrs["min_size"]
+        self.segment['rb_kernel'] = segment.attrs["rb_kernel"]
+        self.segment['gaussian'] = segment.attrs["gaussian"]
+        self.store['store_im'] = store.attrs['store_im']
+        self.store['store_maps'] = store.attrs['store_maps']
+        self.eds['method'] = eds.attrs['method']
+        self.eds['elements'] = eds.attrs['elements']
+        self.eds['factors'] = eds.attrs['factors']
+        
+        f.close()
