@@ -75,7 +75,7 @@ def ParticleAnalysis(acquisition,parameters,particle_list=Particle_list(),mask=n
         p.set_area(cal_area,area_units)
         
         #Set shape measures
-        peri = perimeter(maskp,neighbourhood=8)
+        peri = acquisition.axes_manager[0].scale*perimeter(maskp,neighbourhood=8)
         circularity = 4*3.14159265*p.area/(peri**2)
         p.set_circularity(circularity)
         

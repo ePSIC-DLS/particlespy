@@ -67,5 +67,19 @@ class Particle_list(object):
             areas.append(p.area)
             
         plt.hist(areas)
-        plt.xlabel(self.list[0].area_units)
+        plt.xlabel("Area ("+self.list[0].area_units+")")
+        plt.ylabel("No. of particles")
+        
+    def plot_circularity(self):
+        """
+        Displays a plot of particle circularity for analysed particles.
+        """
+        
+        circularities = []
+        
+        for p in self.list:
+            circularities.append(p.circularity)
+            
+        plt.hist(circularities)
+        plt.xlabel("Circularity")
         plt.ylabel("No. of particles")
