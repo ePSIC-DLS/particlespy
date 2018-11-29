@@ -15,8 +15,8 @@ import numpy as np
 from skimage.segmentation import mark_boundaries
 from skimage.util import invert
 
-import segptcls
-import ParticleAnalysis
+from ParticleSpy.segptcls import process
+from ParticleSpy.ParticleAnalysis import parameters
 
 class Application(QMainWindow):
 
@@ -28,7 +28,7 @@ class Application(QMainWindow):
         self.getim(im_hs)
         self.getparams()
         
-        self.prev_params = ParticleAnalysis.parameters()
+        self.prev_params = parameters()
         self.prev_params.generate()
         
         offset = 50
@@ -138,7 +138,7 @@ class Application(QMainWindow):
         self.image = image
         
     def getparams(self):
-        self.params = ParticleAnalysis.parameters()
+        self.params = parameters()
         self.params.generate()
         
     def changeIm(self):
@@ -179,7 +179,7 @@ class Application(QMainWindow):
         self.params.segment['min_size'] = self.minsizev.value()
             
     def update(self):
-        labels = segptcls.process(self.im_hs,self.params)
+        labels = process(self.im_hs,self.params)
         labels = np.uint8(labels*(256/labels.max()))
         if self.imflag=="Image":
             #b=image
@@ -200,7 +200,7 @@ class Application(QMainWindow):
     def undo(self):
         self.params.load(filename='Parameters/parameters_previous.hdf5')
         
-        labels = segptcls.process(self.im_hs,self.params)
+        labels = process(self.im_hs,self.params)
         labels = np.uint8(labels*(256/labels.max()))
         if self.imflag=="Image":
             #b=image
