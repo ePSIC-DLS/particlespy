@@ -7,7 +7,7 @@ Created on Wed Nov 28 14:15:18 2018
 
 import numpy.testing as nptest
 import generate_test_data as gen_test
-import ParticleSpy.ParticleAnalysis as PAnalysis
+from ParticleSpy import ParticleAnalysis as PAnalysis
 from ParticleSpy.ptcl_class import Particle
 
 def test_store_image():
