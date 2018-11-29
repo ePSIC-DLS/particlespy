@@ -1,4 +1,4 @@
-import ParticleSpy.api as ps
+from ParticleSpy import api as ps
 import numpy.testing as nptest
 import generate_test_data as gen_test
 import os
