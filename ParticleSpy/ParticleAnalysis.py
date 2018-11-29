@@ -5,11 +5,11 @@ Created on Tue Jul 31 13:35:23 2018
 @author: qzo13262
 """
 
-import segptcls as seg
+from ParticleSpy.segptcls import process
 import numpy as np
-from ptcl_class import Particle, Particle_list
+from ParticleSpy.ptcl_class import Particle, Particle_list
 from skimage.measure import label, regionprops, perimeter
-import find_zoneaxis as zone
+import ParticleSpy.find_zoneaxis as zone
 import warnings
 import h5py
 
@@ -52,7 +52,7 @@ def ParticleAnalysis(acquisition,parameters,particle_list=Particle_list(),mask=n
         ac_types = 'Image only'
     
     if mask.sum()==0:
-        labeled = seg.process(image,parameters)
+        labeled = process(image,parameters)
         #labels = np.unique(labeled).tolist() #some labeled number have been removed by "remove_small_holes" function
     else:
         labeled = label(mask)
@@ -75,7 +75,8 @@ def ParticleAnalysis(acquisition,parameters,particle_list=Particle_list(),mask=n
         p.set_area(cal_area,area_units)
         
         #Set shape measures
-        peri = acquisition.axes_manager[0].scale*perimeter(maskp,neighbourhood=8)
+        peri = image.axes_manager[0].scale*perimeter(maskp,neighbourhood=4)
+        print(peri)
         circularity = 4*3.14159265*p.area/(peri**2)
         p.set_circularity(circularity)
         
@@ -139,9 +140,9 @@ def store_spectrum(particle,ac,stype):
     particle.store_spectrum(ac_particle_spectrum,stype)
         
 def get_composition(particle,params):
-    print(particle.spectrum['EDS'])
+    #print(particle.spectrum['EDS'])
     bw = particle.spectrum['EDS'].estimate_background_windows(line_width=[5.0, 2.0])
-    print(bw)
+    #print(bw)
     intensities = particle.spectrum['EDS'].get_lines_intensity(background_windows=bw)
     atomic_percent = particle.spectrum['EDS'].quantification(intensities, method=params.eds['method'],factors=params.eds['factors'])
     particle.store_composition(atomic_percent)
