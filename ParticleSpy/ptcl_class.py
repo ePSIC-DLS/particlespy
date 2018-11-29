@@ -6,7 +6,7 @@ Created on Tue Jul 31 14:51:58 2018
 """
 
 import matplotlib.pyplot as plt
-from particle_io import save_plist
+from ParticleSpy.particle_save import save_plist
 
 class Particle(object):
     """A segmented particle object."""
