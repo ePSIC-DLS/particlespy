@@ -12,6 +12,7 @@ from skimage.measure import label, regionprops, perimeter
 import ParticleSpy.find_zoneaxis as zone
 import warnings
 import h5py
+import inspect
 
 def ParticleAnalysis(acquisition,parameters,particle_list=Particle_list(),mask=np.zeros((1))):
     """
@@ -172,7 +173,7 @@ class parameters(object):
         
         self.store['store_maps'] = store_maps
     
-    def save(self,filename='Parameters/parameters_current.hdf5'):
+    def save(self,filename=inspect.getfile(process).rpartition('\\')[0]+'/Parameters/parameters_current.hdf5'):
         f = h5py.File(filename,'w')
         
         segment = f.create_group("segment")
@@ -193,7 +194,7 @@ class parameters(object):
         
         f.close()
         
-    def load(self,filename='Parameters/parameters_current.hdf5'):
+    def load(self,filename=inspect.getfile(process).rpartition('\\')[0]+'/Parameters/parameters_current.hdf5'):
         f = h5py.File(filename,'r')
         
         segment = f["segment"]
