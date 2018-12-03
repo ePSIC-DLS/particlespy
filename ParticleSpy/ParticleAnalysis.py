@@ -77,7 +77,6 @@ def ParticleAnalysis(acquisition,parameters,particle_list=Particle_list(),mask=n
         
         #Set shape measures
         peri = image.axes_manager[0].scale*perimeter(maskp,neighbourhood=4)
-        print(peri)
         circularity = 4*3.14159265*p.area/(peri**2)
         p.set_circularity(circularity)
         
@@ -98,7 +97,7 @@ def ParticleAnalysis(acquisition,parameters,particle_list=Particle_list(),mask=n
                     store_spectrum(p,ac,'EDS')
                     if parameters.store["store_maps"]==True:
                         store_maps(p,ac)
-                    if parameters.eds["factors"]!=None:
+                    if parameters.eds["factors"]!=False:
                         get_composition(p,parameters)
         
         particle_list.append(p)
