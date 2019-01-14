@@ -53,7 +53,7 @@ def process(im, param):
     labels = clear_border(labels)
     
     if param.segment["watershed"]!=False:
-        labels = p_watershed(labels)
+        labels = p_watershed(labels,param.segment["min_size"])
         
     if param.segment["min_size"]!=0:
         remove_small_objects(labels,param.segment["min_size"],in_place=True)
@@ -82,9 +82,11 @@ def threshold(data, process_param):
     
     return(labels)
     
-def p_watershed(thresh_image):
+def p_watershed(thresh_image,min_size):
+    if min_size == 0:
+        min_size = 20 #default value
     distance = ndi.distance_transform_edt(thresh_image)
-    local_maxi = peak_local_max(distance, indices=False, footprint=np.ones((20, 20)),
+    local_maxi = peak_local_max(distance, indices=False, footprint=np.ones((min_size, min_size)),
                             labels=thresh_image)
     markers = ndi.label(local_maxi)[0]
     labels = watershed(-distance, markers, mask=thresh_image)
