@@ -11,6 +11,7 @@ from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtCore import Qt
 import sys
 
+import inspect
 import numpy as np
 from skimage.segmentation import mark_boundaries
 from skimage.util import invert
@@ -193,7 +194,7 @@ class Application(QMainWindow):
         self.label.setPixmap(pixmap2)
         
         self.prev_params.load()
-        self.prev_params.save(filename='Parameters/parameters_previous.hdf5')
+        self.prev_params.save(filename=inspect.getfile(process).rpartition('\\')[0]+'/Parameters/parameters_previous.hdf5')
         
         self.params.save()
         

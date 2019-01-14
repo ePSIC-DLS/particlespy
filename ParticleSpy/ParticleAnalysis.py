@@ -8,11 +8,13 @@ Created on Tue Jul 31 13:35:23 2018
 from ParticleSpy.segptcls import process
 import numpy as np
 from ParticleSpy.ptcl_class import Particle, Particle_list
+from skimage import filters
 from skimage.measure import label, regionprops, perimeter
 import ParticleSpy.find_zoneaxis as zone
 import warnings
 import h5py
 import inspect
+import matplotlib.pyplot as plt
 
 def ParticleAnalysis(acquisition,parameters,particle_list=Particle_list(),mask=np.zeros((1))):
     """
@@ -62,7 +64,7 @@ def ParticleAnalysis(acquisition,parameters,particle_list=Particle_list(),mask=n
         p = Particle()
         
         p_im = np.zeros_like(image.data)
-        p_im[labeled==region.label] = image.data[labeled==region.label]
+        p_im[labeled==region.label] = image.data[labeled==region.label] - np.min(image.data[labeled==region.label])
         
         maskp = np.zeros_like(image.data)
         maskp[labeled==region.label] = 1
@@ -81,7 +83,14 @@ def ParticleAnalysis(acquisition,parameters,particle_list=Particle_list(),mask=n
         p.set_circularity(circularity)
         
         #Set zoneaxis
-        p.set_zone(zone.find_zoneaxis(p_im))
+        im_smooth = filters.gaussian(p_im,1)
+        im_zone = np.zeros_like(im_smooth)
+        im_zone[im_smooth>0] = im_smooth[im_smooth>0] - im_smooth[im_smooth>0].mean()
+        im_zone[im_zone<0] = 0
+        p.set_zone(zone.find_zoneaxis(im_zone))
+        if p.zone != None:
+            plt.imshow(im_zone)
+            plt.show()
         
         #Set mask
         p.set_mask(maskp)
