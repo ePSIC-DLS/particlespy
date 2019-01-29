@@ -84,28 +84,36 @@ class Application(QMainWindow):
         self.comboBox.move(pixmap2.width()+20, 160)
         self.comboBox.activated[str].connect(self.threshold_choice)
         
+        self.localtxt = QLabel(self)
+        self.localtxt.setText('Local filter kernel')
+        self.localtxt.move(pixmap2.width()+20,195)
+        
+        self.local_size = QSpinBox(self)
+        self.local_size.valueChanged.connect(self.local)
+        self.local_size.move(pixmap2.width()+20, 220)
+        
         cb = QCheckBox('Watershed', self)
-        cb.move(pixmap2.width()+20, 195)
+        cb.move(pixmap2.width()+20, 260)
         cb.stateChanged.connect(self.changeWatershed)
         
         cb2 = QCheckBox('Invert', self)
-        cb2.move(pixmap2.width()+20, 195 + offset /2 )
+        cb2.move(pixmap2.width()+20, 260 + offset /2 )
         cb2.stateChanged.connect(self.changeInvert)
         
         self.minsizetxt = QLabel(self)
         self.minsizetxt.setText('Min particle size (px)')
-        self.minsizetxt.move(pixmap2.width()+20, 215+offset)
+        self.minsizetxt.move(pixmap2.width()+20, 280+offset)
         
         self.minsizev = QSpinBox(self)
         self.minsizev.valueChanged.connect(self.minsize)
-        self.minsizev.move(pixmap2.width()+20, 240+offset)
+        self.minsizev.move(pixmap2.width()+20, 305+offset)
         
         updateb = QPushButton('Update',self)
-        updateb.move(pixmap2.width()+20,290+offset)
+        updateb.move(pixmap2.width()+20,355+offset)
         updateb.clicked.connect(self.update)
         
         paramsb = QPushButton('Get Params',self)
-        paramsb.move(pixmap2.width()+20,320+offset)
+        paramsb.move(pixmap2.width()+20,385+offset)
         
         paramsb.clicked.connect(self.return_params)
         
@@ -175,6 +183,9 @@ class Application(QMainWindow):
             
     def gaussian(self):
         self.params.segment['gaussian'] = self.gauss.value()
+        
+    def local(self):
+        self.params.segment['local_size'] = self.local_size.value()
             
     def minsize(self):
         self.params.segment['min_size'] = self.minsizev.value()
