@@ -84,6 +84,7 @@ class Application(QMainWindow):
         self.comboBox.addItem("Li")
         self.comboBox.addItem("Local")
         self.comboBox.addItem("Local Otsu")
+        self.comboBox.addItem("Local+Global Otsu")
         self.comboBox.move(pixmap2.width()+20, 160)
         self.comboBox.activated[str].connect(self.threshold_choice)
         
@@ -250,6 +251,8 @@ class Application(QMainWindow):
             self.params.segment['threshold'] = "local"
         if str(self.comboBox.currentText()) == "Local Otsu":
             self.params.segment['threshold'] = "local_otsu"
+        if str(self.comboBox.currentText()) == "Local+Global Otsu":
+            self.params.segment['threshold'] = "lg_otsu"
     
 def main(haadf):
     

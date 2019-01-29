@@ -4,7 +4,7 @@ Created on Tue Jul 31 15:06:08 2018
 
 @author: qzo13262
 """
-
+import matplotlib.pyplot as plt
 import numpy as np
 import scipy.ndimage as ndi
 
@@ -78,8 +78,16 @@ def threshold(data, process_param):
     if process_param["threshold"] == "local_otsu":
         selem = disk(process_param["local_size"])
         thresh = rank.otsu(np.uint8(data),selem)
+    if process_param["threshold"] == "lg_otsu":
+        selem = disk(process_param["local_size"])
+        threshl = rank.otsu(np.uint8(data),selem)
+        threshg = threshold_otsu(data)
     
-    if process_param["threshold"] == "local_otsu":
+    if process_param["threshold"] == "lg_otsu":
+        mask1 = data>=threshl
+        mask2 = data>threshg
+        mask = mask1 * mask2
+    elif process_param["threshold"] == "local_otsu":
         mask = data>=thresh
     else:
         mask = data > thresh
