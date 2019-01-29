@@ -10,10 +10,10 @@ import scipy.ndimage as ndi
 
 from skimage.filters import threshold_otsu, threshold_mean, threshold_minimum
 from skimage.filters import threshold_yen, threshold_isodata, threshold_li
-from skimage.filters import threshold_local
+from skimage.filters import threshold_local, rank
 
 from skimage.measure import label
-from skimage.morphology import remove_small_objects, watershed, square, white_tophat
+from skimage.morphology import remove_small_objects, watershed, square, white_tophat, disk
 from skimage.segmentation import clear_border
 from skimage.feature import peak_local_max
 from skimage.util import invert
@@ -75,8 +75,14 @@ def threshold(data, process_param):
         thresh = threshold_li(data)
     if process_param["threshold"] == "local":
         thresh = threshold_local(data,process_param["local_size"])
-            
-    mask = data > thresh
+    if process_param["threshold"] == "local_otsu":
+        selem = disk(process_param["local_size"])
+        thresh = rank.otsu(np.uint8(data),selem)
+    
+    if process_param["threshold"] == "local_otsu":
+        mask = data>=thresh
+    else:
+        mask = data > thresh
     
     labels = label(mask)
     

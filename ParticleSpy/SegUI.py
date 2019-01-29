@@ -83,6 +83,7 @@ class Application(QMainWindow):
         self.comboBox.addItem("Isodata")
         self.comboBox.addItem("Li")
         self.comboBox.addItem("Local")
+        self.comboBox.addItem("Local Otsu")
         self.comboBox.move(pixmap2.width()+20, 160)
         self.comboBox.activated[str].connect(self.threshold_choice)
         
@@ -247,6 +248,8 @@ class Application(QMainWindow):
             self.params.segment['threshold'] = "li"
         if str(self.comboBox.currentText()) == "Local":
             self.params.segment['threshold'] = "local"
+        if str(self.comboBox.currentText()) == "Local Otsu":
+            self.params.segment['threshold'] = "local_otsu"
     
 def main(haadf):
     
