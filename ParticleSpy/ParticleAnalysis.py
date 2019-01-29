@@ -159,7 +159,7 @@ def get_composition(particle,params):
 class parameters(object):
     """A parameters object."""
     
-    def generate(self,threshold='otsu',watershed=False,invert=False,min_size=0,store_im=False,rb_kernel=0,gaussian=0):
+    def generate(self,threshold='otsu',watershed=False,invert=False,min_size=0,store_im=False,rb_kernel=0,gaussian=0,local_size=101):
         self.segment = {}
         self.segment['threshold'] = threshold
         self.segment['watershed'] = watershed
@@ -167,6 +167,7 @@ class parameters(object):
         self.segment['min_size'] = min_size
         self.segment['rb_kernel'] = rb_kernel
         self.segment['gaussian'] = gaussian
+        self.segment['local_size'] = local_size
         
         self.store = {}
         self.store['store_im'] = store_im
