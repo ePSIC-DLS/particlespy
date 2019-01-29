@@ -74,7 +74,7 @@ def threshold(data, process_param):
     if process_param["threshold"] == "li":
         thresh = threshold_li(data)
     if process_param["threshold"] == "local":
-        thresh = threshold_local(data,21)
+        thresh = threshold_local(data,process_param["local_size"])
             
     mask = data > thresh
     
