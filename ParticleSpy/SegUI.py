@@ -58,6 +58,7 @@ class Application(QMainWindow):
         self.sptxt.move(pixmap2.width()+20,20)
         
         self.sp = QSpinBox(self)
+        self.sp.setMaximum(self.image.shape[0])
         self.sp.valueChanged.connect(self.rollingball)
         self.sp.move(pixmap2.width()+20, 45)
         
@@ -66,6 +67,7 @@ class Application(QMainWindow):
         self.gausstxt.move(pixmap2.width()+20,70)
         
         self.gauss = QSpinBox(self)
+        self.gauss.setMaximum(self.image.shape[0])
         self.gauss.valueChanged.connect(self.gaussian)
         self.gauss.move(pixmap2.width()+20, 95)
         
@@ -89,6 +91,7 @@ class Application(QMainWindow):
         self.localtxt.move(pixmap2.width()+20,195)
         
         self.local_size = QSpinBox(self)
+        self.local_size.setMaximum(self.image.shape[0])
         self.local_size.valueChanged.connect(self.local)
         self.local_size.move(pixmap2.width()+20, 220)
         
@@ -105,6 +108,7 @@ class Application(QMainWindow):
         self.minsizetxt.move(pixmap2.width()+20, 280+offset)
         
         self.minsizev = QSpinBox(self)
+        self.minsizev.setMaximum(self.image.shape[0]*self.image.shape[1])
         self.minsizev.valueChanged.connect(self.minsize)
         self.minsizev.move(pixmap2.width()+20, 305+offset)
         
