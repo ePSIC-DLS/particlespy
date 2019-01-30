@@ -39,7 +39,7 @@ class Application(QMainWindow):
         lay = QVBoxLayout()
 
         self.label = QLabel(self)
-        qi = QImage(self.image.data, self.image.shape[1], self.image.shape[0], self.image.shape[1], QImage.Format_Indexed8)
+        qi = QImage(self.image.data, self.image.shape[1], self.image.shape[0], self.image.shape[1], QImage.Format_Grayscale8)
         pixmap = QPixmap(qi)
         pixmap2 = pixmap.scaled(512, 512, Qt.KeepAspectRatio)
         self.label.setPixmap(pixmap2)
@@ -148,8 +148,9 @@ class Application(QMainWindow):
         
     def getim(self,im_hs):
         self.im_hs = im_hs
-        im = im_hs.data
-        image = np.uint8(255*(im-np.min(im))/(np.max(im)-np.min(im)))
+        im = im_hs.data.astype(np.float64)
+        im = im-np.min(im)
+        image = np.uint8(255*im/np.max(im))
         self.image = image
         
     def getparams(self):
