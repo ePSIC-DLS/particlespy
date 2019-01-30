@@ -10,7 +10,7 @@ import scipy.fftpack as fftim
 from skimage import filters, exposure, measure
 from scipy.ndimage import label
 from math import isclose, degrees, acos
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 def find_zoneaxis(im):
     """
@@ -63,7 +63,7 @@ def find_zoneaxis(im):
     markers,nr_objects = label(fft_thresh)
     properties = measure.regionprops(markers,fft_smoothed)
     #print(np.where(properties[0].max_intensity))
-    plt.imshow(markers)
+    #plt.imshow(markers)
     
     if nr_objects < 4:
         #print('Fewer than 6 peaks were found in the FFT.')
