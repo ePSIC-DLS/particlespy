@@ -77,10 +77,16 @@ def threshold(data, process_param):
         thresh = threshold_local(data,process_param["local_size"])
     if process_param["threshold"] == "local_otsu":
         selem = disk(process_param["local_size"])
-        thresh = rank.otsu(np.uint8(data),selem)
+        data = data.astype(np.float64)
+        data = data-np.min(data)
+        data = np.uint8(255*data/np.max(data))
+        thresh = rank.otsu(data,selem)
     if process_param["threshold"] == "lg_otsu":
         selem = disk(process_param["local_size"])
-        threshl = rank.otsu(np.uint8(data),selem)
+        data = data.astype(np.float64)
+        data = data-np.min(data)
+        data = np.uint8(255*data/np.max(data))
+        threshl = rank.otsu(data,selem)
         threshg = threshold_otsu(data)
     
     if process_param["threshold"] == "lg_otsu":
