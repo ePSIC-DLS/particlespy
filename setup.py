@@ -13,6 +13,10 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/ePSIC-DLS/ParticleSpy",
     packages=setuptools.find_packages(),
+    install_requires=[
+        "hyperspy",
+        "PyQt5",
+    ],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
