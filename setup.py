@@ -15,7 +15,8 @@ except ImportError:
 
 setuptools.setup(
     name="ParticleSpy",
-    version="0.0.1b1",
+    package_dir={'ParticleSpy':'ParticleSpy'},
+    version="0.0.1b3",
     author="Thomas Slater",
     author_email="tjaslater@gmail.com",
     description="A package to perform particle segmentation and analysis",
@@ -23,7 +24,15 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/ePSIC-DLS/ParticleSpy",
     packages=setuptools.find_packages(),
-    install_requires=install_requires,            
+    install_requires=install_requires,   
+    include_package_data=True,
+    package_data={
+        'ParticleSpy':
+        [
+            'Data/*.dm4'
+            'Parameters/*.hdf5'
+        ],
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
