@@ -15,7 +15,7 @@ except ImportError:
 
 setuptools.setup(
     name="ParticleSpy",
-    version="0.0.1",
+    version="0.0.1b1",
     author="Thomas Slater",
     author_email="tjaslater@gmail.com",
     description="A package to perform particle segmentation and analysis",
