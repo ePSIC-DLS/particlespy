@@ -3,6 +3,16 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+install_requires=["hyperspy"]
+
+try:
+    import PyQt5  # noqa
+except ImportError:
+    try:
+        import PySide2  # noqa
+    except ImportError:
+        install_requires.append('PyQt5')
+
 setuptools.setup(
     name="ParticleSpy",
     version="0.0.1",
@@ -13,10 +23,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/ePSIC-DLS/ParticleSpy",
     packages=setuptools.find_packages(),
-    install_requires=[
-        "hyperspy",
-        "PyQt5",
-    ],
+    install_requires=install_requires,            
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
