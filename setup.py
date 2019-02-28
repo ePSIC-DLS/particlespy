@@ -29,7 +29,7 @@ setuptools.setup(
     package_data={
         'ParticleSpy':
         [
-            'Data/*.dm4'
+            'Data/*.dm4',
             'Parameters/*.hdf5'
         ],
     },
