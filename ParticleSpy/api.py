@@ -10,6 +10,7 @@ from ParticleSpy.SegUI import SegUI
 from ParticleSpy.ptcl_class import Particle_list, Particle
 
 from ParticleSpy.particle_load import load_plist
+from ParticleSpy.radial_profile import radial_profile
 
 def load(filename):
     p_list = load_plist(filename)
