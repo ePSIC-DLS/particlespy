@@ -56,7 +56,7 @@ class Particle_list(object):
     def save(self,filename):
         save_plist(self,filename)
         
-    def plot_area(self):
+    def plot_area(self,bins=20):
         """
         Displays a plot of particle areas for analysed particles.
         """
@@ -66,11 +66,11 @@ class Particle_list(object):
         for p in self.list:
             areas.append(p.area)
             
-        plt.hist(areas)
+        plt.hist(areas,bins=bins)
         plt.xlabel("Area ("+self.list[0].area_units+")")
         plt.ylabel("No. of particles")
         
-    def plot_circularity(self):
+    def plot_circularity(self,bins=20):
         """
         Displays a plot of particle circularity for analysed particles.
         """
@@ -80,6 +80,6 @@ class Particle_list(object):
         for p in self.list:
             circularities.append(p.circularity)
             
-        plt.hist(circularities)
+        plt.hist(circularities,bins=bins)
         plt.xlabel("Circularity")
         plt.ylabel("No. of particles")
