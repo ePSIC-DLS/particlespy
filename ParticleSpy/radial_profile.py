@@ -7,7 +7,7 @@ Created on Tue May 28 09:58:37 2019
 import numpy as np
 import matplotlib.pyplot as plt
 
-def radial_profile(particle,signals):
+def radial_profile(particle,signals,plot=True):
     
     dist_count_dic = {}
     for sig in signals:
@@ -19,7 +19,8 @@ def radial_profile(particle,signals):
     scale = particle.image.axes_manager[0].scale
     units = particle.image.axes_manager[0].units
     
-    plot_ConcentricScan(dist_count_dic,scale,units)
+    if plot==True:
+        plot_profile(dist_count_dic,scale,units)
     return(dist_count_dic)
     
 '''def sum_profiles(profiles):
@@ -84,7 +85,7 @@ def concentric_scan_AbsoluteDis(element_map):
     
     return distance_unique, count_unique
 
-def plot_ConcentricScan(dist_count_dic, scale, units, save=False, dir_save=None):
+def plot_profile(dist_count_dic, scale, units, save=False, dir_save=None):
     '''
     DisNorm: check if the distance from particle centre 
             is normalised by the particle size
