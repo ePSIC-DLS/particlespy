@@ -86,14 +86,14 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         p.set_circularity(circularity)
         
         #Set zoneaxis
-        '''im_smooth = filters.gaussian(p_im,1)
+        im_smooth = filters.gaussian(p_im,1)
         im_zone = np.zeros_like(im_smooth)
         im_zone[im_smooth>0] = im_smooth[im_smooth>0] - im_smooth[im_smooth>0].mean()
         im_zone[im_zone<0] = 0
         p.set_zone(zone.find_zoneaxis(im_zone))
         if p.zone != None:
             plt.imshow(im_zone)
-            plt.show()'''
+            plt.show()
         
         #Set mask
         p.set_mask(maskp)
