@@ -16,7 +16,7 @@ import h5py
 import inspect
 import matplotlib.pyplot as plt
 
-def ParticleAnalysis(acquisition,parameters,particle_list=Particle_list(),mask=np.zeros((1))):
+def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
     """
     Perform segmentation and analysis of images of particles.
     
@@ -39,6 +39,9 @@ def ParticleAnalysis(acquisition,parameters,particle_list=Particle_list(),mask=n
     -------
     list: List of Particle objects.
     """
+    
+    if particles==None:
+        particles=Particle_list()
     
     #Check if input is list of signal objects or single one
     if isinstance(acquisition,list):
@@ -83,14 +86,14 @@ def ParticleAnalysis(acquisition,parameters,particle_list=Particle_list(),mask=n
         p.set_circularity(circularity)
         
         #Set zoneaxis
-        im_smooth = filters.gaussian(p_im,1)
+        '''im_smooth = filters.gaussian(p_im,1)
         im_zone = np.zeros_like(im_smooth)
         im_zone[im_smooth>0] = im_smooth[im_smooth>0] - im_smooth[im_smooth>0].mean()
         im_zone[im_zone<0] = 0
         p.set_zone(zone.find_zoneaxis(im_zone))
         if p.zone != None:
             plt.imshow(im_zone)
-            plt.show()
+            plt.show()'''
         
         #Set mask
         p.set_mask(maskp)
@@ -109,9 +112,9 @@ def ParticleAnalysis(acquisition,parameters,particle_list=Particle_list(),mask=n
                     if parameters.eds["factors"]!=False:
                         get_composition(p,parameters)
         
-        particle_list.append(p)
+        particles.append(p)
         
-    return(particle_list)
+    return(particles)
     
 def store_image(particle,image):
     ii = np.where(particle.mask)
