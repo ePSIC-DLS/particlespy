@@ -4,21 +4,21 @@ Created on Tue Jul 31 15:06:08 2018
 
 @author: qzo13262
 """
-
+import matplotlib.pyplot as plt
 import numpy as np
 import scipy.ndimage as ndi
 
 from skimage.filters import threshold_otsu, threshold_mean, threshold_minimum
 from skimage.filters import threshold_yen, threshold_isodata, threshold_li
-from skimage.filters import threshold_local
+from skimage.filters import threshold_local, rank
 
-from skimage.measure import label, regionprops
-from skimage.morphology import remove_small_objects, watershed, square, white_tophat
-from skimage.segmentation import clear_border, mark_boundaries
+from skimage.measure import label
+from skimage.morphology import remove_small_objects, watershed, square, white_tophat, disk
+from skimage.segmentation import clear_border
 from skimage.feature import peak_local_max
 from skimage.util import invert
 
-def process(im, process_param):
+def process(im, param):
     """
     Perform segmentation of an image of particles.
     
@@ -39,21 +39,24 @@ def process(im, process_param):
     else:
         data = im.data
     
-    data = rolling_ball(data,process_param["rb_kernel"])
+    data = rolling_ball(data,param.segment["rb_kernel"])
     
-    if process_param["invert"]!=None:
+    if param.segment["gaussian"]!=0:
+        data = ndi.gaussian_filter(data,param.segment["gaussian"])
+    
+    if param.segment["invert"]!=False:
         data = invert(data)
         
-    if process_param["threshold"]!=None:
-        labels = threshold(data, process_param)
+    if param.segment["threshold"]!=False:
+        labels = threshold(data, param.segment)
         
     labels = clear_border(labels)
     
-    if process_param["watershed"]!=None:
-        labels = p_watershed(labels)
+    if param.segment["watershed"]!=False:
+        labels = p_watershed(labels,param.segment["min_size"])
         
-    if process_param["min_size"]!=None:
-        remove_small_objects(labels,process_param["min_size"],in_place=True)
+    if param.segment["min_size"]!=0:
+        remove_small_objects(labels,param.segment["min_size"],in_place=True)
         
     return(labels)
     
@@ -71,17 +74,39 @@ def threshold(data, process_param):
     if process_param["threshold"] == "li":
         thresh = threshold_li(data)
     if process_param["threshold"] == "local":
-        thresh = threshold_local(data,21)
-            
-    mask = data > thresh
+        thresh = threshold_local(data,process_param["local_size"])
+    if process_param["threshold"] == "local_otsu":
+        selem = disk(process_param["local_size"])
+        data = data.astype(np.float64)
+        data = data-np.min(data)
+        data = np.uint8(255*data/np.max(data))
+        thresh = rank.otsu(data,selem)
+    if process_param["threshold"] == "lg_otsu":
+        selem = disk(process_param["local_size"])
+        data = data.astype(np.float64)
+        data = data-np.min(data)
+        data = np.uint8(255*data/np.max(data))
+        threshl = rank.otsu(data,selem)
+        threshg = threshold_otsu(data)
+    
+    if process_param["threshold"] == "lg_otsu":
+        mask1 = data>=threshl
+        mask2 = data>threshg
+        mask = mask1 * mask2
+    elif process_param["threshold"] == "local_otsu":
+        mask = data>=thresh
+    else:
+        mask = data > thresh
     
     labels = label(mask)
     
     return(labels)
     
-def p_watershed(thresh_image):
+def p_watershed(thresh_image,min_size):
+    if min_size == 0:
+        min_size = 20 #default value
     distance = ndi.distance_transform_edt(thresh_image)
-    local_maxi = peak_local_max(distance, indices=False, footprint=np.ones((3, 3)),
+    local_maxi = peak_local_max(distance, indices=False, footprint=np.ones((min_size, min_size)),
                             labels=thresh_image)
     markers = ndi.label(local_maxi)[0]
     labels = watershed(-distance, markers, mask=thresh_image)
