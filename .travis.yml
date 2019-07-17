@@ -9,6 +9,7 @@ install:
 
 script:
   - pytest
+  - cd docs
   - make html
   - touch _build/html/.nojekyll
 
