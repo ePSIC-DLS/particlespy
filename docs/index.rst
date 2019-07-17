@@ -14,6 +14,7 @@ It extends the functionality of the `Hyperspy <http://hyperspy.org/>`_ package i
    :caption: Contents:
    
    getting_started.rst
+   source/modules.rst
 
 
 
