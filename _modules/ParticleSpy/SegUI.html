@@ -1,0 +1,481 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ParticleSpy.SegUI &mdash; ParticleSpy 0.0.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> ParticleSpy
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/modules.html">ParticleSpy</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ParticleSpy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>ParticleSpy.SegUI</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ParticleSpy.SegUI</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Mon Oct 22 15:50:08 2018</span>
+
+<span class="sd">@author: qzo13262</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="k">import</span> <span class="n">QCheckBox</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QMainWindow</span><span class="p">,</span> <span class="n">QSpinBox</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="k">import</span> <span class="n">QApplication</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QComboBox</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtGui</span> <span class="k">import</span> <span class="n">QPixmap</span><span class="p">,</span> <span class="n">QImage</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="k">import</span> <span class="n">Qt</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">skimage.segmentation</span> <span class="k">import</span> <span class="n">mark_boundaries</span>
+<span class="kn">from</span> <span class="nn">skimage.util</span> <span class="k">import</span> <span class="n">invert</span>
+
+<span class="kn">from</span> <span class="nn">ParticleSpy.segptcls</span> <span class="k">import</span> <span class="n">process</span>
+<span class="kn">from</span> <span class="nn">ParticleSpy.ParticleAnalysis</span> <span class="k">import</span> <span class="n">parameters</span>
+
+<div class="viewcode-block" id="Application"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.SegUI.Application">[docs]</a><span class="k">class</span> <span class="nc">Application</span><span class="p">(</span><span class="n">QMainWindow</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">im_hs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Segmentation UI&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imflag</span> <span class="o">=</span> <span class="s2">&quot;Image&quot;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">getim</span><span class="p">(</span><span class="n">im_hs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">getparams</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">prev_params</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prev_params</span><span class="o">.</span><span class="n">generate</span><span class="p">()</span>
+        
+        <span class="n">offset</span> <span class="o">=</span> <span class="mi">50</span>
+
+        <span class="c1">#self.central_widget = QWidget()               </span>
+        <span class="c1">#self.setCentralWidget(self.central_widget)</span>
+        <span class="n">lay</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">qi</span> <span class="o">=</span> <span class="n">QImage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">QImage</span><span class="o">.</span><span class="n">Format_Grayscale8</span><span class="p">)</span>
+        <span class="n">pixmap</span> <span class="o">=</span> <span class="n">QPixmap</span><span class="p">(</span><span class="n">qi</span><span class="p">)</span>
+        <span class="n">pixmap2</span> <span class="o">=</span> <span class="n">pixmap</span><span class="o">.</span><span class="n">scaled</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">KeepAspectRatio</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="n">pixmap2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="n">pixmap2</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span><span class="n">pixmap2</span><span class="o">.</span><span class="n">height</span><span class="p">())</span>
+        
+        <span class="n">height</span> <span class="o">=</span> <span class="nb">max</span><span class="p">((</span><span class="n">pixmap2</span><span class="o">.</span><span class="n">height</span><span class="p">()</span><span class="o">+</span><span class="mi">50</span><span class="p">,</span><span class="mi">300</span> <span class="o">+</span> <span class="n">offset</span><span class="p">))</span> <span class="c1">#300 +50</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">pixmap2</span><span class="o">.</span><span class="n">width</span><span class="p">()</span><span class="o">+</span><span class="mi">130</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">filt_title</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filt_title</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Pre-filtering options&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filt_title</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">pixmap2</span><span class="o">.</span><span class="n">width</span><span class="p">()</span><span class="o">+</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">sptxt</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sptxt</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Rolling ball size&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sptxt</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">pixmap2</span><span class="o">.</span><span class="n">width</span><span class="p">()</span><span class="o">+</span><span class="mi">20</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">sp</span> <span class="o">=</span> <span class="n">QSpinBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sp</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sp</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rollingball</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sp</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">pixmap2</span><span class="o">.</span><span class="n">width</span><span class="p">()</span><span class="o">+</span><span class="mi">20</span><span class="p">,</span> <span class="mi">45</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">gausstxt</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gausstxt</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Gaussian filter kernel size&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gausstxt</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">pixmap2</span><span class="o">.</span><span class="n">width</span><span class="p">()</span><span class="o">+</span><span class="mi">20</span><span class="p">,</span><span class="mi">70</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">gauss</span> <span class="o">=</span> <span class="n">QSpinBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gauss</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gauss</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gaussian</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gauss</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">pixmap2</span><span class="o">.</span><span class="n">width</span><span class="p">()</span><span class="o">+</span><span class="mi">20</span><span class="p">,</span> <span class="mi">95</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">thresh_title</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thresh_title</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Thresholding options&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thresh_title</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">pixmap2</span><span class="o">.</span><span class="n">width</span><span class="p">()</span><span class="o">+</span><span class="mi">20</span><span class="p">,</span> <span class="mi">135</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;Otsu&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;Mean&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;Minimum&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;Yen&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;Isodata&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;Li&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;Local&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;Local Otsu&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;Local+Global Otsu&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">pixmap2</span><span class="o">.</span><span class="n">width</span><span class="p">()</span><span class="o">+</span><span class="mi">20</span><span class="p">,</span> <span class="mi">160</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">activated</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">threshold_choice</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">localtxt</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">localtxt</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Local filter kernel&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">localtxt</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">pixmap2</span><span class="o">.</span><span class="n">width</span><span class="p">()</span><span class="o">+</span><span class="mi">20</span><span class="p">,</span><span class="mi">195</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">local_size</span> <span class="o">=</span> <span class="n">QSpinBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">local_size</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">local_size</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">local</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">local_size</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">pixmap2</span><span class="o">.</span><span class="n">width</span><span class="p">()</span><span class="o">+</span><span class="mi">20</span><span class="p">,</span> <span class="mi">220</span><span class="p">)</span>
+        
+        <span class="n">cb</span> <span class="o">=</span> <span class="n">QCheckBox</span><span class="p">(</span><span class="s1">&#39;Watershed&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">cb</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">pixmap2</span><span class="o">.</span><span class="n">width</span><span class="p">()</span><span class="o">+</span><span class="mi">20</span><span class="p">,</span> <span class="mi">260</span><span class="p">)</span>
+        <span class="n">cb</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">changeWatershed</span><span class="p">)</span>
+        
+        <span class="n">cb2</span> <span class="o">=</span> <span class="n">QCheckBox</span><span class="p">(</span><span class="s1">&#39;Invert&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">cb2</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">pixmap2</span><span class="o">.</span><span class="n">width</span><span class="p">()</span><span class="o">+</span><span class="mi">20</span><span class="p">,</span> <span class="mi">260</span> <span class="o">+</span> <span class="n">offset</span> <span class="o">/</span><span class="mi">2</span> <span class="p">)</span>
+        <span class="n">cb2</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">changeInvert</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">minsizetxt</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minsizetxt</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Min particle size (px)&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minsizetxt</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">pixmap2</span><span class="o">.</span><span class="n">width</span><span class="p">()</span><span class="o">+</span><span class="mi">20</span><span class="p">,</span> <span class="mi">280</span><span class="o">+</span><span class="n">offset</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">minsizev</span> <span class="o">=</span> <span class="n">QSpinBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minsizev</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minsizev</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">minsize</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minsizev</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">pixmap2</span><span class="o">.</span><span class="n">width</span><span class="p">()</span><span class="o">+</span><span class="mi">20</span><span class="p">,</span> <span class="mi">305</span><span class="o">+</span><span class="n">offset</span><span class="p">)</span>
+        
+        <span class="n">updateb</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s1">&#39;Update&#39;</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">updateb</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">pixmap2</span><span class="o">.</span><span class="n">width</span><span class="p">()</span><span class="o">+</span><span class="mi">20</span><span class="p">,</span><span class="mi">355</span><span class="o">+</span><span class="n">offset</span><span class="p">)</span>
+        <span class="n">updateb</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">)</span>
+        
+        <span class="n">paramsb</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s1">&#39;Get Params&#39;</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">paramsb</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">pixmap2</span><span class="o">.</span><span class="n">width</span><span class="p">()</span><span class="o">+</span><span class="mi">20</span><span class="p">,</span><span class="mi">385</span><span class="o">+</span><span class="n">offset</span><span class="p">)</span>
+        
+        <span class="n">paramsb</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">return_params</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">imagetxt</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imagetxt</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Display:&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imagetxt</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">75</span><span class="p">,</span> <span class="n">pixmap2</span><span class="o">.</span><span class="n">height</span><span class="p">()</span><span class="o">+</span><span class="mi">15</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">imBox</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imBox</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;Image&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imBox</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;Labels&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imBox</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">pixmap2</span><span class="o">.</span><span class="n">width</span><span class="p">()</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="n">pixmap2</span><span class="o">.</span><span class="n">height</span><span class="p">()</span><span class="o">+</span><span class="mi">15</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">imBox</span><span class="o">.</span><span class="n">activated</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">changeIm</span><span class="p">)</span>
+        
+        <span class="n">lay</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thresh_title</span><span class="p">)</span>
+        <span class="n">lay</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filt_title</span><span class="p">)</span>
+        <span class="n">lay</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+        <span class="n">lay</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="p">)</span>
+        <span class="n">lay</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sp</span><span class="p">)</span>
+        <span class="n">lay</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sptxt</span><span class="p">)</span>
+        <span class="n">lay</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gauss</span><span class="p">)</span>
+        <span class="n">lay</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gausstxt</span><span class="p">)</span>
+        <span class="n">lay</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">imagetxt</span><span class="p">)</span>
+        <span class="n">lay</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">minsizev</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        
+<div class="viewcode-block" id="Application.getim"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.SegUI.Application.getim">[docs]</a>    <span class="k">def</span> <span class="nf">getim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">im_hs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">im_hs</span> <span class="o">=</span> <span class="n">im_hs</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="n">im_hs</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="n">im</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">(</span><span class="mi">255</span><span class="o">*</span><span class="n">im</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">im</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">image</span></div>
+        
+<div class="viewcode-block" id="Application.getparams"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.SegUI.Application.getparams">[docs]</a>    <span class="k">def</span> <span class="nf">getparams</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">generate</span><span class="p">()</span></div>
+        
+<div class="viewcode-block" id="Application.changeIm"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.SegUI.Application.changeIm">[docs]</a>    <span class="k">def</span> <span class="nf">changeIm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">imBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span> <span class="o">==</span> <span class="s2">&quot;Image&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">imflag</span> <span class="o">=</span> <span class="s2">&quot;Image&quot;</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">imBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span> <span class="o">==</span> <span class="s2">&quot;Labels&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">imflag</span> <span class="o">=</span> <span class="s2">&quot;Labels&quot;</span></div>
+        
+<div class="viewcode-block" id="Application.changeWatershed"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.SegUI.Application.changeWatershed">[docs]</a>    <span class="k">def</span> <span class="nf">changeWatershed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Checked</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;watershed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;watershed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span></div>
+            
+<div class="viewcode-block" id="Application.changeInvert"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.SegUI.Application.changeInvert">[docs]</a>    <span class="k">def</span> <span class="nf">changeInvert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Checked</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;invert&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">qi</span> <span class="o">=</span> <span class="n">QImage</span><span class="p">(</span><span class="n">invert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">QImage</span><span class="o">.</span><span class="n">Format_Indexed8</span><span class="p">)</span>
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;invert&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">qi</span> <span class="o">=</span> <span class="n">QImage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">QImage</span><span class="o">.</span><span class="n">Format_Indexed8</span><span class="p">)</span>
+        
+        <span class="n">pixmap</span> <span class="o">=</span> <span class="n">QPixmap</span><span class="p">(</span><span class="n">qi</span><span class="p">)</span>
+        <span class="n">pixmap2</span> <span class="o">=</span> <span class="n">pixmap</span><span class="o">.</span><span class="n">scaled</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">KeepAspectRatio</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="n">pixmap2</span><span class="p">)</span></div>
+            
+<div class="viewcode-block" id="Application.rollingball"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.SegUI.Application.rollingball">[docs]</a>    <span class="k">def</span> <span class="nf">rollingball</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sp</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;rb_kernel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;rb_kernel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sp</span><span class="o">.</span><span class="n">value</span><span class="p">()</span></div>
+            
+<div class="viewcode-block" id="Application.gaussian"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.SegUI.Application.gaussian">[docs]</a>    <span class="k">def</span> <span class="nf">gaussian</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;gaussian&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gauss</span><span class="o">.</span><span class="n">value</span><span class="p">()</span></div>
+        
+<div class="viewcode-block" id="Application.local"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.SegUI.Application.local">[docs]</a>    <span class="k">def</span> <span class="nf">local</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;local_size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_size</span><span class="o">.</span><span class="n">value</span><span class="p">()</span></div>
+            
+<div class="viewcode-block" id="Application.minsize"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.SegUI.Application.minsize">[docs]</a>    <span class="k">def</span> <span class="nf">minsize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;min_size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minsizev</span><span class="o">.</span><span class="n">value</span><span class="p">()</span></div>
+            
+<div class="viewcode-block" id="Application.update"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.SegUI.Application.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">im_hs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">(</span><span class="n">labels</span><span class="o">*</span><span class="p">(</span><span class="mi">256</span><span class="o">/</span><span class="n">labels</span><span class="o">.</span><span class="n">max</span><span class="p">()))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">imflag</span><span class="o">==</span><span class="s2">&quot;Image&quot;</span><span class="p">:</span>
+            <span class="c1">#b=image</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">(</span><span class="n">mark_boundaries</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))[:,:,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">255</span><span class="p">)</span>
+            <span class="n">qi</span> <span class="o">=</span> <span class="n">QImage</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">QImage</span><span class="o">.</span><span class="n">Format_Indexed8</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">imflag</span><span class="o">==</span><span class="s2">&quot;Labels&quot;</span><span class="p">:</span>
+            <span class="n">qi</span> <span class="o">=</span> <span class="n">QImage</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">QImage</span><span class="o">.</span><span class="n">Format_Indexed8</span><span class="p">)</span>
+        <span class="c1">#qi = QImage(imchoice.data, imchoice.shape[1], imchoice.shape[0], imchoice.shape[1], QImage.Format_Indexed8)</span>
+        <span class="n">pixmap</span> <span class="o">=</span> <span class="n">QPixmap</span><span class="p">(</span><span class="n">qi</span><span class="p">)</span>
+        <span class="n">pixmap2</span> <span class="o">=</span> <span class="n">pixmap</span><span class="o">.</span><span class="n">scaled</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">KeepAspectRatio</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="n">pixmap2</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">prev_params</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prev_params</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">process</span><span class="p">)</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;/Parameters/parameters_previous.hdf5&#39;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
+        
+<div class="viewcode-block" id="Application.undo"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.SegUI.Application.undo">[docs]</a>    <span class="k">def</span> <span class="nf">undo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;Parameters/parameters_previous.hdf5&#39;</span><span class="p">)</span>
+        
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">im_hs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">(</span><span class="n">labels</span><span class="o">*</span><span class="p">(</span><span class="mi">256</span><span class="o">/</span><span class="n">labels</span><span class="o">.</span><span class="n">max</span><span class="p">()))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">imflag</span><span class="o">==</span><span class="s2">&quot;Image&quot;</span><span class="p">:</span>
+            <span class="c1">#b=image</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">(</span><span class="n">mark_boundaries</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))[:,:,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">255</span><span class="p">)</span>
+            <span class="n">qi</span> <span class="o">=</span> <span class="n">QImage</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">QImage</span><span class="o">.</span><span class="n">Format_Indexed8</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">imflag</span><span class="o">==</span><span class="s2">&quot;Labels&quot;</span><span class="p">:</span>
+            <span class="n">qi</span> <span class="o">=</span> <span class="n">QImage</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">QImage</span><span class="o">.</span><span class="n">Format_Indexed8</span><span class="p">)</span>
+        <span class="c1">#qi = QImage(imchoice.data, imchoice.shape[1], imchoice.shape[0], imchoice.shape[1], QImage.Format_Indexed8)</span>
+        <span class="n">pixmap</span> <span class="o">=</span> <span class="n">QPixmap</span><span class="p">(</span><span class="n">qi</span><span class="p">)</span>
+        <span class="n">pixmap2</span> <span class="o">=</span> <span class="n">pixmap</span><span class="o">.</span><span class="n">scaled</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">KeepAspectRatio</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="n">pixmap2</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="Application.return_params"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.SegUI.Application.return_params">[docs]</a>    <span class="k">def</span> <span class="nf">return_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">params</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="Application.threshold_choice"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.SegUI.Application.threshold_choice">[docs]</a>    <span class="k">def</span> <span class="nf">threshold_choice</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span> <span class="o">==</span> <span class="s2">&quot;Otsu&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;threshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;otsu&quot;</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span> <span class="o">==</span> <span class="s2">&quot;Mean&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;threshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;mean&quot;</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span> <span class="o">==</span> <span class="s2">&quot;Minimum&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;threshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;minimum&quot;</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span> <span class="o">==</span> <span class="s2">&quot;Yen&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;threshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;yen&quot;</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span> <span class="o">==</span> <span class="s2">&quot;Isodata&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;threshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;isodata&quot;</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span> <span class="o">==</span> <span class="s2">&quot;Li&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;threshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;li&quot;</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span> <span class="o">==</span> <span class="s2">&quot;Local&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;threshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;local&quot;</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span> <span class="o">==</span> <span class="s2">&quot;Local Otsu&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;threshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;local_otsu&quot;</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span> <span class="o">==</span> <span class="s2">&quot;Local+Global Otsu&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;threshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;lg_otsu&quot;</span></div></div>
+    
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.SegUI.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">haadf</span><span class="p">):</span>
+    
+    <span class="n">ex</span> <span class="o">=</span> <span class="n">Application</span><span class="p">(</span><span class="n">haadf</span><span class="p">)</span>
+    
+    <span class="k">return</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="SegUI"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.SegUI.SegUI">[docs]</a><span class="k">def</span> <span class="nf">SegUI</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">aboutToQuit</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">)</span>
+    
+    <span class="c1">#params = ParticleAnalysis.param_generator()</span>
+    <span class="n">ex</span> <span class="o">=</span> <span class="n">main</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+    
+    <span class="c1">#ex.show()</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
+    
+    <span class="k">return</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span></div>
+    
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">hyperspy.api</span> <span class="k">as</span> <span class="nn">hs</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;Data/JEOL HAADF Image.dm4&quot;</span>
+    <span class="n">haadf</span> <span class="o">=</span> <span class="n">hs</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">aboutToQuit</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">)</span>
+    
+    <span class="c1">#params = ParticleAnalysis.param_generator()</span>
+    <span class="n">ex</span> <span class="o">=</span> <span class="n">main</span><span class="p">(</span><span class="n">haadf</span><span class="p">)</span>
+    
+    <span class="c1">#ex.show()</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
+    
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, ePSIC
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

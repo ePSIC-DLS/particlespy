@@ -1,0 +1,425 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ParticleSpy.ParticleAnalysis &mdash; ParticleSpy 0.0.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> ParticleSpy
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/modules.html">ParticleSpy</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ParticleSpy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>ParticleSpy.ParticleAnalysis</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ParticleSpy.ParticleAnalysis</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Tue Jul 31 13:35:23 2018</span>
+
+<span class="sd">@author: qzo13262</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">ParticleSpy.segptcls</span> <span class="k">import</span> <span class="n">process</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">ParticleSpy.ptcl_class</span> <span class="k">import</span> <span class="n">Particle</span><span class="p">,</span> <span class="n">Particle_list</span>
+<span class="kn">from</span> <span class="nn">skimage</span> <span class="k">import</span> <span class="n">filters</span>
+<span class="kn">from</span> <span class="nn">skimage.measure</span> <span class="k">import</span> <span class="n">label</span><span class="p">,</span> <span class="n">regionprops</span><span class="p">,</span> <span class="n">perimeter</span>
+<span class="kn">import</span> <span class="nn">ParticleSpy.find_zoneaxis</span> <span class="k">as</span> <span class="nn">zone</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">h5py</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<div class="viewcode-block" id="ParticleAnalysis"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.ParticleAnalysis">[docs]</a><span class="k">def</span> <span class="nf">ParticleAnalysis</span><span class="p">(</span><span class="n">acquisition</span><span class="p">,</span><span class="n">parameters</span><span class="p">,</span><span class="n">particles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">mask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">))):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform segmentation and analysis of images of particles.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    acquisition: Hyperpsy signal object or list of hyperspy signal objects.</span>
+<span class="sd">        Hyperpsy signal object containing a nanoparticle image or a list of signal</span>
+<span class="sd">         objects that contains an image at position 0 and other datasets following.</span>
+<span class="sd">    process_param: Dictionary of parameters</span>
+<span class="sd">        The parameters can be input manually in to a dictionary or can be generated</span>
+<span class="sd">        using param_generator().</span>
+<span class="sd">    particle_list: List</span>
+<span class="sd">        List of already analysed particles that the output can be appended</span>
+<span class="sd">        to.</span>
+<span class="sd">    mask: Numpy array</span>
+<span class="sd">        Numpy array of same 2D size as acquisition that contains a mask of presegmented</span>
+<span class="sd">        particles.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list: List of Particle objects.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">particles</span><span class="o">==</span><span class="kc">None</span><span class="p">:</span>
+        <span class="n">particles</span><span class="o">=</span><span class="n">Particle_list</span><span class="p">()</span>
+    
+    <span class="c1">#Check if input is list of signal objects or single one</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">acquisition</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">acquisition</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ac_types</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ac</span> <span class="ow">in</span> <span class="n">acquisition</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="k">if</span> <span class="n">ac</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">Signal</span><span class="o">.</span><span class="n">signal_type</span> <span class="o">==</span> <span class="s1">&#39;EDS_TEM&#39;</span><span class="p">:</span>
+                <span class="n">ac_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ac</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">Signal</span><span class="o">.</span><span class="n">signal_type</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;You have input data that does not have a defined signal type and therefore will not be processed.&quot;</span><span class="o">+</span>
+                              <span class="s2">&quot; You need to define signal_type in the metadata for anything other than the first dataset.&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">acquisition</span>
+        <span class="n">ac_types</span> <span class="o">=</span> <span class="s1">&#39;Image only&#39;</span>
+    
+    <span class="k">if</span> <span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">labeled</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="n">image</span><span class="p">,</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="c1">#labels = np.unique(labeled).tolist() #some labeled number have been removed by &quot;remove_small_holes&quot; function</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">labeled</span> <span class="o">=</span> <span class="n">label</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+        
+    <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">regionprops</span><span class="p">(</span><span class="n">labeled</span><span class="p">):</span> <span class="c1">#&#39;count&#39; start with 1, 0 is background</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">()</span>
+        
+        <span class="n">p_im</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">p_im</span><span class="p">[</span><span class="n">labeled</span><span class="o">==</span><span class="n">region</span><span class="o">.</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">labeled</span><span class="o">==</span><span class="n">region</span><span class="o">.</span><span class="n">label</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">labeled</span><span class="o">==</span><span class="n">region</span><span class="o">.</span><span class="n">label</span><span class="p">])</span>
+        
+        <span class="n">maskp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">maskp</span><span class="p">[</span><span class="n">labeled</span><span class="o">==</span><span class="n">region</span><span class="o">.</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        
+        <span class="c1">#origin = ac_number</span>
+        <span class="c1">#p.set_origin(origin)</span>
+        
+        <span class="c1">#Set area</span>
+        <span class="n">cal_area</span> <span class="o">=</span> <span class="n">region</span><span class="o">.</span><span class="n">area</span><span class="o">*</span><span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scale</span><span class="o">*</span><span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scale</span>
+        <span class="n">area_units</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="o">+</span><span class="s2">&quot;^2&quot;</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">set_area</span><span class="p">(</span><span class="n">cal_area</span><span class="p">,</span><span class="n">area_units</span><span class="p">)</span>
+        
+        <span class="c1">#Set shape measures</span>
+        <span class="n">peri</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scale</span><span class="o">*</span><span class="n">perimeter</span><span class="p">(</span><span class="n">maskp</span><span class="p">,</span><span class="n">neighbourhood</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">circularity</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="mf">3.14159265</span><span class="o">*</span><span class="n">p</span><span class="o">.</span><span class="n">area</span><span class="o">/</span><span class="p">(</span><span class="n">peri</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">set_circularity</span><span class="p">(</span><span class="n">circularity</span><span class="p">)</span>
+        
+        <span class="c1">#Set zoneaxis</span>
+        <span class="n">im_smooth</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">gaussian</span><span class="p">(</span><span class="n">p_im</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">im_zone</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">im_smooth</span><span class="p">)</span>
+        <span class="n">im_zone</span><span class="p">[</span><span class="n">im_smooth</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">im_smooth</span><span class="p">[</span><span class="n">im_smooth</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">im_smooth</span><span class="p">[</span><span class="n">im_smooth</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">im_zone</span><span class="p">[</span><span class="n">im_zone</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">set_zone</span><span class="p">(</span><span class="n">zone</span><span class="o">.</span><span class="n">find_zoneaxis</span><span class="p">(</span><span class="n">im_zone</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">zone</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">im_zone</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        
+        <span class="c1">#Set mask</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">set_mask</span><span class="p">(</span><span class="n">maskp</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">parameters</span><span class="o">.</span><span class="n">store</span><span class="p">[</span><span class="s2">&quot;store_im&quot;</span><span class="p">]</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            <span class="n">store_image</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">image</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ac_types</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">ac</span> <span class="ow">in</span> <span class="n">acquisition</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ac</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">Signal</span><span class="o">.</span><span class="n">signal_type</span> <span class="o">==</span> <span class="s1">&#39;EDS_TEM&#39;</span><span class="p">:</span>
+                    <span class="n">ac</span><span class="o">.</span><span class="n">set_elements</span><span class="p">(</span><span class="n">parameters</span><span class="o">.</span><span class="n">eds</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">])</span>
+                    <span class="n">ac</span><span class="o">.</span><span class="n">add_lines</span><span class="p">()</span>
+                    <span class="n">store_spectrum</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">ac</span><span class="p">,</span><span class="s1">&#39;EDS&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">parameters</span><span class="o">.</span><span class="n">store</span><span class="p">[</span><span class="s2">&quot;store_maps&quot;</span><span class="p">]</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+                        <span class="n">store_maps</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">ac</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">parameters</span><span class="o">.</span><span class="n">eds</span><span class="p">[</span><span class="s2">&quot;factors&quot;</span><span class="p">]</span><span class="o">!=</span><span class="kc">False</span><span class="p">:</span>
+                        <span class="n">get_composition</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">parameters</span><span class="p">)</span>
+        
+        <span class="n">particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        
+    <span class="k">return</span><span class="p">(</span><span class="n">particles</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="store_image"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.store_image">[docs]</a><span class="k">def</span> <span class="nf">store_image</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span><span class="n">image</span><span class="p">):</span>
+    <span class="n">ii</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+            
+    <span class="n">box_x_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">ii</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">box_x_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">ii</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">box_y_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">ii</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">box_y_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">ii</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">pad</span> <span class="o">=</span> <span class="mi">5</span>
+    
+    <span class="n">p_boxed</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">isig</span><span class="p">[(</span><span class="n">box_y_min</span><span class="o">-</span><span class="n">pad</span><span class="p">):(</span><span class="n">box_y_max</span><span class="o">+</span><span class="n">pad</span><span class="p">),(</span><span class="n">box_x_min</span><span class="o">-</span><span class="n">pad</span><span class="p">):(</span><span class="n">box_x_max</span><span class="o">+</span><span class="n">pad</span><span class="p">)]</span>
+    <span class="n">particle</span><span class="o">.</span><span class="n">store_im</span><span class="p">(</span><span class="n">p_boxed</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="store_maps"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.store_maps">[docs]</a><span class="k">def</span> <span class="nf">store_maps</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span><span class="n">ac</span><span class="p">):</span>
+    <span class="n">maps</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="n">get_lines_intensity</span><span class="p">()</span>
+    <span class="n">particle</span><span class="o">.</span><span class="n">maps_gen</span><span class="p">()</span>
+    
+    <span class="k">for</span> <span class="nb">map</span> <span class="ow">in</span> <span class="n">maps</span><span class="p">:</span>
+        <span class="n">ii</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+                
+        <span class="n">box_x_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">ii</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">box_x_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">ii</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">box_y_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">ii</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">box_y_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">ii</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">pad</span> <span class="o">=</span> <span class="mi">5</span>
+        
+        <span class="n">p_boxed</span> <span class="o">=</span> <span class="nb">map</span><span class="o">.</span><span class="n">inav</span><span class="p">[(</span><span class="n">box_y_min</span><span class="o">-</span><span class="n">pad</span><span class="p">):(</span><span class="n">box_y_max</span><span class="o">+</span><span class="n">pad</span><span class="p">),(</span><span class="n">box_x_min</span><span class="o">-</span><span class="n">pad</span><span class="p">):(</span><span class="n">box_x_max</span><span class="o">+</span><span class="n">pad</span><span class="p">)]</span>
+        <span class="n">particle</span><span class="o">.</span><span class="n">store_map</span><span class="p">(</span><span class="n">p_boxed</span><span class="p">,</span><span class="n">p_boxed</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">Sample</span><span class="o">.</span><span class="n">elements</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
+        
+<div class="viewcode-block" id="store_spectrum"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.store_spectrum">[docs]</a><span class="k">def</span> <span class="nf">store_spectrum</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span><span class="n">ac</span><span class="p">,</span><span class="n">stype</span><span class="p">):</span>
+    <span class="n">ac_particle</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">*</span><span class="n">particle</span><span class="o">.</span><span class="n">mask</span>
+    <span class="n">ac_particle</span> <span class="o">=</span> <span class="n">ac_particle</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+    <span class="n">ac_particle_spectrum</span> <span class="o">=</span> <span class="n">ac_particle</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">ac_particle_spectrum</span><span class="o">.</span><span class="n">set_signal_type</span><span class="p">(</span><span class="s2">&quot;EDS_TEM&quot;</span><span class="p">)</span>
+    <span class="n">particle</span><span class="o">.</span><span class="n">store_spectrum</span><span class="p">(</span><span class="n">ac_particle_spectrum</span><span class="p">,</span><span class="n">stype</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="get_composition"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.get_composition">[docs]</a><span class="k">def</span> <span class="nf">get_composition</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span><span class="n">params</span><span class="p">):</span>
+    <span class="c1">#print(particle.spectrum[&#39;EDS&#39;])</span>
+    <span class="n">bw</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">spectrum</span><span class="p">[</span><span class="s1">&#39;EDS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">estimate_background_windows</span><span class="p">(</span><span class="n">line_width</span><span class="o">=</span><span class="p">[</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">])</span>
+    <span class="c1">#print(bw)</span>
+    <span class="n">intensities</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">spectrum</span><span class="p">[</span><span class="s1">&#39;EDS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_lines_intensity</span><span class="p">(</span><span class="n">background_windows</span><span class="o">=</span><span class="n">bw</span><span class="p">)</span>
+    <span class="n">atomic_percent</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">spectrum</span><span class="p">[</span><span class="s1">&#39;EDS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">quantification</span><span class="p">(</span><span class="n">intensities</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">eds</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">],</span><span class="n">factors</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">eds</span><span class="p">[</span><span class="s1">&#39;factors&#39;</span><span class="p">])</span>
+    <span class="n">particle</span><span class="o">.</span><span class="n">store_composition</span><span class="p">(</span><span class="n">atomic_percent</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="parameters"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.parameters">[docs]</a><span class="k">class</span> <span class="nc">parameters</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A parameters object.&quot;&quot;&quot;</span>
+    
+<div class="viewcode-block" id="parameters.generate"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.parameters.generate">[docs]</a>    <span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">threshold</span><span class="o">=</span><span class="s1">&#39;otsu&#39;</span><span class="p">,</span><span class="n">watershed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">invert</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">min_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">store_im</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">rb_kernel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">gaussian</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">local_size</span><span class="o">=</span><span class="mi">101</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;threshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">threshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;watershed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">watershed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;invert&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">invert</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;min_size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">min_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;rb_kernel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rb_kernel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;gaussian&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gaussian</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;local_size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">local_size</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">store</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="p">[</span><span class="s1">&#39;store_im&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">store_im</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">generate_eds</span><span class="p">()</span></div>
+        
+<div class="viewcode-block" id="parameters.generate_eds"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.parameters.generate_eds">[docs]</a>    <span class="k">def</span> <span class="nf">generate_eds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">eds_method</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">elements</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">factors</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">store_maps</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eds</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eds</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">eds_method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eds</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">elements</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eds</span><span class="p">[</span><span class="s1">&#39;factors&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">factors</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="p">[</span><span class="s1">&#39;store_maps&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">store_maps</span></div>
+    
+<div class="viewcode-block" id="parameters.save"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.parameters.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">process</span><span class="p">)</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;/Parameters/parameters_current.hdf5&#39;</span><span class="p">):</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        
+        <span class="n">segment</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;segment&quot;</span><span class="p">)</span>
+        <span class="n">store</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;store&quot;</span><span class="p">)</span>
+        <span class="n">eds</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;eds&quot;</span><span class="p">)</span>
+        
+        <span class="n">segment</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;threshold&#39;</span><span class="p">]</span>
+        <span class="n">segment</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;watershed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;watershed&#39;</span><span class="p">]</span>
+        <span class="n">segment</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;invert&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;invert&#39;</span><span class="p">]</span>
+        <span class="n">segment</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;min_size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;min_size&#39;</span><span class="p">]</span>
+        <span class="n">segment</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;rb_kernel&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;rb_kernel&#39;</span><span class="p">]</span>
+        <span class="n">segment</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;gaussian&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;gaussian&#39;</span><span class="p">]</span>
+        <span class="n">store</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;store_im&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="p">[</span><span class="s1">&#39;store_im&#39;</span><span class="p">]</span>
+        <span class="n">store</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;store_maps&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="p">[</span><span class="s1">&#39;store_maps&#39;</span><span class="p">]</span>
+        <span class="n">eds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eds</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span>
+        <span class="n">eds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eds</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span>
+        <span class="n">eds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;factors&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eds</span><span class="p">[</span><span class="s1">&#39;factors&#39;</span><span class="p">]</span>
+        
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+        
+<div class="viewcode-block" id="parameters.load"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.parameters.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">process</span><span class="p">)</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;/Parameters/parameters_current.hdf5&#39;</span><span class="p">):</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        
+        <span class="n">segment</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;segment&quot;</span><span class="p">]</span>
+        <span class="n">store</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;store&quot;</span><span class="p">]</span>
+        <span class="n">eds</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;eds&quot;</span><span class="p">]</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">store</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eds</span> <span class="o">=</span> <span class="p">{}</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;threshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">segment</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;watershed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">segment</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;watershed&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;invert&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">segment</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;invert&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;min_size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">segment</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;min_size&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;rb_kernel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">segment</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;rb_kernel&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;gaussian&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">segment</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;gaussian&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="p">[</span><span class="s1">&#39;store_im&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;store_im&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="p">[</span><span class="s1">&#39;store_maps&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;store_maps&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eds</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">eds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eds</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">eds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eds</span><span class="p">[</span><span class="s1">&#39;factors&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">eds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;factors&#39;</span><span class="p">]</span>
+        
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, ePSIC
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

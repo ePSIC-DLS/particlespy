@@ -1,0 +1,614 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ParticleSpy package &mdash; ParticleSpy 0.0.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="ParticleSpy" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> ParticleSpy
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ParticleSpy</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ParticleSpy package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ParticleSpy.ParticleAnalysis">ParticleSpy.ParticleAnalysis module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ParticleSpy.SegUI">ParticleSpy.SegUI module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ParticleSpy.api">ParticleSpy.api module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ParticleSpy.find_zoneaxis">ParticleSpy.find_zoneaxis module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ParticleSpy.particle_io">ParticleSpy.particle_io module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ParticleSpy.particle_load">ParticleSpy.particle_load module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ParticleSpy.particle_save">ParticleSpy.particle_save module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ParticleSpy.ptcl_class">ParticleSpy.ptcl_class module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ParticleSpy.radial_profile">ParticleSpy.radial_profile module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ParticleSpy.segptcls">ParticleSpy.segptcls module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ParticleSpy">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ParticleSpy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">ParticleSpy</a> &raquo;</li>
+        
+      <li>ParticleSpy package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/source/ParticleSpy.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="particlespy-package">
+<h1>ParticleSpy package<a class="headerlink" href="#particlespy-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ParticleSpy.ParticleAnalysis">
+<span id="particlespy-particleanalysis-module"></span><h2>ParticleSpy.ParticleAnalysis module<a class="headerlink" href="#module-ParticleSpy.ParticleAnalysis" title="Permalink to this headline">¶</a></h2>
+<p>Created on Tue Jul 31 13:35:23 2018</p>
+<p>&#64;author: qzo13262</p>
+<dl class="function">
+<dt id="ParticleSpy.ParticleAnalysis.ParticleAnalysis">
+<code class="sig-prename descclassname">ParticleSpy.ParticleAnalysis.</code><code class="sig-name descname">ParticleAnalysis</code><span class="sig-paren">(</span><em class="sig-param">acquisition</em>, <em class="sig-param">parameters</em>, <em class="sig-param">particles=None</em>, <em class="sig-param">mask=array([ 0.])</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#ParticleAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.ParticleAnalysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform segmentation and analysis of images of particles.</p>
+<dl class="simple">
+<dt>acquisition: Hyperpsy signal object or list of hyperspy signal objects.</dt><dd><dl class="simple">
+<dt>Hyperpsy signal object containing a nanoparticle image or a list of signal</dt><dd><p>objects that contains an image at position 0 and other datasets following.</p>
+</dd>
+</dl>
+</dd>
+<dt>process_param: Dictionary of parameters</dt><dd><p>The parameters can be input manually in to a dictionary or can be generated
+using param_generator().</p>
+</dd>
+<dt>particle_list: List</dt><dd><p>List of already analysed particles that the output can be appended
+to.</p>
+</dd>
+<dt>mask: Numpy array</dt><dd><p>Numpy array of same 2D size as acquisition that contains a mask of presegmented
+particles.</p>
+</dd>
+</dl>
+<p>list: List of Particle objects.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ParticleSpy.ParticleAnalysis.get_composition">
+<code class="sig-prename descclassname">ParticleSpy.ParticleAnalysis.</code><code class="sig-name descname">get_composition</code><span class="sig-paren">(</span><em class="sig-param">particle</em>, <em class="sig-param">params</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#get_composition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.get_composition" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="ParticleSpy.ParticleAnalysis.parameters">
+<em class="property">class </em><code class="sig-prename descclassname">ParticleSpy.ParticleAnalysis.</code><code class="sig-name descname">parameters</code><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A parameters object.</p>
+<dl class="method">
+<dt id="ParticleSpy.ParticleAnalysis.parameters.generate">
+<code class="sig-name descname">generate</code><span class="sig-paren">(</span><em class="sig-param">threshold='otsu'</em>, <em class="sig-param">watershed=False</em>, <em class="sig-param">invert=False</em>, <em class="sig-param">min_size=0</em>, <em class="sig-param">store_im=False</em>, <em class="sig-param">rb_kernel=0</em>, <em class="sig-param">gaussian=0</em>, <em class="sig-param">local_size=101</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#parameters.generate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.parameters.generate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.ParticleAnalysis.parameters.generate_eds">
+<code class="sig-name descname">generate_eds</code><span class="sig-paren">(</span><em class="sig-param">eds_method=False</em>, <em class="sig-param">elements=False</em>, <em class="sig-param">factors=False</em>, <em class="sig-param">store_maps=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#parameters.generate_eds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.parameters.generate_eds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.ParticleAnalysis.parameters.load">
+<code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param">filename='/Parameters/parameters_current.hdf5'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#parameters.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.parameters.load" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.ParticleAnalysis.parameters.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">filename='/Parameters/parameters_current.hdf5'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#parameters.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.parameters.save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="ParticleSpy.ParticleAnalysis.store_image">
+<code class="sig-prename descclassname">ParticleSpy.ParticleAnalysis.</code><code class="sig-name descname">store_image</code><span class="sig-paren">(</span><em class="sig-param">particle</em>, <em class="sig-param">image</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#store_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.store_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ParticleSpy.ParticleAnalysis.store_maps">
+<code class="sig-prename descclassname">ParticleSpy.ParticleAnalysis.</code><code class="sig-name descname">store_maps</code><span class="sig-paren">(</span><em class="sig-param">particle</em>, <em class="sig-param">ac</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#store_maps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.store_maps" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ParticleSpy.ParticleAnalysis.store_spectrum">
+<code class="sig-prename descclassname">ParticleSpy.ParticleAnalysis.</code><code class="sig-name descname">store_spectrum</code><span class="sig-paren">(</span><em class="sig-param">particle</em>, <em class="sig-param">ac</em>, <em class="sig-param">stype</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#store_spectrum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.store_spectrum" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ParticleSpy.SegUI">
+<span id="particlespy-segui-module"></span><h2>ParticleSpy.SegUI module<a class="headerlink" href="#module-ParticleSpy.SegUI" title="Permalink to this headline">¶</a></h2>
+<p>Created on Mon Oct 22 15:50:08 2018</p>
+<p>&#64;author: qzo13262</p>
+<dl class="class">
+<dt id="ParticleSpy.SegUI.Application">
+<em class="property">class </em><code class="sig-prename descclassname">ParticleSpy.SegUI.</code><code class="sig-name descname">Application</code><span class="sig-paren">(</span><em class="sig-param">im_hs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Application"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Application" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QMainWindow</span></code></p>
+<dl class="method">
+<dt id="ParticleSpy.SegUI.Application.changeIm">
+<code class="sig-name descname">changeIm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Application.changeIm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Application.changeIm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.SegUI.Application.changeInvert">
+<code class="sig-name descname">changeInvert</code><span class="sig-paren">(</span><em class="sig-param">state</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Application.changeInvert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Application.changeInvert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.SegUI.Application.changeWatershed">
+<code class="sig-name descname">changeWatershed</code><span class="sig-paren">(</span><em class="sig-param">state</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Application.changeWatershed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Application.changeWatershed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.SegUI.Application.gaussian">
+<code class="sig-name descname">gaussian</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Application.gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Application.gaussian" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.SegUI.Application.getim">
+<code class="sig-name descname">getim</code><span class="sig-paren">(</span><em class="sig-param">im_hs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Application.getim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Application.getim" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.SegUI.Application.getparams">
+<code class="sig-name descname">getparams</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Application.getparams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Application.getparams" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.SegUI.Application.local">
+<code class="sig-name descname">local</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Application.local"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Application.local" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.SegUI.Application.minsize">
+<code class="sig-name descname">minsize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Application.minsize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Application.minsize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.SegUI.Application.return_params">
+<code class="sig-name descname">return_params</code><span class="sig-paren">(</span><em class="sig-param">params</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Application.return_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Application.return_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.SegUI.Application.rollingball">
+<code class="sig-name descname">rollingball</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Application.rollingball"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Application.rollingball" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.SegUI.Application.threshold_choice">
+<code class="sig-name descname">threshold_choice</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Application.threshold_choice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Application.threshold_choice" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.SegUI.Application.undo">
+<code class="sig-name descname">undo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Application.undo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Application.undo" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.SegUI.Application.update">
+<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Application.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Application.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>update(self, QRect)
+update(self, QRegion)
+update(self, int, int, int, int)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="ParticleSpy.SegUI.SegUI">
+<code class="sig-prename descclassname">ParticleSpy.SegUI.</code><code class="sig-name descname">SegUI</code><span class="sig-paren">(</span><em class="sig-param">image</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#SegUI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.SegUI" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ParticleSpy.SegUI.main">
+<code class="sig-prename descclassname">ParticleSpy.SegUI.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><em class="sig-param">haadf</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ParticleSpy.api">
+<span id="particlespy-api-module"></span><h2>ParticleSpy.api module<a class="headerlink" href="#module-ParticleSpy.api" title="Permalink to this headline">¶</a></h2>
+<p>Created on Mon Nov  5 09:48:31 2018</p>
+<p>&#64;author: qzo13262</p>
+<dl class="function">
+<dt id="ParticleSpy.api.load">
+<code class="sig-prename descclassname">ParticleSpy.api.</code><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/api.html#load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.api.load" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ParticleSpy.find_zoneaxis">
+<span id="particlespy-find-zoneaxis-module"></span><h2>ParticleSpy.find_zoneaxis module<a class="headerlink" href="#module-ParticleSpy.find_zoneaxis" title="Permalink to this headline">¶</a></h2>
+<p>Created on Thu Jun 14 13:59:52 2018</p>
+<p>&#64;author: qzo13262</p>
+<dl class="function">
+<dt id="ParticleSpy.find_zoneaxis.find_zoneaxis">
+<code class="sig-prename descclassname">ParticleSpy.find_zoneaxis.</code><code class="sig-name descname">find_zoneaxis</code><span class="sig-paren">(</span><em class="sig-param">im</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/find_zoneaxis.html#find_zoneaxis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.find_zoneaxis.find_zoneaxis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines whether an atomic resolution image is solely of a major zone axis 
+(001, 011, 111) for cubic materials.</p>
+<dl class="simple">
+<dt>im: Numpy array</dt><dd><p>Atomic resolution image of sample.</p>
+</dd>
+</dl>
+<p>string: Zone axis of material in image (eg. ‘011’)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ParticleSpy.find_zoneaxis.set_circle">
+<code class="sig-prename descclassname">ParticleSpy.find_zoneaxis.</code><code class="sig-name descname">set_circle</code><span class="sig-paren">(</span><em class="sig-param">im_dim=(2048</em>, <em class="sig-param">2048)</em>, <em class="sig-param">radius=150</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/find_zoneaxis.html#set_circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.find_zoneaxis.set_circle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ParticleSpy.particle_io">
+<span id="particlespy-particle-io-module"></span><h2>ParticleSpy.particle_io module<a class="headerlink" href="#module-ParticleSpy.particle_io" title="Permalink to this headline">¶</a></h2>
+<p>Created on Thu Nov 22 12:23:59 2018</p>
+<p>&#64;author: qzo13262</p>
+<dl class="function">
+<dt id="ParticleSpy.particle_io.load_plist">
+<code class="sig-prename descclassname">ParticleSpy.particle_io.</code><code class="sig-name descname">load_plist</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/particle_io.html#load_plist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.particle_io.load_plist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ParticleSpy.particle_io.save_plist">
+<code class="sig-prename descclassname">ParticleSpy.particle_io.</code><code class="sig-name descname">save_plist</code><span class="sig-paren">(</span><em class="sig-param">p_list</em>, <em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/particle_io.html#save_plist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.particle_io.save_plist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ParticleSpy.particle_load">
+<span id="particlespy-particle-load-module"></span><h2>ParticleSpy.particle_load module<a class="headerlink" href="#module-ParticleSpy.particle_load" title="Permalink to this headline">¶</a></h2>
+<p>Created on Wed Nov 28 17:11:22 2018</p>
+<p>&#64;author: qzo13262</p>
+<dl class="function">
+<dt id="ParticleSpy.particle_load.load_plist">
+<code class="sig-prename descclassname">ParticleSpy.particle_load.</code><code class="sig-name descname">load_plist</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/particle_load.html#load_plist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.particle_load.load_plist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ParticleSpy.particle_save">
+<span id="particlespy-particle-save-module"></span><h2>ParticleSpy.particle_save module<a class="headerlink" href="#module-ParticleSpy.particle_save" title="Permalink to this headline">¶</a></h2>
+<p>Created on Thu Nov 22 12:23:59 2018</p>
+<p>&#64;author: qzo13262</p>
+<dl class="function">
+<dt id="ParticleSpy.particle_save.save_plist">
+<code class="sig-prename descclassname">ParticleSpy.particle_save.</code><code class="sig-name descname">save_plist</code><span class="sig-paren">(</span><em class="sig-param">p_list</em>, <em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/particle_save.html#save_plist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.particle_save.save_plist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ParticleSpy.ptcl_class">
+<span id="particlespy-ptcl-class-module"></span><h2>ParticleSpy.ptcl_class module<a class="headerlink" href="#module-ParticleSpy.ptcl_class" title="Permalink to this headline">¶</a></h2>
+<p>Created on Tue Jul 31 14:51:58 2018</p>
+<p>&#64;author: qzo13262</p>
+<dl class="class">
+<dt id="ParticleSpy.ptcl_class.Particle">
+<em class="property">class </em><code class="sig-prename descclassname">ParticleSpy.ptcl_class.</code><code class="sig-name descname">Particle</code><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A segmented particle object.</p>
+<dl class="method">
+<dt id="ParticleSpy.ptcl_class.Particle.maps_gen">
+<code class="sig-name descname">maps_gen</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle.maps_gen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle.maps_gen" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.ptcl_class.Particle.set_area">
+<code class="sig-name descname">set_area</code><span class="sig-paren">(</span><em class="sig-param">area</em>, <em class="sig-param">units</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle.set_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle.set_area" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.ptcl_class.Particle.set_circularity">
+<code class="sig-name descname">set_circularity</code><span class="sig-paren">(</span><em class="sig-param">circularity</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle.set_circularity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle.set_circularity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.ptcl_class.Particle.set_mask">
+<code class="sig-name descname">set_mask</code><span class="sig-paren">(</span><em class="sig-param">mask</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle.set_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle.set_mask" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.ptcl_class.Particle.set_origin">
+<code class="sig-name descname">set_origin</code><span class="sig-paren">(</span><em class="sig-param">origin</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle.set_origin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle.set_origin" title="Permalink to this definition">¶</a></dt>
+<dd><p>A container for the origin of data (filename, acquisition number etc.)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.ptcl_class.Particle.set_zone">
+<code class="sig-name descname">set_zone</code><span class="sig-paren">(</span><em class="sig-param">zone</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle.set_zone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle.set_zone" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.ptcl_class.Particle.store_composition">
+<code class="sig-name descname">store_composition</code><span class="sig-paren">(</span><em class="sig-param">composition</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle.store_composition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle.store_composition" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.ptcl_class.Particle.store_im">
+<code class="sig-name descname">store_im</code><span class="sig-paren">(</span><em class="sig-param">p_im</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle.store_im"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle.store_im" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.ptcl_class.Particle.store_map">
+<code class="sig-name descname">store_map</code><span class="sig-paren">(</span><em class="sig-param">p_map</em>, <em class="sig-param">element</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle.store_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle.store_map" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.ptcl_class.Particle.store_spectrum">
+<code class="sig-name descname">store_spectrum</code><span class="sig-paren">(</span><em class="sig-param">spectrum</em>, <em class="sig-param">stype</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle.store_spectrum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle.store_spectrum" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ParticleSpy.ptcl_class.Particle_list">
+<em class="property">class </em><code class="sig-prename descclassname">ParticleSpy.ptcl_class.</code><code class="sig-name descname">Particle_list</code><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A particle list object.</p>
+<dl class="method">
+<dt id="ParticleSpy.ptcl_class.Particle_list.append">
+<code class="sig-name descname">append</code><span class="sig-paren">(</span><em class="sig-param">particle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle_list.append"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle_list.append" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.ptcl_class.Particle_list.plot_area">
+<code class="sig-name descname">plot_area</code><span class="sig-paren">(</span><em class="sig-param">bins=20</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle_list.plot_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle_list.plot_area" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays a plot of particle areas for analysed particles.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.ptcl_class.Particle_list.plot_circularity">
+<code class="sig-name descname">plot_circularity</code><span class="sig-paren">(</span><em class="sig-param">bins=20</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle_list.plot_circularity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle_list.plot_circularity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays a plot of particle circularity for analysed particles.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.ptcl_class.Particle_list.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle_list.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle_list.save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ParticleSpy.radial_profile">
+<span id="particlespy-radial-profile-module"></span><h2>ParticleSpy.radial_profile module<a class="headerlink" href="#module-ParticleSpy.radial_profile" title="Permalink to this headline">¶</a></h2>
+<p>Created on Tue May 28 09:58:37 2019</p>
+<p>&#64;author: qzo13262</p>
+<dl class="function">
+<dt id="ParticleSpy.radial_profile.concentric_scan_AbsoluteDis">
+<code class="sig-prename descclassname">ParticleSpy.radial_profile.</code><code class="sig-name descname">concentric_scan_AbsoluteDis</code><span class="sig-paren">(</span><em class="sig-param">element_map</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/radial_profile.html#concentric_scan_AbsoluteDis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.radial_profile.concentric_scan_AbsoluteDis" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Return:</dt><dd><p>dis_count_dict: keys ordered dict {dis0: countX0, dis1: countX1, …}</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ParticleSpy.radial_profile.plot_profile">
+<code class="sig-prename descclassname">ParticleSpy.radial_profile.</code><code class="sig-name descname">plot_profile</code><span class="sig-paren">(</span><em class="sig-param">dist_count_dic</em>, <em class="sig-param">scale</em>, <em class="sig-param">units</em>, <em class="sig-param">mark_radius=False</em>, <em class="sig-param">radius=1</em>, <em class="sig-param">save=False</em>, <em class="sig-param">dir_save=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/radial_profile.html#plot_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.radial_profile.plot_profile" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>DisNorm: check if the distance from particle centre </dt><dd><p>is normalised by the particle size</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ParticleSpy.radial_profile.radial_profile">
+<code class="sig-prename descclassname">ParticleSpy.radial_profile.</code><code class="sig-name descname">radial_profile</code><span class="sig-paren">(</span><em class="sig-param">particle</em>, <em class="sig-param">signals</em>, <em class="sig-param">plot=True</em>, <em class="sig-param">mark_radius=False</em>, <em class="sig-param">radius=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/radial_profile.html#radial_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.radial_profile.radial_profile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ParticleSpy.segptcls">
+<span id="particlespy-segptcls-module"></span><h2>ParticleSpy.segptcls module<a class="headerlink" href="#module-ParticleSpy.segptcls" title="Permalink to this headline">¶</a></h2>
+<p>Created on Tue Jul 31 15:06:08 2018</p>
+<p>&#64;author: qzo13262</p>
+<dl class="function">
+<dt id="ParticleSpy.segptcls.p_watershed">
+<code class="sig-prename descclassname">ParticleSpy.segptcls.</code><code class="sig-name descname">p_watershed</code><span class="sig-paren">(</span><em class="sig-param">thresh_image</em>, <em class="sig-param">min_size</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/segptcls.html#p_watershed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.segptcls.p_watershed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ParticleSpy.segptcls.process">
+<code class="sig-prename descclassname">ParticleSpy.segptcls.</code><code class="sig-name descname">process</code><span class="sig-paren">(</span><em class="sig-param">im</em>, <em class="sig-param">param</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/segptcls.html#process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.segptcls.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform segmentation of an image of particles.</p>
+<dl class="simple">
+<dt>im: Hyperpsy signal object</dt><dd><p>Hyperpsy signal object containing a nanoparticle image.</p>
+</dd>
+<dt>process_param: Dictionary of parameters</dt><dd><p>The parameters for segmentation.</p>
+</dd>
+</dl>
+<p>numpy array: Labels corresponding to particles in the image.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ParticleSpy.segptcls.rolling_ball">
+<code class="sig-prename descclassname">ParticleSpy.segptcls.</code><code class="sig-name descname">rolling_ball</code><span class="sig-paren">(</span><em class="sig-param">img</em>, <em class="sig-param">kernelsize=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/segptcls.html#rolling_ball"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.segptcls.rolling_ball" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ParticleSpy.segptcls.threshold">
+<code class="sig-prename descclassname">ParticleSpy.segptcls.</code><code class="sig-name descname">threshold</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">process_param</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/segptcls.html#threshold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.segptcls.threshold" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ParticleSpy">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ParticleSpy" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="modules.html" class="btn btn-neutral float-left" title="ParticleSpy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, ePSIC
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

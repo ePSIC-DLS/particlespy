@@ -1,0 +1,313 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ParticleSpy.segptcls &mdash; ParticleSpy 0.0.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> ParticleSpy
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/modules.html">ParticleSpy</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ParticleSpy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>ParticleSpy.segptcls</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ParticleSpy.segptcls</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Tue Jul 31 15:06:08 2018</span>
+
+<span class="sd">@author: qzo13262</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.ndimage</span> <span class="k">as</span> <span class="nn">ndi</span>
+
+<span class="kn">from</span> <span class="nn">skimage.filters</span> <span class="k">import</span> <span class="n">threshold_otsu</span><span class="p">,</span> <span class="n">threshold_mean</span><span class="p">,</span> <span class="n">threshold_minimum</span>
+<span class="kn">from</span> <span class="nn">skimage.filters</span> <span class="k">import</span> <span class="n">threshold_yen</span><span class="p">,</span> <span class="n">threshold_isodata</span><span class="p">,</span> <span class="n">threshold_li</span>
+<span class="kn">from</span> <span class="nn">skimage.filters</span> <span class="k">import</span> <span class="n">threshold_local</span><span class="p">,</span> <span class="n">rank</span>
+
+<span class="kn">from</span> <span class="nn">skimage.measure</span> <span class="k">import</span> <span class="n">label</span>
+<span class="kn">from</span> <span class="nn">skimage.morphology</span> <span class="k">import</span> <span class="n">remove_small_objects</span><span class="p">,</span> <span class="n">watershed</span><span class="p">,</span> <span class="n">square</span><span class="p">,</span> <span class="n">white_tophat</span><span class="p">,</span> <span class="n">disk</span>
+<span class="kn">from</span> <span class="nn">skimage.segmentation</span> <span class="k">import</span> <span class="n">clear_border</span>
+<span class="kn">from</span> <span class="nn">skimage.feature</span> <span class="k">import</span> <span class="n">peak_local_max</span>
+<span class="kn">from</span> <span class="nn">skimage.util</span> <span class="k">import</span> <span class="n">invert</span>
+
+<div class="viewcode-block" id="process"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.segptcls.process">[docs]</a><span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">param</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform segmentation of an image of particles.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    im: Hyperpsy signal object</span>
+<span class="sd">        Hyperpsy signal object containing a nanoparticle image.</span>
+<span class="sd">    process_param: Dictionary of parameters</span>
+<span class="sd">        The parameters for segmentation.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy array: Labels corresponding to particles in the image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">im</span><span class="p">,(</span><span class="nb">list</span><span class="p">,)):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">im</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">data</span>
+    
+    <span class="n">data</span> <span class="o">=</span> <span class="n">rolling_ball</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">param</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s2">&quot;rb_kernel&quot;</span><span class="p">])</span>
+    
+    <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s2">&quot;gaussian&quot;</span><span class="p">]</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">ndi</span><span class="o">.</span><span class="n">gaussian_filter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">param</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s2">&quot;gaussian&quot;</span><span class="p">])</span>
+    
+    <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s2">&quot;invert&quot;</span><span class="p">]</span><span class="o">!=</span><span class="kc">False</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">invert</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        
+    <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">]</span><span class="o">!=</span><span class="kc">False</span><span class="p">:</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">threshold</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">param</span><span class="o">.</span><span class="n">segment</span><span class="p">)</span>
+        
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">clear_border</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s2">&quot;watershed&quot;</span><span class="p">]</span><span class="o">!=</span><span class="kc">False</span><span class="p">:</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">p_watershed</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span><span class="n">param</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s2">&quot;min_size&quot;</span><span class="p">])</span>
+        
+    <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s2">&quot;min_size&quot;</span><span class="p">]</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">remove_small_objects</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span><span class="n">param</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s2">&quot;min_size&quot;</span><span class="p">],</span><span class="n">in_place</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+    <span class="k">return</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="threshold"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.segptcls.threshold">[docs]</a><span class="k">def</span> <span class="nf">threshold</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">process_param</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">process_param</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;otsu&quot;</span><span class="p">:</span>
+        <span class="n">thresh</span> <span class="o">=</span> <span class="n">threshold_otsu</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">process_param</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;mean&quot;</span><span class="p">:</span>
+        <span class="n">thresh</span> <span class="o">=</span> <span class="n">threshold_mean</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">process_param</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;minimum&quot;</span><span class="p">:</span>
+        <span class="n">thresh</span> <span class="o">=</span> <span class="n">threshold_minimum</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">process_param</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;yen&quot;</span><span class="p">:</span>
+        <span class="n">thresh</span> <span class="o">=</span> <span class="n">threshold_yen</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">process_param</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;isodata&quot;</span><span class="p">:</span>
+        <span class="n">thresh</span> <span class="o">=</span> <span class="n">threshold_isodata</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">process_param</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;li&quot;</span><span class="p">:</span>
+        <span class="n">thresh</span> <span class="o">=</span> <span class="n">threshold_li</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">process_param</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;local&quot;</span><span class="p">:</span>
+        <span class="n">thresh</span> <span class="o">=</span> <span class="n">threshold_local</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">process_param</span><span class="p">[</span><span class="s2">&quot;local_size&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">process_param</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;local_otsu&quot;</span><span class="p">:</span>
+        <span class="n">selem</span> <span class="o">=</span> <span class="n">disk</span><span class="p">(</span><span class="n">process_param</span><span class="p">[</span><span class="s2">&quot;local_size&quot;</span><span class="p">])</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">(</span><span class="mi">255</span><span class="o">*</span><span class="n">data</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="n">thresh</span> <span class="o">=</span> <span class="n">rank</span><span class="o">.</span><span class="n">otsu</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">selem</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">process_param</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;lg_otsu&quot;</span><span class="p">:</span>
+        <span class="n">selem</span> <span class="o">=</span> <span class="n">disk</span><span class="p">(</span><span class="n">process_param</span><span class="p">[</span><span class="s2">&quot;local_size&quot;</span><span class="p">])</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">(</span><span class="mi">255</span><span class="o">*</span><span class="n">data</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="n">threshl</span> <span class="o">=</span> <span class="n">rank</span><span class="o">.</span><span class="n">otsu</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">selem</span><span class="p">)</span>
+        <span class="n">threshg</span> <span class="o">=</span> <span class="n">threshold_otsu</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">process_param</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;lg_otsu&quot;</span><span class="p">:</span>
+        <span class="n">mask1</span> <span class="o">=</span> <span class="n">data</span><span class="o">&gt;=</span><span class="n">threshl</span>
+        <span class="n">mask2</span> <span class="o">=</span> <span class="n">data</span><span class="o">&gt;</span><span class="n">threshg</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">mask1</span> <span class="o">*</span> <span class="n">mask2</span>
+    <span class="k">elif</span> <span class="n">process_param</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;local_otsu&quot;</span><span class="p">:</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">data</span><span class="o">&gt;=</span><span class="n">thresh</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">data</span> <span class="o">&gt;</span> <span class="n">thresh</span>
+    
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">label</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+    
+    <span class="k">return</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="p_watershed"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.segptcls.p_watershed">[docs]</a><span class="k">def</span> <span class="nf">p_watershed</span><span class="p">(</span><span class="n">thresh_image</span><span class="p">,</span><span class="n">min_size</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">min_size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">min_size</span> <span class="o">=</span> <span class="mi">20</span> <span class="c1">#default value</span>
+    <span class="n">distance</span> <span class="o">=</span> <span class="n">ndi</span><span class="o">.</span><span class="n">distance_transform_edt</span><span class="p">(</span><span class="n">thresh_image</span><span class="p">)</span>
+    <span class="n">local_maxi</span> <span class="o">=</span> <span class="n">peak_local_max</span><span class="p">(</span><span class="n">distance</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">footprint</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">min_size</span><span class="p">,</span> <span class="n">min_size</span><span class="p">)),</span>
+                            <span class="n">labels</span><span class="o">=</span><span class="n">thresh_image</span><span class="p">)</span>
+    <span class="n">markers</span> <span class="o">=</span> <span class="n">ndi</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">local_maxi</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">watershed</span><span class="p">(</span><span class="o">-</span><span class="n">distance</span><span class="p">,</span> <span class="n">markers</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">thresh_image</span><span class="p">)</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="rolling_ball"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.segptcls.rolling_ball">[docs]</a><span class="k">def</span> <span class="nf">rolling_ball</span><span class="p">(</span><span class="n">img</span><span class="p">,</span><span class="n">kernelsize</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">kernelsize</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">new_img</span> <span class="o">=</span> <span class="n">img</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">new_img</span> <span class="o">=</span> <span class="n">white_tophat</span><span class="p">(</span><span class="n">img</span><span class="p">,</span><span class="n">selem</span><span class="o">=</span><span class="n">square</span><span class="p">(</span><span class="n">kernelsize</span><span class="p">))</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">new_img</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, ePSIC
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
