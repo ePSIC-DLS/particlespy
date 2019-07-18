@@ -81,7 +81,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         p.set_area(cal_area,area_units)
         
         #Set diam measures
-        cal_circdiam = (cal_area**0.5)/np.pi
+        cal_circdiam = 2*(cal_area**0.5)/np.pi
         diam_units = image.axes_manager[0].units
         p.set_circdiam(cal_circdiam,diam_units)
         

@@ -22,11 +22,11 @@ class Particle(object):
         self.properties['area'] = {'value':area,'units':units}
         
     def set_circdiam(self, circdiam, units):
-        self.properties['circdiam'] = {'value':circdiam,'units':units}
+        self.properties['equivalent circular diameter'] = {'value':circdiam,'units':units}
         
     def set_axes_lengths(self,axeslengths,units):
-        self.properties['majoraxis'] = {'value':axeslengths[0],'units':units}
-        self.properties['minoraxis'] = {'value':axeslengths[1],'units':units}
+        self.properties['major axis length'] = {'value':axeslengths[0],'units':units}
+        self.properties['minor axis length'] = {'value':axeslengths[1],'units':units}
         
     def set_circularity(self, circularity):
         self.properties['circularity'] = {'value':circularity,'units':None}
