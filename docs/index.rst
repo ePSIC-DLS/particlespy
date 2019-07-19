@@ -10,12 +10,13 @@ ParticleSpy is a python package which eases segmentation and analysis of nanopar
 It extends the functionality of the `Hyperspy <http://hyperspy.org/>`_ package in order to easily segment and analyse regions of Hyperspy signal objects.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: -1
    :caption: Contents:
    
    getting_started.rst
+   segmentation.rst
+   particle_analysis.rst
    source/modules.rst
-
 
 
 Indices and tables
