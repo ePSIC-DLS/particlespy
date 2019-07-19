@@ -262,6 +262,9 @@ def main(haadf):
     return(ex)
     
 def SegUI(image):
+    """
+    Function to launch the Segmentation User Interface.
+    """
     app = QApplication(sys.argv)
     app.aboutToQuit.connect(app.deleteLater)
     

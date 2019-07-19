@@ -9,7 +9,28 @@ import matplotlib.pyplot as plt
 from ParticleSpy.particle_save import save_plist
 
 class Particle(object):
-    """A segmented particle object."""
+    """A segmented particle object.
+    
+    Attributes
+    ----------
+    properties : dict
+        Dictionary of particle properties created by the ParticleAnalysis() function.
+    origin : str
+        Origin of particle data, e.g. filename or acquisition number.
+    zone : str
+        Zone axis of particle.
+    mask : array
+        Boolean array corresponding to the particle pixels on the original image.
+    image : Hyperspy signal object
+        Image of particle.
+    maps : dict
+        Dictionary containing elemental maps of the particle.
+    spectrum : Hyperspy signal object
+        Spectrum obtained from the particle.
+    composition : dict
+        Dictionary of composition values for the particle.
+    
+    """
     
     def __init__(self):
         self.properties = {}
@@ -98,7 +119,15 @@ class Particle_list(object):
         
     def plot(self,prop='area',bins=20):
         """
-        Displays a plot of the chosen particle property.
+        Displays a histogram of the chosen particle property.
+        
+        Parameters
+        ----------
+        prop : str
+            The name of the property to plot as a histogram.
+        bins : int
+            The number of bins in the histogram.
+        
         """
         
         property_list = []

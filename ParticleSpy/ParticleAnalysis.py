@@ -25,10 +25,10 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
     acquisition: Hyperpsy signal object or list of hyperspy signal objects.
         Hyperpsy signal object containing a nanoparticle image or a list of signal
          objects that contains an image at position 0 and other datasets following.
-    process_param: Dictionary of parameters
+    parameters: Dictionary of parameters
         The parameters can be input manually in to a dictionary or can be generated
         using param_generator().
-    particle_list: List
+    particles: list
         List of already analysed particles that the output can be appended
         to.
     mask: Numpy array
@@ -37,7 +37,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         
     Returns
     -------
-    list: List of Particle objects.
+    Particle_list object
     """
     
     if particles==None:
