@@ -96,6 +96,10 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         eccentricity = region.eccentricity
         p.set_eccentricity(eccentricity)
         
+        #Set total image intensity
+        intensity = (image*mask).sum()
+        p.set_intensity(intensity)
+        
         #Set zoneaxis
         im_smooth = filters.gaussian(np.uint16(p_im),1)
         im_zone = np.zeros_like(im_smooth)

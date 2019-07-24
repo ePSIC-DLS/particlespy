@@ -55,6 +55,9 @@ class Particle(object):
     def set_eccentricity(self,eccentricity):
         self.properties['eccentricity'] = {'value':eccentricity,'units':None}
         
+    def set_intensity(self,intensity):
+        self.properties['intensity'] = {'value':intensity,'units':None}
+        
     def set_zone(self, zone):
         self.zone = zone
         
