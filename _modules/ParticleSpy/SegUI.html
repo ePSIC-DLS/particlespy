@@ -85,6 +85,8 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../segmentation.html">Segmentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../particle_analysis.html">Particle Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/modules.html">ParticleSpy</a></li>
 </ul>
 
@@ -413,6 +415,9 @@
     <span class="k">return</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="SegUI"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.SegUI.SegUI">[docs]</a><span class="k">def</span> <span class="nf">SegUI</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to launch the Segmentation User Interface.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
     <span class="n">app</span><span class="o">.</span><span class="n">aboutToQuit</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">)</span>
     

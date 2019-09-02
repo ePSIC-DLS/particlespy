@@ -85,6 +85,8 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../segmentation.html">Segmentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../particle_analysis.html">Particle Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/modules.html">ParticleSpy</a></li>
 </ul>
 
@@ -176,10 +178,10 @@
 <span class="sd">    acquisition: Hyperpsy signal object or list of hyperspy signal objects.</span>
 <span class="sd">        Hyperpsy signal object containing a nanoparticle image or a list of signal</span>
 <span class="sd">         objects that contains an image at position 0 and other datasets following.</span>
-<span class="sd">    process_param: Dictionary of parameters</span>
+<span class="sd">    parameters: Dictionary of parameters</span>
 <span class="sd">        The parameters can be input manually in to a dictionary or can be generated</span>
 <span class="sd">        using param_generator().</span>
-<span class="sd">    particle_list: List</span>
+<span class="sd">    particles: list</span>
 <span class="sd">        List of already analysed particles that the output can be appended</span>
 <span class="sd">        to.</span>
 <span class="sd">    mask: Numpy array</span>
@@ -188,7 +190,7 @@
 <span class="sd">        </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    list: List of Particle objects.</span>
+<span class="sd">    Particle_list object</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">if</span> <span class="n">particles</span><span class="o">==</span><span class="kc">None</span><span class="p">:</span>
@@ -231,13 +233,28 @@
         <span class="n">area_units</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="o">+</span><span class="s2">&quot;^2&quot;</span>
         <span class="n">p</span><span class="o">.</span><span class="n">set_area</span><span class="p">(</span><span class="n">cal_area</span><span class="p">,</span><span class="n">area_units</span><span class="p">)</span>
         
+        <span class="c1">#Set diam measures</span>
+        <span class="n">cal_circdiam</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">cal_area</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+        <span class="n">diam_units</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">units</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">set_circdiam</span><span class="p">(</span><span class="n">cal_circdiam</span><span class="p">,</span><span class="n">diam_units</span><span class="p">)</span>
+        
+        <span class="n">cal_axes_lengths</span> <span class="o">=</span> <span class="p">(</span><span class="n">region</span><span class="o">.</span><span class="n">major_axis_length</span><span class="o">*</span><span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span><span class="n">region</span><span class="o">.</span><span class="n">minor_axis_length</span><span class="o">*</span><span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span>
+        <span class="c1">#Note: the above only works for square pixels</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">set_axes_lengths</span><span class="p">(</span><span class="n">cal_axes_lengths</span><span class="p">,</span><span class="n">diam_units</span><span class="p">)</span>
+        
         <span class="c1">#Set shape measures</span>
         <span class="n">peri</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scale</span><span class="o">*</span><span class="n">perimeter</span><span class="p">(</span><span class="n">maskp</span><span class="p">,</span><span class="n">neighbourhood</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-        <span class="n">circularity</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="mf">3.14159265</span><span class="o">*</span><span class="n">p</span><span class="o">.</span><span class="n">area</span><span class="o">/</span><span class="p">(</span><span class="n">peri</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">circularity</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="mf">3.14159265</span><span class="o">*</span><span class="n">p</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;area&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="n">peri</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">p</span><span class="o">.</span><span class="n">set_circularity</span><span class="p">(</span><span class="n">circularity</span><span class="p">)</span>
+        <span class="n">eccentricity</span> <span class="o">=</span> <span class="n">region</span><span class="o">.</span><span class="n">eccentricity</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">set_eccentricity</span><span class="p">(</span><span class="n">eccentricity</span><span class="p">)</span>
+        
+        <span class="c1">#Set total image intensity</span>
+        <span class="n">intensity</span> <span class="o">=</span> <span class="p">(</span><span class="n">image</span><span class="o">*</span><span class="n">mask</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">set_intensity</span><span class="p">(</span><span class="n">intensity</span><span class="p">)</span>
         
         <span class="c1">#Set zoneaxis</span>
-        <span class="n">im_smooth</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">gaussian</span><span class="p">(</span><span class="n">p_im</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">im_smooth</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">gaussian</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint16</span><span class="p">(</span><span class="n">p_im</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">im_zone</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">im_smooth</span><span class="p">)</span>
         <span class="n">im_zone</span><span class="p">[</span><span class="n">im_smooth</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">im_smooth</span><span class="p">[</span><span class="n">im_smooth</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">im_smooth</span><span class="p">[</span><span class="n">im_smooth</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
         <span class="n">im_zone</span><span class="p">[</span><span class="n">im_zone</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>

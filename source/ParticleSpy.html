@@ -86,6 +86,8 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../segmentation.html">Segmentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../particle_analysis.html">Particle Analysis</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">ParticleSpy</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">ParticleSpy package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
@@ -181,7 +183,7 @@
 <p>&#64;author: qzo13262</p>
 <dl class="function">
 <dt id="ParticleSpy.ParticleAnalysis.ParticleAnalysis">
-<code class="sig-prename descclassname">ParticleSpy.ParticleAnalysis.</code><code class="sig-name descname">ParticleAnalysis</code><span class="sig-paren">(</span><em class="sig-param">acquisition</em>, <em class="sig-param">parameters</em>, <em class="sig-param">particles=None</em>, <em class="sig-param">mask=array([ 0.])</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#ParticleAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.ParticleAnalysis" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ParticleSpy.ParticleAnalysis.</code><code class="sig-name descname">ParticleAnalysis</code><span class="sig-paren">(</span><em class="sig-param">acquisition</em>, <em class="sig-param">parameters</em>, <em class="sig-param">particles=None</em>, <em class="sig-param">mask=array([0.])</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#ParticleAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.ParticleAnalysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform segmentation and analysis of images of particles.</p>
 <dl class="simple">
 <dt>acquisition: Hyperpsy signal object or list of hyperspy signal objects.</dt><dd><dl class="simple">
@@ -189,17 +191,17 @@
 </dd>
 </dl>
 </dd>
-<dt>process_param: Dictionary of parameters</dt><dd><p>The parameters can be input manually in to a dictionary or can be generated
+<dt>parameters: Dictionary of parameters</dt><dd><p>The parameters can be input manually in to a dictionary or can be generated
 using param_generator().</p>
 </dd>
-<dt>particle_list: List</dt><dd><p>List of already analysed particles that the output can be appended
+<dt>particles: list</dt><dd><p>List of already analysed particles that the output can be appended
 to.</p>
 </dd>
 <dt>mask: Numpy array</dt><dd><p>Numpy array of same 2D size as acquisition that contains a mask of presegmented
 particles.</p>
 </dd>
 </dl>
-<p>list: List of Particle objects.</p>
+<p>Particle_list object</p>
 </dd></dl>
 
 <dl class="function">
@@ -331,7 +333,8 @@ update(self, int, int, int, int)</p>
 <dl class="function">
 <dt id="ParticleSpy.SegUI.SegUI">
 <code class="sig-prename descclassname">ParticleSpy.SegUI.</code><code class="sig-name descname">SegUI</code><span class="sig-paren">(</span><em class="sig-param">image</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#SegUI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.SegUI" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Function to launch the Segmentation User Interface.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="ParticleSpy.SegUI.main">
@@ -362,7 +365,7 @@ update(self, int, int, int, int)</p>
 <dt>im: Numpy array</dt><dd><p>Atomic resolution image of sample.</p>
 </dd>
 </dl>
-<p>string: Zone axis of material in image (eg. ‘011’)</p>
+<p>str : Zone axis of material in image (eg. ‘011’)</p>
 </dd></dl>
 
 <dl class="function">
@@ -415,6 +418,24 @@ update(self, int, int, int, int)</p>
 <em class="property">class </em><code class="sig-prename descclassname">ParticleSpy.ptcl_class.</code><code class="sig-name descname">Particle</code><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>A segmented particle object.</p>
+<dl class="simple">
+<dt>properties<span class="classifier">dict</span></dt><dd><p>Dictionary of particle properties created by the ParticleAnalysis() function.</p>
+</dd>
+<dt>origin<span class="classifier">str</span></dt><dd><p>Origin of particle data, e.g. filename or acquisition number.</p>
+</dd>
+<dt>zone<span class="classifier">str</span></dt><dd><p>Zone axis of particle.</p>
+</dd>
+<dt>mask<span class="classifier">array</span></dt><dd><p>Boolean array corresponding to the particle pixels on the original image.</p>
+</dd>
+<dt>image<span class="classifier">Hyperspy signal object</span></dt><dd><p>Image of particle.</p>
+</dd>
+<dt>maps<span class="classifier">dict</span></dt><dd><p>Dictionary containing elemental maps of the particle.</p>
+</dd>
+<dt>spectrum<span class="classifier">Hyperspy signal object</span></dt><dd><p>Spectrum obtained from the particle.</p>
+</dd>
+<dt>composition<span class="classifier">dict</span></dt><dd><p>Dictionary of composition values for the particle.</p>
+</dd>
+</dl>
 <dl class="method">
 <dt id="ParticleSpy.ptcl_class.Particle.maps_gen">
 <code class="sig-name descname">maps_gen</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle.maps_gen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle.maps_gen" title="Permalink to this definition">¶</a></dt>
@@ -426,8 +447,28 @@ update(self, int, int, int, int)</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="ParticleSpy.ptcl_class.Particle.set_axes_lengths">
+<code class="sig-name descname">set_axes_lengths</code><span class="sig-paren">(</span><em class="sig-param">axeslengths</em>, <em class="sig-param">units</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle.set_axes_lengths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle.set_axes_lengths" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.ptcl_class.Particle.set_circdiam">
+<code class="sig-name descname">set_circdiam</code><span class="sig-paren">(</span><em class="sig-param">circdiam</em>, <em class="sig-param">units</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle.set_circdiam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle.set_circdiam" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="ParticleSpy.ptcl_class.Particle.set_circularity">
 <code class="sig-name descname">set_circularity</code><span class="sig-paren">(</span><em class="sig-param">circularity</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle.set_circularity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle.set_circularity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.ptcl_class.Particle.set_eccentricity">
+<code class="sig-name descname">set_eccentricity</code><span class="sig-paren">(</span><em class="sig-param">eccentricity</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle.set_eccentricity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle.set_eccentricity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.ptcl_class.Particle.set_intensity">
+<code class="sig-name descname">set_intensity</code><span class="sig-paren">(</span><em class="sig-param">intensity</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle.set_intensity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle.set_intensity" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -479,6 +520,18 @@ update(self, int, int, int, int)</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="ParticleSpy.ptcl_class.Particle_list.plot">
+<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param">prop='area'</em>, <em class="sig-param">bins=20</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle_list.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle_list.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays a histogram of the chosen particle property.</p>
+<dl class="simple">
+<dt>prop<span class="classifier">str</span></dt><dd><p>The name of the property to plot as a histogram.</p>
+</dd>
+<dt>bins<span class="classifier">int</span></dt><dd><p>The number of bins in the histogram.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="ParticleSpy.ptcl_class.Particle_list.plot_area">
 <code class="sig-name descname">plot_area</code><span class="sig-paren">(</span><em class="sig-param">bins=20</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle_list.plot_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle_list.plot_area" title="Permalink to this definition">¶</a></dt>
 <dd><p>Displays a plot of particle areas for analysed particles.</p>
@@ -513,17 +566,42 @@ update(self, int, int, int, int)</p>
 
 <dl class="function">
 <dt id="ParticleSpy.radial_profile.plot_profile">
-<code class="sig-prename descclassname">ParticleSpy.radial_profile.</code><code class="sig-name descname">plot_profile</code><span class="sig-paren">(</span><em class="sig-param">dist_count_dic</em>, <em class="sig-param">scale</em>, <em class="sig-param">units</em>, <em class="sig-param">mark_radius=False</em>, <em class="sig-param">radius=1</em>, <em class="sig-param">save=False</em>, <em class="sig-param">dir_save=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/radial_profile.html#plot_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.radial_profile.plot_profile" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="simple">
-<dt>DisNorm: check if the distance from particle centre </dt><dd><p>is normalised by the particle size</p>
+<code class="sig-prename descclassname">ParticleSpy.radial_profile.</code><code class="sig-name descname">plot_profile</code><span class="sig-paren">(</span><em class="sig-param">dist_count_dic</em>, <em class="sig-param">scale</em>, <em class="sig-param">units</em>, <em class="sig-param">mark_radius=False</em>, <em class="sig-param">radius=1.0</em>, <em class="sig-param">save=False</em>, <em class="sig-param">dir_save=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/radial_profile.html#plot_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.radial_profile.plot_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to plot a radial profile of particle signals.</p>
+<dl class="simple">
+<dt>dist_count_dic<span class="classifier">dict</span></dt><dd><p>Dictionary containing the distances and counts of the profile.</p>
 </dd>
 </dl>
+<p>scale : float
+units : str
+mark_radius : bool</p>
+<blockquote>
+<div><p>If true, mark the particle radius on the profile plot.</p>
+</div></blockquote>
+<p>radius : float
+save : bool
+dir_save : str</p>
+<blockquote>
+<div><p>Default : None</p>
+</div></blockquote>
 </dd></dl>
 
 <dl class="function">
 <dt id="ParticleSpy.radial_profile.radial_profile">
-<code class="sig-prename descclassname">ParticleSpy.radial_profile.</code><code class="sig-name descname">radial_profile</code><span class="sig-paren">(</span><em class="sig-param">particle</em>, <em class="sig-param">signals</em>, <em class="sig-param">plot=True</em>, <em class="sig-param">mark_radius=False</em>, <em class="sig-param">radius=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/radial_profile.html#radial_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.radial_profile.radial_profile" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-prename descclassname">ParticleSpy.radial_profile.</code><code class="sig-name descname">radial_profile</code><span class="sig-paren">(</span><em class="sig-param">particle</em>, <em class="sig-param">signals</em>, <em class="sig-param">plot=True</em>, <em class="sig-param">mark_radius=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/radial_profile.html#radial_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.radial_profile.radial_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to calculate and plot a radial profile of a signal from an individual 
+particle.</p>
+<dl class="simple">
+<dt>particle<span class="classifier">ParticleSpy particle object</span></dt><dd><p>The particle object.</p>
+</dd>
+<dt>signals<span class="classifier">list</span></dt><dd><p>List of signals to plot, either ‘Image’ or element name, e.g. ‘Ag’.</p>
+</dd>
+<dt>plot<span class="classifier">bool</span></dt><dd><p>True if plotting, False otherwise.</p>
+</dd>
+<dt>mark_radius<span class="classifier">bool</span></dt><dd><p>If true, mark the particle radius on the profile plot.</p>
+</dd>
+</dl>
+</dd></dl>
 
 </div>
 <div class="section" id="module-ParticleSpy.segptcls">

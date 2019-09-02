@@ -85,6 +85,8 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../segmentation.html">Segmentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../particle_analysis.html">Particle Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/modules.html">ParticleSpy</a></li>
 </ul>
 
@@ -160,18 +162,54 @@
 <span class="kn">from</span> <span class="nn">ParticleSpy.particle_save</span> <span class="k">import</span> <span class="n">save_plist</span>
 
 <div class="viewcode-block" id="Particle"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle">[docs]</a><span class="k">class</span> <span class="nc">Particle</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A segmented particle object.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;A segmented particle object.</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    properties : dict</span>
+<span class="sd">        Dictionary of particle properties created by the ParticleAnalysis() function.</span>
+<span class="sd">    origin : str</span>
+<span class="sd">        Origin of particle data, e.g. filename or acquisition number.</span>
+<span class="sd">    zone : str</span>
+<span class="sd">        Zone axis of particle.</span>
+<span class="sd">    mask : array</span>
+<span class="sd">        Boolean array corresponding to the particle pixels on the original image.</span>
+<span class="sd">    image : Hyperspy signal object</span>
+<span class="sd">        Image of particle.</span>
+<span class="sd">    maps : dict</span>
+<span class="sd">        Dictionary containing elemental maps of the particle.</span>
+<span class="sd">    spectrum : Hyperspy signal object</span>
+<span class="sd">        Spectrum obtained from the particle.</span>
+<span class="sd">    composition : dict</span>
+<span class="sd">        Dictionary of composition values for the particle.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="p">{}</span>
     
 <div class="viewcode-block" id="Particle.set_origin"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle.set_origin">[docs]</a>    <span class="k">def</span> <span class="nf">set_origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A container for the origin of data (filename, acquisition number etc.)&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">origin</span></div>
         
 <div class="viewcode-block" id="Particle.set_area"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle.set_area">[docs]</a>    <span class="k">def</span> <span class="nf">set_area</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">area</span><span class="p">,</span> <span class="n">units</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">area</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">area_units</span> <span class="o">=</span> <span class="n">units</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;area&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span><span class="n">area</span><span class="p">,</span><span class="s1">&#39;units&#39;</span><span class="p">:</span><span class="n">units</span><span class="p">}</span></div>
+        
+<div class="viewcode-block" id="Particle.set_circdiam"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle.set_circdiam">[docs]</a>    <span class="k">def</span> <span class="nf">set_circdiam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circdiam</span><span class="p">,</span> <span class="n">units</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;equivalent circular diameter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span><span class="n">circdiam</span><span class="p">,</span><span class="s1">&#39;units&#39;</span><span class="p">:</span><span class="n">units</span><span class="p">}</span></div>
+        
+<div class="viewcode-block" id="Particle.set_axes_lengths"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle.set_axes_lengths">[docs]</a>    <span class="k">def</span> <span class="nf">set_axes_lengths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axeslengths</span><span class="p">,</span><span class="n">units</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;major axis length&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span><span class="n">axeslengths</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="s1">&#39;units&#39;</span><span class="p">:</span><span class="n">units</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;minor axis length&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span><span class="n">axeslengths</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="s1">&#39;units&#39;</span><span class="p">:</span><span class="n">units</span><span class="p">}</span></div>
         
 <div class="viewcode-block" id="Particle.set_circularity"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle.set_circularity">[docs]</a>    <span class="k">def</span> <span class="nf">set_circularity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circularity</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">circularity</span> <span class="o">=</span> <span class="n">circularity</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;circularity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span><span class="n">circularity</span><span class="p">,</span><span class="s1">&#39;units&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">}</span></div>
+        
+<div class="viewcode-block" id="Particle.set_eccentricity"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle.set_eccentricity">[docs]</a>    <span class="k">def</span> <span class="nf">set_eccentricity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">eccentricity</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;eccentricity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span><span class="n">eccentricity</span><span class="p">,</span><span class="s1">&#39;units&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">}</span></div>
+        
+<div class="viewcode-block" id="Particle.set_intensity"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle.set_intensity">[docs]</a>    <span class="k">def</span> <span class="nf">set_intensity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">intensity</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;intensity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span><span class="n">intensity</span><span class="p">,</span><span class="s1">&#39;units&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">}</span></div>
         
 <div class="viewcode-block" id="Particle.set_zone"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle.set_zone">[docs]</a>    <span class="k">def</span> <span class="nf">set_zone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">zone</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">zone</span> <span class="o">=</span> <span class="n">zone</span></div>
@@ -215,10 +253,10 @@
         <span class="n">areas</span> <span class="o">=</span> <span class="p">[]</span>
         
         <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">:</span>
-            <span class="n">areas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">area</span><span class="p">)</span>
+            <span class="n">areas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;area&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
             
         <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">areas</span><span class="p">,</span><span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Area (&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">area_units</span><span class="o">+</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Area (&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;area&#39;</span><span class="p">][</span><span class="s1">&#39;units&#39;</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;No. of particles&quot;</span><span class="p">)</span></div>
         
 <div class="viewcode-block" id="Particle_list.plot_circularity"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle_list.plot_circularity">[docs]</a>    <span class="k">def</span> <span class="nf">plot_circularity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
@@ -229,10 +267,35 @@
         <span class="n">circularities</span> <span class="o">=</span> <span class="p">[]</span>
         
         <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">:</span>
-            <span class="n">circularities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">circularity</span><span class="p">)</span>
+            <span class="n">circularities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;circularity&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
             
         <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">circularities</span><span class="p">,</span><span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Circularity&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;No. of particles&quot;</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="Particle_list.plot"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle_list.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">prop</span><span class="o">=</span><span class="s1">&#39;area&#39;</span><span class="p">,</span><span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Displays a histogram of the chosen particle property.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        prop : str</span>
+<span class="sd">            The name of the property to plot as a histogram.</span>
+<span class="sd">        bins : int</span>
+<span class="sd">            The number of bins in the histogram.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">property_list</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">:</span>
+            <span class="n">property_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
+            
+        <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">property_list</span><span class="p">,</span><span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop</span><span class="p">][</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="o">+</span><span class="s2">&quot; (&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop</span><span class="p">][</span><span class="s1">&#39;units&#39;</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;No. of particles&quot;</span><span class="p">)</span></div></div>
 </pre></div>
 

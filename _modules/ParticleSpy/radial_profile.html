@@ -85,6 +85,8 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../segmentation.html">Segmentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../particle_analysis.html">Particle Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/modules.html">ParticleSpy</a></li>
 </ul>
 
@@ -158,7 +160,22 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
-<div class="viewcode-block" id="radial_profile"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.radial_profile.radial_profile">[docs]</a><span class="k">def</span> <span class="nf">radial_profile</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span><span class="n">signals</span><span class="p">,</span><span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mark_radius</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="radial_profile"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.radial_profile.radial_profile">[docs]</a><span class="k">def</span> <span class="nf">radial_profile</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span><span class="n">signals</span><span class="p">,</span><span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mark_radius</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to calculate and plot a radial profile of a signal from an individual </span>
+<span class="sd">    particle.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    particle : ParticleSpy particle object</span>
+<span class="sd">        The particle object.</span>
+<span class="sd">    signals : list</span>
+<span class="sd">        List of signals to plot, either &#39;Image&#39; or element name, e.g. &#39;Ag&#39;.</span>
+<span class="sd">    plot : bool</span>
+<span class="sd">        True if plotting, False otherwise.</span>
+<span class="sd">    mark_radius : bool</span>
+<span class="sd">        If true, mark the particle radius on the profile plot.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">dist_count_dic</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">sig</span> <span class="ow">in</span> <span class="n">signals</span><span class="p">:</span>
@@ -171,7 +188,7 @@
     <span class="n">units</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">units</span>
     
     <span class="k">if</span> <span class="n">plot</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
-        <span class="n">plot_profile</span><span class="p">(</span><span class="n">dist_count_dic</span><span class="p">,</span><span class="n">scale</span><span class="p">,</span><span class="n">units</span><span class="p">,</span> <span class="n">mark_radius</span><span class="o">=</span><span class="n">mark_radius</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">)</span>
+        <span class="n">plot_profile</span><span class="p">(</span><span class="n">dist_count_dic</span><span class="p">,</span><span class="n">scale</span><span class="p">,</span><span class="n">units</span><span class="p">,</span> <span class="n">mark_radius</span><span class="o">=</span><span class="n">mark_radius</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">particle</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;equivalent circular diameter&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">return</span><span class="p">(</span><span class="n">dist_count_dic</span><span class="p">)</span></div>
     
 <span class="sd">&#39;&#39;&#39;def sum_profiles(profiles):</span>
@@ -236,14 +253,23 @@
     
     <span class="k">return</span> <span class="n">distance_unique</span><span class="p">,</span> <span class="n">count_unique</span></div>
 
-<div class="viewcode-block" id="plot_profile"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.radial_profile.plot_profile">[docs]</a><span class="k">def</span> <span class="nf">plot_profile</span><span class="p">(</span><span class="n">dist_count_dic</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span class="n">mark_radius</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dir_save</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    DisNorm: check if the distance from particle centre </span>
-<span class="sd">            is normalised by the particle size</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    
-    <span class="sd">&#39;&#39;&#39;if DisNorm == True:</span>
-<span class="sd">        plt.xlim([0,100])&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="plot_profile"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.radial_profile.plot_profile">[docs]</a><span class="k">def</span> <span class="nf">plot_profile</span><span class="p">(</span><span class="n">dist_count_dic</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span class="n">mark_radius</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dir_save</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to plot a radial profile of particle signals.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dist_count_dic : dict</span>
+<span class="sd">        Dictionary containing the distances and counts of the profile.</span>
+<span class="sd">    scale : float</span>
+<span class="sd">    units : str</span>
+<span class="sd">    mark_radius : bool</span>
+<span class="sd">        If true, mark the particle radius on the profile plot.</span>
+<span class="sd">    radius : float</span>
+<span class="sd">    save : bool</span>
+<span class="sd">    dir_save : str</span>
+<span class="sd">        Default : None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
         
     <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Distance from particle centre (&#39;</span><span class="o">+</span><span class="n">units</span><span class="o">+</span><span class="s1">&#39;)&#39;</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Normalised intensity (counts)&#39;</span><span class="p">)</span>
