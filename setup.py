@@ -14,9 +14,9 @@ except ImportError:
         install_requires.append('PyQt5')
 
 setuptools.setup(
-    name="ParticleSpy",
-    package_dir={'ParticleSpy':'ParticleSpy'},
-    version="0.0.2",
+    name="particlespy",
+    package_dir={'particlespy':'particlespy'},
+    version="0.1.0",
     author="Thomas Slater",
     author_email="tjaslater@gmail.com",
     description="A package to perform particle segmentation and analysis",
