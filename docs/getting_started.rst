@@ -1,11 +1,8 @@
 .. _getting_started:
 
-
 ***************
 Getting started
 ***************
-
-.. _installing-pspy:
 
 Installing ParticleSpy
 ======================
@@ -32,7 +29,7 @@ you can use the following command to install the package.
 
 .. code-block:: bash
 
-    pip install -e git+https://github.com/ePSIC-DLS/ParticleSpy
+    $ pip install -e git+https://github.com/ePSIC-DLS/ParticleSpy
 
 Using ParticleSpy
 =================
