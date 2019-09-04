@@ -6,6 +6,20 @@ python:
 install:
   - pip install -r requirements.txt
   - pip install -e .
+  - pip install sphinx
+  - pip install sphinx_rtd_theme
 
 script:
   - pytest
+  - cd docs
+  - make html
+  - touch _build/html/.nojekyll
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN  # Set in travis-ci.org dashboard, marked secure
+  keep-history: true
+  on:
+    branch: master
+  local_dir: docs/_build/html/

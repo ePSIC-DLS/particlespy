@@ -25,10 +25,10 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
     acquisition: Hyperpsy signal object or list of hyperspy signal objects.
         Hyperpsy signal object containing a nanoparticle image or a list of signal
          objects that contains an image at position 0 and other datasets following.
-    process_param: Dictionary of parameters
+    parameters: Dictionary of parameters
         The parameters can be input manually in to a dictionary or can be generated
         using param_generator().
-    particle_list: List
+    particles: list
         List of already analysed particles that the output can be appended
         to.
     mask: Numpy array
@@ -37,7 +37,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         
     Returns
     -------
-    list: List of Particle objects.
+    Particle_list object
     """
     
     if particles==None:
@@ -80,13 +80,28 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         area_units = image.axes_manager[0].units+"^2"
         p.set_area(cal_area,area_units)
         
+        #Set diam measures
+        cal_circdiam = 2*(cal_area**0.5)/np.pi
+        diam_units = image.axes_manager[0].units
+        p.set_circdiam(cal_circdiam,diam_units)
+        
+        cal_axes_lengths = (region.major_axis_length*image.axes_manager[0].scale,region.minor_axis_length*image.axes_manager[0].scale)
+        #Note: the above only works for square pixels
+        p.set_axes_lengths(cal_axes_lengths,diam_units)
+        
         #Set shape measures
         peri = image.axes_manager[0].scale*perimeter(maskp,neighbourhood=4)
-        circularity = 4*3.14159265*p.area/(peri**2)
+        circularity = 4*3.14159265*p.properties['area']['value']/(peri**2)
         p.set_circularity(circularity)
+        eccentricity = region.eccentricity
+        p.set_eccentricity(eccentricity)
+        
+        #Set total image intensity
+        intensity = (image*mask).sum()
+        p.set_intensity(intensity)
         
         #Set zoneaxis
-        im_smooth = filters.gaussian(p_im,1)
+        im_smooth = filters.gaussian(np.uint16(p_im),1)
         im_zone = np.zeros_like(im_smooth)
         im_zone[im_smooth>0] = im_smooth[im_smooth>0] - im_smooth[im_smooth>0].mean()
         im_zone[im_zone<0] = 0

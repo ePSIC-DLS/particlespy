@@ -12,8 +12,8 @@ def test_load_particles():
     image = gen_test.generate_test_image(hspy=True)
     mask = gen_test.generate_test_image(hspy=False)
     
-    nptest.assert_almost_equal(p.area,20069.0)
-    assert p.area_units == 'nm^2'
-    nptest.assert_almost_equal(p.circularity,0.9095832157785668)
+    nptest.assert_almost_equal(p.properties['area']['value'],20069.0)
+    assert p.properties['area']['units'] == 'nm^2'
+    nptest.assert_almost_equal(p.properties['circularity']['value'],0.9095832157785668)
     nptest.assert_allclose(p.mask,mask)
     nptest.assert_allclose(p.image.data,image.data[16:184,16:184])
