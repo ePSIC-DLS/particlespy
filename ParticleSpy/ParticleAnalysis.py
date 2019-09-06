@@ -97,7 +97,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         p.set_eccentricity(eccentricity)
         
         #Set total image intensity
-        intensity = (image*mask).sum()
+        intensity = (image.data*maskp).sum()
         p.set_intensity(intensity)
         
         #Set zoneaxis
@@ -156,7 +156,10 @@ def store_maps(particle,ac):
         box_y_min = np.min(ii[1])
         pad = 5
         
-        p_boxed = map.inav[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
+        if box_y_min-pad > 0 and box_x_min-pad > 0 and box_x_max+pad < particle.mask.shape[0] and box_y_max+pad < particle.mask.shape[1]:
+            p_boxed = map.inav[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
+        else:
+            p_boxed = map.inav[(box_y_min):(box_y_max),(box_x_min):(box_x_max)]
         particle.store_map(p_boxed,p_boxed.metadata.Sample.elements[0])
         
 def store_spectrum(particle,ac,stype):
