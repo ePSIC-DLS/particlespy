@@ -6,7 +6,7 @@ Created on Mon Oct 22 15:50:08 2018
 """
 
 from PyQt5.QtWidgets import QCheckBox, QPushButton, QLabel, QMainWindow, QSpinBox
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QComboBox
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QComboBox, QTabWidget
 from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtCore import Qt
 import sys
@@ -33,10 +33,22 @@ class Application(QMainWindow):
         self.prev_params.generate()
         
         offset = 50
+        
+        self.layout = QVBoxLayout(self)
+        
+        # Initialize tab screen
+        self.tabs = QTabWidget()
+        self.tab1 = QWidget()
+        self.tab2 = QWidget()
+        
+        # Add tabs
+        self.tabs.addTab(self.tab1,"Auto")
+        self.tabs.addTab(self.tab2,"Manual")
 
         #self.central_widget = QWidget()               
         #self.setCentralWidget(self.central_widget)
         lay = QVBoxLayout()
+        self.tab1.setLayout(lay)
 
         self.label = QLabel(self)
         qi = QImage(self.image.data, self.image.shape[1], self.image.shape[0], self.image.shape[1], QImage.Format_Grayscale8)
@@ -144,6 +156,13 @@ class Application(QMainWindow):
         lay.addWidget(self.gausstxt)
         lay.addWidget(self.imagetxt)
         lay.addWidget(self.minsizev)
+        
+        
+        self.layout.addWidget(self.tabs)
+        self.setLayout(self.layout)
+        
+        self.setCentralWidget(self.tabs)
+        
         self.show()
         
     def getim(self,im_hs):
