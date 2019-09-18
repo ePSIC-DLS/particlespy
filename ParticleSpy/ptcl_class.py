@@ -58,6 +58,9 @@ class Particle(object):
     def set_intensity(self,intensity):
         self.properties['intensity'] = {'value':intensity,'units':None}
         
+    def set_property(self,propname,value,units):
+        self.properties[propname] = {'value':value, 'units': units}
+        
     def set_zone(self, zone):
         self.zone = zone
         
