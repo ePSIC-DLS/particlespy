@@ -46,16 +46,8 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
     #Check if input is list of signal objects or single one
     if isinstance(acquisition,list):
         image = acquisition[0]
-        ac_types = []
-        for ac in acquisition[1:]:
-            if ac.metadata.Signal.signal_type == 'EDS_TEM':
-                ac_types.append(ac.metadata.Signal.signal_type)
-            else:
-                warnings.warn("You have input data that does not have a defined signal type and therefore will not be processed."+
-                              " You need to define signal_type in the metadata for anything other than the first dataset.")
     else:
         image = acquisition
-        ac_types = 'Image only'
     
     if mask.sum()==0:
         labeled = process(image,parameters)
@@ -116,7 +108,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         if parameters.store["store_im"]==True:
             store_image(p,image)
             
-        if isinstance(ac_types,list):
+        if isinstance(acquisition,list):
             for ac in acquisition:
                 if ac.metadata.Signal.signal_type == 'EDS_TEM':
                     ac.set_elements(parameters.eds['elements'])
@@ -126,6 +118,12 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
                         store_maps(p,ac)
                     if parameters.eds["factors"]!=False:
                         get_composition(p,parameters)
+                else:
+                    if ac.metadata.Signal.signal_type:
+                        store_spectrum(p,ac,ac.metadata.Signal.signal_type)
+                    else:
+                        warnings.warn("You have input data that does not have a defined signal type and therefore will not be processed."+
+                              " You need to define signal_type in the metadata for anything other than the first dataset.")
         
         particles.append(p)
         
