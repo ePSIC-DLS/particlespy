@@ -17,7 +17,10 @@ def test_store_image():
     p = Particle()
     p.set_mask(mask)
     
-    PAnalysis.store_image(p,image)
+    params = PAnalysis.parameters()
+    params.store['pad'] = 5
+    
+    PAnalysis.store_image(p,image,params)
     
     nptest.assert_allclose(p.image.data,image.data[16:184,16:184])
     
@@ -28,7 +31,10 @@ def test_store_maps():
     p = Particle()
     p.set_mask(mask)
     
-    PAnalysis.store_maps(p,si)
+    params = PAnalysis.parameters()
+    params.store['pad'] = 5
+    
+    PAnalysis.store_maps(p,si,params)
     
     au_map = si.get_lines_intensity()[0]
     
