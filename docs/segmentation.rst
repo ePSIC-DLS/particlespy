@@ -43,7 +43,7 @@ The parameters for the automated segmentation are described here:
 
 (1) Rolling ball size
     
-   The rolling ball algorithm is equivalent to a top hat filter. It acts to remove slowly varying background intensity at a size larger than the particle diameter. The default is to not apply a rolling ball (value = 0). To apply a rolling ball enter a value (in pixels) that is significantly larger than your particle diameter.
+The rolling ball algorithm is equivalent to a top hat filter. It acts to remove slowly varying background intensity at a size larger than the particle diameter. The default is to not apply a rolling ball (value = 0). To apply a rolling ball enter a value (in pixels) that is significantly larger than your particle diameter.
 
 (2) Gaussian filter kernel
     
