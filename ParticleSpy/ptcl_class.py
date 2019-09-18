@@ -59,6 +59,22 @@ class Particle(object):
         self.properties['intensity'] = {'value':intensity,'units':None}
         
     def set_property(self,propname,value,units):
+        """
+        Give a Particle() object an arbitrary property.
+        
+        Parameters
+        ----------
+        propname : str
+            The name of the property to set.
+        value : 
+            The value of the property.
+        units :
+            The units of the property.
+            
+        Example
+        -------
+        >>> particle.set_property('area',10.0,'nm')
+        """
         self.properties[propname] = {'value':value, 'units': units}
         
     def set_zone(self, zone):
