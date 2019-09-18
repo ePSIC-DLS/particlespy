@@ -11,8 +11,7 @@ install:
   - pip install sphinx_rtd_theme
 
 script:
-  - pytest
-  - py.test --cov-report term --cov=app/test/
+  - pytest --cov=ParticleSpy
   - cd docs
   - make html
   - touch _build/html/.nojekyll

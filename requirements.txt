@@ -1,1 +1,4 @@
 PyQt5
+coverage>=4.4.0
+pytest>=3.6.0
+pytest-cov
