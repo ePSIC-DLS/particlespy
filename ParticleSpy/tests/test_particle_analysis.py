@@ -18,8 +18,7 @@ def test_store_image():
     p.set_mask(mask)
     
     params = PAnalysis.parameters()
-    params.load()
-    params.store['pad'] = 5
+    params.generate()
     
     PAnalysis.store_image(p,image,params)
     
@@ -33,8 +32,7 @@ def test_store_maps():
     p.set_mask(mask)
     
     params = PAnalysis.parameters()
-    params.load()
-    params.store['pad'] = 5
+    params.generate()
     
     PAnalysis.store_maps(p,si,params)
     
