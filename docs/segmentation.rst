@@ -7,7 +7,7 @@ Segmentation
 ParticleSpy provides different options for the segmentation of particles from images.
 
 Using a Pre-Segmented Mask
-==========================
+--------------------------
 
 The most straightforward method is to supply ParticleSpy with a pre-segmented mask (boolean image).
 
@@ -18,22 +18,32 @@ The most straightforward method is to supply ParticleSpy with a pre-segmented ma
 In this way other software (e.g. ImageJ) could be used to perform segmentation which is then used by ParticleSpy to segment particles.
 
 Using the Segmentation User Interface
-=====================================
+-------------------------------------
 
-ParticleSpy can also perform its own segmentation using functions from scikit-image. A number of methods and options for segmentation are included and therefore ParticleSpy parameterizes the segmentation process. In order to choose the correct parameters for your segmentation ParticleSpy provides a Segmentation User Interface, that can be launched from a python kernel using the :py:meth:`~.SegUI` function.
+ParticleSpy can also perform its own segmentation either using automated functions from scikit-image or using a fully manual approach.
+In order to assist with both methods, ParticleSpy provides a Segmentation User Interface.
+This can be launched from a python kernel using the :py:meth:`~.SegUI` function.
 
 .. code-block:: python
 
     >>> SegUI(image)
 
-Once the Segmentation User Interface is launched the image is displayed and a number of options are available on the right hand side.
+Parameter Picking for Automated Segmentation
+============================================
+
+Once the Segmentation User Interface is launched the 'Auto' panel is displayed.
+This panel provides a number of options that can be tuned to provide an optimal automated segmentation.
+Once you have chosen your parameters, pressing 'Update' will display a segmented image.
+'Update' will also save the current parameters to use later.
 
 .. image:: _static/segui.png
     :align: center
 
+The parameters for the automated segmentation are described here:
+
 (1) Rolling ball size
     
-   The rolling ball algorithm is equivalent to a top hat filter. It acts to remove slowly varying background intensity at a size larger than the particle diameter. The default is to not apply a rolling ball (value = 0). To apply a rolling ball enter a value (in pixels) that is significantly larger than your particle diameter.
+The rolling ball algorithm is equivalent to a top hat filter. It acts to remove slowly varying background intensity at a size larger than the particle diameter. The default is to not apply a rolling ball (value = 0). To apply a rolling ball enter a value (in pixels) that is significantly larger than your particle diameter.
 
 (2) Gaussian filter kernel
     
@@ -73,3 +83,25 @@ Prints the current parameters as output for reference.
 (10) Display
      
 Option to display either the image with label boundaries displayed, or the solid labels coloured by label number.
+
+Manual Segmentation
+===================
+
+The second tab in the Segmentation User Interface provides an option to manually segment an individual image.
+You can get to this tab by clicking 'Manual' in the top bar.
+
+Here, segmentation works by holding the left mouse button and drawing around the outside of a particle.
+Once you have completely enclosed the particle, release the left mouse button.
+If you are happy with your particle boundary, click on the particle centre with the right mouse button.
+You may notice the middle of the particle turn slightly blue (can be difficult to see).
+Continue to segment all of the particles in the image in this way until all are segmented.
+
+Once you have segmented all of the particles, click 'Save Segmentation'.
+This will save the generated segmentation as an internal npy file that can be read when using :py:meth:`~.ParticleAnalysis`.
+
+.. image:: _static/manual_segui.png
+    :align: center
+
+.. warning::
+   Do NOT right-click on any part of the image that is not fully enclosed by a red circle.
+   Doing so will ruin the segmentation and you will have to reload SegUI.

@@ -3,7 +3,8 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-install_requires=["hyperspy"]
+install_requires=["hyperspy",
+                  "scikit-image>=0.15"]
 
 try:
     import PyQt5  # noqa
