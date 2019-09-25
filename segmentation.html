@@ -89,7 +89,11 @@
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Segmentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#using-a-pre-segmented-mask">Using a Pre-Segmented Mask</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#using-the-segmentation-user-interface">Using the Segmentation User Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-the-segmentation-user-interface">Using the Segmentation User Interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#parameter-picking-for-automated-segmentation">Parameter Picking for Automated Segmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#manual-segmentation">Manual Segmentation</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="particle_analysis.html">Particle Analysis</a></li>
@@ -171,18 +175,24 @@
 </div>
 <div class="section" id="using-the-segmentation-user-interface">
 <h2>Using the Segmentation User Interface<a class="headerlink" href="#using-the-segmentation-user-interface" title="Permalink to this headline">¶</a></h2>
-<p>ParticleSpy can also perform its own segmentation using functions from scikit-image. A number of methods and options for segmentation are included and therefore ParticleSpy parameterizes the segmentation process. In order to choose the correct parameters for your segmentation ParticleSpy provides a Segmentation User Interface, that can be launched from a python kernel using the <code class="xref py py-meth docutils literal notranslate"><span class="pre">SegUI()</span></code> function.</p>
+<p>ParticleSpy can also perform its own segmentation either using automated functions from scikit-image or using a fully manual approach.
+In order to assist with both methods, ParticleSpy provides a Segmentation User Interface.
+This can be launched from a python kernel using the <code class="xref py py-meth docutils literal notranslate"><span class="pre">SegUI()</span></code> function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SegUI</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Once the Segmentation User Interface is launched the image is displayed and a number of options are available on the right hand side.</p>
+<div class="section" id="parameter-picking-for-automated-segmentation">
+<h3>Parameter Picking for Automated Segmentation<a class="headerlink" href="#parameter-picking-for-automated-segmentation" title="Permalink to this headline">¶</a></h3>
+<p>Once the Segmentation User Interface is launched the ‘Auto’ panel is displayed.
+This panel provides a number of options that can be tuned to provide an optimal automated segmentation.
+Once you have chosen your parameters, pressing ‘Update’ will display a segmented image.
+‘Update’ will also save the current parameters to use later.</p>
 <img alt="_images/segui.png" class="align-center" src="_images/segui.png" />
+<p>The parameters for the automated segmentation are described here:</p>
 <ol class="arabic simple">
 <li><p>Rolling ball size</p></li>
 </ol>
-<blockquote>
-<div><p>The rolling ball algorithm is equivalent to a top hat filter. It acts to remove slowly varying background intensity at a size larger than the particle diameter. The default is to not apply a rolling ball (value = 0). To apply a rolling ball enter a value (in pixels) that is significantly larger than your particle diameter.</p>
-</div></blockquote>
+<p>The rolling ball algorithm is equivalent to a top hat filter. It acts to remove slowly varying background intensity at a size larger than the particle diameter. The default is to not apply a rolling ball (value = 0). To apply a rolling ball enter a value (in pixels) that is significantly larger than your particle diameter.</p>
 <ol class="arabic simple" start="2">
 <li><p>Gaussian filter kernel</p></li>
 </ol>
@@ -223,6 +233,25 @@
 <li><p>Display</p></li>
 </ol>
 <p>Option to display either the image with label boundaries displayed, or the solid labels coloured by label number.</p>
+</div>
+<div class="section" id="manual-segmentation">
+<h3>Manual Segmentation<a class="headerlink" href="#manual-segmentation" title="Permalink to this headline">¶</a></h3>
+<p>The second tab in the Segmentation User Interface provides an option to manually segment an individual image.
+You can get to this tab by clicking ‘Manual’ in the top bar.</p>
+<p>Here, segmentation works by holding the left mouse button and drawing around the outside of a particle.
+Once you have completely enclosed the particle, release the left mouse button.
+If you are happy with your particle boundary, click on the particle centre with the right mouse button.
+You may notice the middle of the particle turn slightly blue (can be difficult to see).
+Continue to segment all of the particles in the image in this way until all are segmented.</p>
+<p>Once you have segmented all of the particles, click ‘Save Segmentation’.
+This will save the generated segmentation as an internal npy file that can be read when using <code class="xref py py-meth docutils literal notranslate"><span class="pre">ParticleAnalysis()</span></code>.</p>
+<img alt="_images/manual_segui.png" class="align-center" src="_images/manual_segui.png" />
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Do NOT right-click on any part of the image that is not fully enclosed by a red circle.
+Doing so will ruin the segmentation and you will have to reload SegUI.</p>
+</div>
+</div>
 </div>
 </div>
 

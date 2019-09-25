@@ -210,7 +210,9 @@
         <span class="n">image</span> <span class="o">=</span> <span class="n">acquisition</span>
         <span class="n">ac_types</span> <span class="o">=</span> <span class="s1">&#39;Image only&#39;</span>
     
-    <span class="k">if</span> <span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">mask</span> <span class="o">==</span> <span class="s1">&#39;UI&#39;</span><span class="p">:</span>
+        <span class="n">labeled</span> <span class="o">=</span> <span class="n">label</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">process</span><span class="p">)</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;/Parameters/manual_mask.npy&#39;</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
         <span class="n">labeled</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="n">image</span><span class="p">,</span><span class="n">parameters</span><span class="p">)</span>
         <span class="c1">#labels = np.unique(labeled).tolist() #some labeled number have been removed by &quot;remove_small_holes&quot; function</span>
     <span class="k">else</span><span class="p">:</span>
