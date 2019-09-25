@@ -359,7 +359,7 @@ class Canvas(QLabel):
         
     def savearray(self,image):
         resized = np.array(Image.fromarray(self.array).resize((image.shape[0],image.shape[1])))
-        np.save('Parameters/manual_mask',resized)
+        np.save(inspect.getfile(process).rpartition('\\')[0]+'/Parameters/manual_mask',resized)
 
 
 def main(haadf):
