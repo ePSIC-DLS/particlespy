@@ -57,7 +57,9 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         image = acquisition
         ac_types = 'Image only'
     
-    if mask.sum()==0:
+    if mask == 'UI':
+        labeled = label(np.load(inspect.getfile(process).rpartition('\\')[0]+'/Parameters/manual_mask.npy'))
+    elif mask.sum()==0:
         labeled = process(image,parameters)
         #labels = np.unique(labeled).tolist() #some labeled number have been removed by "remove_small_holes" function
     else:
