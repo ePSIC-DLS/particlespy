@@ -111,15 +111,24 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
             store_image(p,image)
             
         if isinstance(acquisition,list):
+            p.spectrum = {}
             for ac in acquisition:
                 if ac.metadata.Signal.signal_type == 'EDS_TEM':
                     ac.set_elements(parameters.eds['elements'])
                     ac.add_lines()
-                    store_spectrum(p,ac,'EDS')
+                    store_spectrum(p,ac,'EDS_TEM')
                     if parameters.store["store_maps"]==True:
                         store_maps(p,ac)
                     if parameters.eds["factors"]!=False:
                         get_composition(p,parameters)
+                elif ac.metadata.Signal.signal_type == 'EELS':
+                    ac.add_elements(parameters.eds['elements'])
+                    if 'high-loss' in ac.metadata.General.title:
+                        store_spectrum(p,ac,'EELS-HL')
+                    elif 'low-loss' in ac.metadata.General.title:
+                        store_spectrum(p,ac,'EELS-LL')
+                    else:
+                        store_spectrum(p,ac,ac.metadata.Signal.signal_type)
                 else:
                     if ac.metadata.Signal.signal_type:
                         store_spectrum(p,ac,ac.metadata.Signal.signal_type)
@@ -163,15 +172,16 @@ def store_spectrum(particle,ac,stype):
     ac_particle = ac.transpose()*particle.mask
     ac_particle = ac_particle.transpose()
     ac_particle_spectrum = ac_particle.sum()
-    ac_particle_spectrum.set_signal_type("EDS_TEM")
+    if '-' in stype:
+        ac_particle_spectrum.set_signal_type(stype.rpartition('-')[0])
+    else:
+        ac_particle_spectrum.set_signal_type(stype)
     particle.store_spectrum(ac_particle_spectrum,stype)
         
 def get_composition(particle,params):
-    #print(particle.spectrum['EDS'])
-    bw = particle.spectrum['EDS'].estimate_background_windows(line_width=[5.0, 2.0])
-    #print(bw)
-    intensities = particle.spectrum['EDS'].get_lines_intensity(background_windows=bw)
-    atomic_percent = particle.spectrum['EDS'].quantification(intensities, method=params.eds['method'],factors=params.eds['factors'])
+    bw = particle.spectrum['EDS_TEM'].estimate_background_windows(line_width=[5.0, 2.0])
+    intensities = particle.spectrum['EDS_TEM'].get_lines_intensity(background_windows=bw)
+    atomic_percent = particle.spectrum['EDS_TEM'].quantification(intensities, method=params.eds['method'],factors=params.eds['factors'])
     particle.store_composition(atomic_percent)
     
 class parameters(object):

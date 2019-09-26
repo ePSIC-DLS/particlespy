@@ -93,7 +93,6 @@ class Particle(object):
         self.maps[element] = p_map
         
     def store_spectrum(self,spectrum,stype):
-        self.spectrum = {}
         self.spectrum[stype] = spectrum
         
     def store_composition(self,composition):
@@ -163,3 +162,4 @@ class Particle_list(object):
         else:
             plt.xlabel(prop.capitalize()+" ("+self.list[0].properties[prop]['units']+")")
         plt.ylabel("No. of particles")
+        plt.show()
