@@ -147,7 +147,7 @@ class Particle_list(object):
             plt.xlabel(prop.capitalize()+" ("+self.list[0].properties[prop]['units']+")")
         plt.ylabel("No. of particles")
         
-    def normalize_boxing(self):
+    def normalize_boxing(self,even=False):
         """
         Normalizes the size of all particle images so that their dimensions are
         equal.
@@ -162,10 +162,15 @@ class Particle_list(object):
             dimensions.append(particle.image.data.shape[0])
             dimensions.append(particle.image.data.shape[1])
             
-        max_dim = max(dimensions)
+        if even==True:
+            if (max(dimensions) % 2) == 0:
+                max_dim = max(dimensions)
+            else:
+                max_dim = max(dimensions) + 1
+        else:
+            max_dim = max(dimensions)
         
         for i,particle in enumerate(self.list):
-            print(i)
             x_diff = max_dim - particle.image.data.shape[0]
             y_diff = max_dim - particle.image.data.shape[1]
             
