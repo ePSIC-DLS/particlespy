@@ -43,6 +43,7 @@ def test_store_spectrum():
     
     stype = 'EDS_TEM'
     
+    p.spectrum = {}
     PAnalysis.store_spectrum(p,si,stype)
     
     si_particle = si.transpose()*mask
@@ -60,6 +61,7 @@ def test_get_composition():
     
     stype = 'EDS_TEM'
     
+    p.spectrum = {}
     PAnalysis.store_spectrum(p,si,stype)
     
     params = PAnalysis.parameters()
