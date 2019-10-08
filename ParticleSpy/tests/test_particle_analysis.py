@@ -41,7 +41,7 @@ def test_store_spectrum():
     p = Particle()
     p.set_mask(mask)
     
-    stype = 'EDS'
+    stype = 'EDS_TEM'
     
     PAnalysis.store_spectrum(p,si,stype)
     
@@ -49,7 +49,7 @@ def test_store_spectrum():
     si_particle = si_particle.transpose()
     si_particle_spectrum = si_particle.sum()
     
-    nptest.assert_allclose(p.spectrum['EDS'].data,si_particle_spectrum.data)
+    nptest.assert_allclose(p.spectrum['EDS_TEM'].data,si_particle_spectrum.data)
 
 def test_get_composition():
     mask = gen_test.generate_test_image(hspy=False)
@@ -58,7 +58,7 @@ def test_get_composition():
     p = Particle()
     p.set_mask(mask)
     
-    stype = 'EDS'
+    stype = 'EDS_TEM'
     
     PAnalysis.store_spectrum(p,si,stype)
     
@@ -96,5 +96,5 @@ def test_particleanalysis():
     si_particle = si.transpose()*mask
     si_particle = si_particle.transpose()
     si_particle_spectrum = si_particle.sum()
-    nptest.assert_allclose(p.spectrum['EDS'].data,si_particle_spectrum.data)
+    nptest.assert_allclose(p.spectrum['EDS_TEM'].data,si_particle_spectrum.data)
     nptest.assert_allclose(p.composition['Au'],46.94530019)
