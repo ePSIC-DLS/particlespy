@@ -64,6 +64,7 @@ In addition, Particle Analysis can do the following processing on EDS data:
 
 .. code-block:: python
 
+    >>> data = [image,eds_si]
     >>> params = ps.parameters.load()
     >>> params.generate_eds(eds_method='CL',elements=['Pt','Au'],factors=[1.7,1.9],store_maps=False)
     >>> particles = ps.ParticleAnalysis(data, params)
