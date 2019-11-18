@@ -118,7 +118,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
                     ac.add_lines()
                     store_spectrum(p,ac,'EDS_TEM')
                     if parameters.store["store_maps"]:
-                        store_maps(p,ac)
+                        store_maps(p,ac,parameters)
                     if parameters.eds["factors"]!=False:
                         get_composition(p,parameters)
                 elif ac.metadata.Signal.signal_type == 'EELS':
