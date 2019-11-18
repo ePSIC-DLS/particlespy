@@ -62,4 +62,20 @@ You can now use the chosen parameters to do your particle analysis:
 
 The variable particles is now assigned to a particle list object which contains data on all of the segmented particles.
 
+Saving and Loading Particles
+============================
+
+Once you have a segmented particles list this can be saved to disk as follows:
+
+.. code-block:: python
+
+    >>> particles.save(filename)
+    
+Once saved, a particles list can be loaded from a saved file by using the :py:meth:`~.load` function.
+
+.. code-block:: python
+
+    >>> particles = ps.load(filename)
+
+
 For further examples of using the package you can view the example Jupyter notebook `here <https://github.com/TomSlater/ParticleSpy/blob/master/ParticleSpy/Basic%20Example.ipynb>`_. 
