@@ -92,6 +92,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#combining-particles-from-multiple-images">Combining Particles from Multiple Images</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#eds-analysis">EDS Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#particle-segmentation-with-a-pre-generated-mask">Particle Segmentation with a Pre-Generated Mask</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#normalize-particle-image-sizes">Normalize Particle Image Sizes</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="source/modules.html">ParticleSpy</a></li>
@@ -218,6 +219,15 @@ In order to use a pre-generated mask it is possible to pass a mask argument to <
 </div>
 <p>If you have used the manual segmentation editor in <code class="xref py py-meth docutils literal notranslate"><span class="pre">SegUI()</span></code> you can simply pass ‘UI’ as the mask argument.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">ParticleAnalysis</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="s1">&#39;UI&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="normalize-particle-image-sizes">
+<h2>Normalize Particle Image Sizes<a class="headerlink" href="#normalize-particle-image-sizes" title="Permalink to this headline">¶</a></h2>
+<p>Sometimes further processing requires that all particle images have the same dimensions.
+In ParticleSpy this can be readily achieved using the <a class="reference internal" href="source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle_list.normalize_boxing" title="ParticleSpy.ptcl_class.Particle_list.normalize_boxing"><code class="xref py py-meth docutils literal notranslate"><span class="pre">normalize_boxing()</span></code></a> function.
+The function will set all image dimensions to the largest x and y values in the particle list.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span><span class="o">.</span><span class="n">normalize_boxing</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>

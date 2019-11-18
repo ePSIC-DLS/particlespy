@@ -212,11 +212,11 @@ particles.</p>
 <dl class="class">
 <dt id="ParticleSpy.ParticleAnalysis.parameters">
 <em class="property">class </em><code class="sig-prename descclassname">ParticleSpy.ParticleAnalysis.</code><code class="sig-name descname">parameters</code><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.parameters" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>A parameters object.</p>
 <dl class="method">
 <dt id="ParticleSpy.ParticleAnalysis.parameters.generate">
-<code class="sig-name descname">generate</code><span class="sig-paren">(</span><em class="sig-param">threshold='otsu'</em>, <em class="sig-param">watershed=False</em>, <em class="sig-param">invert=False</em>, <em class="sig-param">min_size=0</em>, <em class="sig-param">store_im=False</em>, <em class="sig-param">rb_kernel=0</em>, <em class="sig-param">gaussian=0</em>, <em class="sig-param">local_size=101</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#parameters.generate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.parameters.generate" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">generate</code><span class="sig-paren">(</span><em class="sig-param">threshold='otsu'</em>, <em class="sig-param">watershed=False</em>, <em class="sig-param">invert=False</em>, <em class="sig-param">min_size=0</em>, <em class="sig-param">store_im=False</em>, <em class="sig-param">pad=5</em>, <em class="sig-param">rb_kernel=0</em>, <em class="sig-param">gaussian=0</em>, <em class="sig-param">local_size=101</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#parameters.generate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.parameters.generate" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -238,12 +238,12 @@ particles.</p>
 
 <dl class="function">
 <dt id="ParticleSpy.ParticleAnalysis.store_image">
-<code class="sig-prename descclassname">ParticleSpy.ParticleAnalysis.</code><code class="sig-name descname">store_image</code><span class="sig-paren">(</span><em class="sig-param">particle</em>, <em class="sig-param">image</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#store_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.store_image" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ParticleSpy.ParticleAnalysis.</code><code class="sig-name descname">store_image</code><span class="sig-paren">(</span><em class="sig-param">particle</em>, <em class="sig-param">image</em>, <em class="sig-param">params</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#store_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.store_image" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="ParticleSpy.ParticleAnalysis.store_maps">
-<code class="sig-prename descclassname">ParticleSpy.ParticleAnalysis.</code><code class="sig-name descname">store_maps</code><span class="sig-paren">(</span><em class="sig-param">particle</em>, <em class="sig-param">ac</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#store_maps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.store_maps" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ParticleSpy.ParticleAnalysis.</code><code class="sig-name descname">store_maps</code><span class="sig-paren">(</span><em class="sig-param">particle</em>, <em class="sig-param">ac</em>, <em class="sig-param">params</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#store_maps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.store_maps" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -452,7 +452,7 @@ update(self, int, int, int, int)</p>
 <dl class="class">
 <dt id="ParticleSpy.ptcl_class.Particle">
 <em class="property">class </em><code class="sig-prename descclassname">ParticleSpy.ptcl_class.</code><code class="sig-name descname">Particle</code><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>A segmented particle object.</p>
 <dl class="simple">
 <dt>properties<span class="classifier">dict</span></dt><dd><p>Dictionary of particle properties created by the ParticleAnalysis() function.</p>
@@ -548,12 +548,22 @@ update(self, int, int, int, int)</p>
 <dl class="class">
 <dt id="ParticleSpy.ptcl_class.Particle_list">
 <em class="property">class </em><code class="sig-prename descclassname">ParticleSpy.ptcl_class.</code><code class="sig-name descname">Particle_list</code><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>A particle list object.</p>
 <dl class="method">
 <dt id="ParticleSpy.ptcl_class.Particle_list.append">
 <code class="sig-name descname">append</code><span class="sig-paren">(</span><em class="sig-param">particle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle_list.append"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle_list.append" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.ptcl_class.Particle_list.normalize_boxing">
+<code class="sig-name descname">normalize_boxing</code><span class="sig-paren">(</span><em class="sig-param">even=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle_list.normalize_boxing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle_list.normalize_boxing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalizes the size of all particle images so that their dimensions are
+equal.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span><span class="o">.</span><span class="n">normalize_boxing</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="method">
 <dt id="ParticleSpy.ptcl_class.Particle_list.plot">
