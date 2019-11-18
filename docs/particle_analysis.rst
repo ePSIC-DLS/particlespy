@@ -4,7 +4,7 @@
 Particle Analysis
 *****************
 
-Once you have chosen your segmentation parameters and successfully prepared a prameters object you can use this to perform Particle Analysis.
+Once you have chosen your segmentation parameters and have successfully prepared a parameters object you can use this to perform Particle Analysis.
 
 .. code-block:: python
 

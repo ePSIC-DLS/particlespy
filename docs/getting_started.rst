@@ -20,7 +20,7 @@ The easiest way to install the latest stable build of ParticleSpy is via pip. Th
 Installing from Github
 ----------------------
 
-If you would like to use a development version of Hyperspy downloaded from Github you need to have a python environment with Hyperspy installed. 
+If you would like to use a development version of ParticleSpy downloaded from Github you need to have a python environment with Hyperspy installed. 
 Full instructions for Hyperpsy installation can be found at 
 `http://hyperspy.org/hyperspy-doc/v1.3/user_guide/install.html <http://hyperspy.org/hyperspy-doc/v1.3/user_guide/install.html>`_.
 
