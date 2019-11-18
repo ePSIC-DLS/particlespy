@@ -47,12 +47,14 @@ For example:
 
     >>> ps.ParticleAnalysis(data, params, particles=particles)
 
-EDS Analysis
-------------
+Spectrum Analysis
+-----------------
 
-In addition, Particle Analysis will also segment and process EDS data if given as an additional dataset in the data list.
+In addition, Particle Analysis will also segment and process simultaneously acquired data if given as an additional dataset in the data list.
+This could include EDS, EELS or scanning diffraction data.
+The only requirement is that the navigation dimensions of the additional data are the same as the signal dimensions of the image used for segmentation.
 
-Particle Analysis can do the following processing on EDS data:
+In addition, Particle Analysis can do the following processing on EDS data:
 
 * Obtain the EDS spectrum of each particle.
 
@@ -62,10 +64,11 @@ Particle Analysis can do the following processing on EDS data:
 
 .. code-block:: python
 
+    >>> data = [image,eds_si]
     >>> params = ps.parameters.load()
     >>> params.generate_eds(eds_method='CL',elements=['Pt','Au'],factors=[1.7,1.9],store_maps=False)
     >>> particles = ps.ParticleAnalysis(data, params)
-    
+
 Particle Segmentation with a Pre-Generated Mask
 -----------------------------------------------
 
@@ -83,3 +86,13 @@ If you have used the manual segmentation editor in :py:meth:`~.SegUI` you can si
 .. code-block:: python
     
     >>> particles = ps.ParticleAnalysis(data, params, mask='UI')
+    
+Normalize Particle Image Sizes
+------------------------------
+Sometimes further processing requires that all particle images have the same dimensions.
+In ParticleSpy this can be readily achieved using the :py:meth:`~.Particle_list.normalize_boxing` function.
+The function will set all image dimensions to the largest x and y values in the particle list.
+
+.. code-block:: python
+
+    >>> particles.normalize_boxing()

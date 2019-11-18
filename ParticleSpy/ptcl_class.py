@@ -6,6 +6,8 @@ Created on Tue Jul 31 14:51:58 2018
 """
 
 import matplotlib.pyplot as plt
+import numpy as np
+from scipy.ndimage import interpolation
 from ParticleSpy.particle_save import save_plist
 
 class Particle(object):
@@ -58,6 +60,25 @@ class Particle(object):
     def set_intensity(self,intensity):
         self.properties['intensity'] = {'value':intensity,'units':None}
         
+    def set_property(self,propname,value,units):
+        """
+        Give a Particle() object an arbitrary property.
+        
+        Parameters
+        ----------
+        propname : str
+            The name of the property to set.
+        value : 
+            The value of the property.
+        units :
+            The units of the property.
+            
+        Example
+        -------
+        >>> particle.set_property('area',10.0,'nm')
+        """
+        self.properties[propname] = {'value':value, 'units': units}
+        
     def set_zone(self, zone):
         self.zone = zone
         
@@ -74,7 +95,6 @@ class Particle(object):
         self.maps[element] = p_map
         
     def store_spectrum(self,spectrum,stype):
-        self.spectrum = {}
         self.spectrum[stype] = spectrum
         
     def store_composition(self,composition):
@@ -144,3 +164,45 @@ class Particle_list(object):
         else:
             plt.xlabel(prop.capitalize()+" ("+self.list[0].properties[prop]['units']+")")
         plt.ylabel("No. of particles")
+        plt.show()
+        
+    def normalize_boxing(self,even=False):
+        """
+        Normalizes the size of all particle images so that their dimensions are
+        equal.
+        
+        Example
+        -------
+        >>> particles.normalize_boxing()
+        """
+        
+        dimensions = []
+        for particle in self.list:
+            dimensions.append(particle.image.data.shape[0])
+            dimensions.append(particle.image.data.shape[1])
+            
+        if even==True:
+            if (max(dimensions) % 2) == 0:
+                max_dim = max(dimensions)
+            else:
+                max_dim = max(dimensions) + 1
+        else:
+            max_dim = max(dimensions)
+        
+        for i,particle in enumerate(self.list):
+            x_diff = max_dim - particle.image.data.shape[0]
+            y_diff = max_dim - particle.image.data.shape[1]
+            
+            minval = particle.image.data.min()
+            
+            new_im = np.full((max_dim,max_dim),minval)
+            
+            new_im[:particle.image.data.shape[0],
+                   :particle.image.data.shape[1]] = particle.image.data
+                   
+            new_im = interpolation.shift(new_im,(x_diff/2,y_diff/2),cval=minval)
+            
+            particle.image.data = new_im
+            
+            particle.image.axes_manager[0].size = particle.image.data.shape[0]
+            particle.image.axes_manager[1].size = particle.image.data.shape[1]

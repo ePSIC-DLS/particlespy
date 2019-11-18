@@ -16,6 +16,7 @@ It extends the functionality of the `Hyperspy <http://hyperspy.org/>`_ package i
    getting_started.rst
    segmentation.rst
    particle_analysis.rst
+   plotting_saving.rst
    source/modules.rst
 
 
