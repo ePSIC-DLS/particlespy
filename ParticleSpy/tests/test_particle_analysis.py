@@ -104,3 +104,16 @@ def test_particleanalysis():
     si_particle_spectrum = si_particle.sum()
     nptest.assert_allclose(p.spectrum['EDS'].data,si_particle_spectrum.data)
     nptest.assert_allclose(p.composition['Au'],46.94530019)
+    
+def test_normalize_boxing():
+    mask = gen_test.generate_test_image2(hspy=False)
+    image = gen_test.generate_test_image2(hspy=True)
+    
+    params = PAnalysis.parameters()
+    params.generate(store_im=True)
+    
+    particles = PAnalysis.ParticleAnalysis(image,params,mask=mask)
+    
+    particles.normalize_boxing()
+    
+    assert particles.list[0].image.data.shape == (68,68)
