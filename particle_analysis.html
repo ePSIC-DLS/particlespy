@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="ParticleSpy" href="source/modules.html" />
+    <link rel="next" title="Plotting and Saving" href="plotting_saving.html" />
     <link rel="prev" title="Segmentation" href="segmentation.html" /> 
 </head>
 
@@ -90,11 +90,12 @@
 <li class="toctree-l1"><a class="reference internal" href="segmentation.html">Segmentation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Particle Analysis</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#combining-particles-from-multiple-images">Combining Particles from Multiple Images</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#eds-analysis">EDS Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#spectrum-analysis">Spectrum Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#particle-segmentation-with-a-pre-generated-mask">Particle Segmentation with a Pre-Generated Mask</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#normalize-particle-image-sizes">Normalize Particle Image Sizes</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="plotting_saving.html">Plotting and Saving</a></li>
 <li class="toctree-l1"><a class="reference internal" href="source/modules.html">ParticleSpy</a></li>
 </ul>
 
@@ -193,16 +194,19 @@ For example:</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="eds-analysis">
-<h2>EDS Analysis<a class="headerlink" href="#eds-analysis" title="Permalink to this headline">¶</a></h2>
-<p>In addition, Particle Analysis will also segment and process EDS data if given as an additional dataset in the data list.</p>
-<p>Particle Analysis can do the following processing on EDS data:</p>
+<div class="section" id="spectrum-analysis">
+<h2>Spectrum Analysis<a class="headerlink" href="#spectrum-analysis" title="Permalink to this headline">¶</a></h2>
+<p>In addition, Particle Analysis will also segment and process simultaneously acquired data if given as an additional dataset in the data list.
+This could include EDS, EELS or scanning diffraction data.
+The only requirement is that the navigation dimensions of the additional data are the same as the signal dimensions of the image used for segmentation.</p>
+<p>In addition, Particle Analysis can do the following processing on EDS data:</p>
 <ul class="simple">
 <li><p>Obtain the EDS spectrum of each particle.</p></li>
 <li><p>Obtain elemental maps of each particle.</p></li>
 <li><p>Get the composition of each particle if k-factors or zeta-factors are supplied in the parameters object.</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">image</span><span class="p">,</span><span class="n">eds_si</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">params</span><span class="o">.</span><span class="n">generate_eds</span><span class="p">(</span><span class="n">eds_method</span><span class="o">=</span><span class="s1">&#39;CL&#39;</span><span class="p">,</span><span class="n">elements</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Pt&#39;</span><span class="p">,</span><span class="s1">&#39;Au&#39;</span><span class="p">],</span><span class="n">factors</span><span class="o">=</span><span class="p">[</span><span class="mf">1.7</span><span class="p">,</span><span class="mf">1.9</span><span class="p">],</span><span class="n">store_maps</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">ParticleAnalysis</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
 </pre></div>
@@ -241,7 +245,7 @@ The function will set all image dimensions to the largest x and y values in the 
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="source/modules.html" class="btn btn-neutral float-right" title="ParticleSpy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="plotting_saving.html" class="btn btn-neutral float-right" title="Plotting and Saving" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="segmentation.html" class="btn btn-neutral float-left" title="Segmentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

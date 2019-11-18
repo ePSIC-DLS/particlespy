@@ -87,6 +87,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../segmentation.html">Segmentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../particle_analysis.html">Particle Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plotting_saving.html">Plotting and Saving</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/modules.html">ParticleSpy</a></li>
 </ul>
 
@@ -213,6 +214,25 @@
 <div class="viewcode-block" id="Particle.set_intensity"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle.set_intensity">[docs]</a>    <span class="k">def</span> <span class="nf">set_intensity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">intensity</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;intensity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span><span class="n">intensity</span><span class="p">,</span><span class="s1">&#39;units&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">}</span></div>
         
+<div class="viewcode-block" id="Particle.set_property"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle.set_property">[docs]</a>    <span class="k">def</span> <span class="nf">set_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">propname</span><span class="p">,</span><span class="n">value</span><span class="p">,</span><span class="n">units</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Give a Particle() object an arbitrary property.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        propname : str</span>
+<span class="sd">            The name of the property to set.</span>
+<span class="sd">        value : </span>
+<span class="sd">            The value of the property.</span>
+<span class="sd">        units :</span>
+<span class="sd">            The units of the property.</span>
+<span class="sd">            </span>
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+<span class="sd">        &gt;&gt;&gt; particle.set_property(&#39;area&#39;,10.0,&#39;nm&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">propname</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="n">units</span><span class="p">}</span></div>
+        
 <div class="viewcode-block" id="Particle.set_zone"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle.set_zone">[docs]</a>    <span class="k">def</span> <span class="nf">set_zone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">zone</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">zone</span> <span class="o">=</span> <span class="n">zone</span></div>
         
@@ -229,7 +249,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">[</span><span class="n">element</span><span class="p">]</span> <span class="o">=</span> <span class="n">p_map</span></div>
         
 <div class="viewcode-block" id="Particle.store_spectrum"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle.store_spectrum">[docs]</a>    <span class="k">def</span> <span class="nf">store_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">spectrum</span><span class="p">,</span><span class="n">stype</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum</span><span class="p">[</span><span class="n">stype</span><span class="p">]</span> <span class="o">=</span> <span class="n">spectrum</span></div>
         
 <div class="viewcode-block" id="Particle.store_composition"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle.store_composition">[docs]</a>    <span class="k">def</span> <span class="nf">store_composition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">composition</span><span class="p">):</span>
@@ -298,7 +317,8 @@
             <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="o">+</span><span class="s2">&quot; (&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop</span><span class="p">][</span><span class="s1">&#39;units&#39;</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;No. of particles&quot;</span><span class="p">)</span></div>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;No. of particles&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
         
 <div class="viewcode-block" id="Particle_list.normalize_boxing"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle_list.normalize_boxing">[docs]</a>    <span class="k">def</span> <span class="nf">normalize_boxing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">even</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

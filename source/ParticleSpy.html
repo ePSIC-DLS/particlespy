@@ -88,6 +88,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../segmentation.html">Segmentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../particle_analysis.html">Particle Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plotting_saving.html">Plotting and Saving</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">ParticleSpy</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">ParticleSpy package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
@@ -516,6 +517,23 @@ update(self, int, int, int, int)</p>
 <dt id="ParticleSpy.ptcl_class.Particle.set_origin">
 <code class="sig-name descname">set_origin</code><span class="sig-paren">(</span><em class="sig-param">origin</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle.set_origin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle.set_origin" title="Permalink to this definition">¶</a></dt>
 <dd><p>A container for the origin of data (filename, acquisition number etc.)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ParticleSpy.ptcl_class.Particle.set_property">
+<code class="sig-name descname">set_property</code><span class="sig-paren">(</span><em class="sig-param">propname</em>, <em class="sig-param">value</em>, <em class="sig-param">units</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle.set_property"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle.set_property" title="Permalink to this definition">¶</a></dt>
+<dd><p>Give a Particle() object an arbitrary property.</p>
+<dl class="simple">
+<dt>propname<span class="classifier">str</span></dt><dd><p>The name of the property to set.</p>
+</dd>
+<dt>value<span class="classifier"></span></dt><dd><p>The value of the property.</p>
+</dd>
+<dt>units :</dt><dd><p>The units of the property.</p>
+</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">particle</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;area&#39;</span><span class="p">,</span><span class="mf">10.0</span><span class="p">,</span><span class="s1">&#39;nm&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
