@@ -60,6 +60,25 @@ class Particle(object):
     def set_intensity(self,intensity):
         self.properties['intensity'] = {'value':intensity,'units':None}
         
+    def set_property(self,propname,value,units):
+        """
+        Give a Particle() object an arbitrary property.
+        
+        Parameters
+        ----------
+        propname : str
+            The name of the property to set.
+        value : 
+            The value of the property.
+        units :
+            The units of the property.
+            
+        Example
+        -------
+        >>> particle.set_property('area',10.0,'nm')
+        """
+        self.properties[propname] = {'value':value, 'units': units}
+        
     def set_zone(self, zone):
         self.zone = zone
         
@@ -76,7 +95,6 @@ class Particle(object):
         self.maps[element] = p_map
         
     def store_spectrum(self,spectrum,stype):
-        self.spectrum = {}
         self.spectrum[stype] = spectrum
         
     def store_composition(self,composition):
@@ -146,6 +164,7 @@ class Particle_list(object):
         else:
             plt.xlabel(prop.capitalize()+" ("+self.list[0].properties[prop]['units']+")")
         plt.ylabel("No. of particles")
+        plt.show()
         
     def normalize_boxing(self,even=False):
         """
