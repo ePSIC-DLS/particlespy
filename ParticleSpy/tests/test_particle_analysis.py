@@ -23,7 +23,7 @@ def test_store_image():
     
 def test_store_maps():
     mask = gen_test.generate_test_image(hspy=False)
-    si = gen_test.generate_test_si()
+    si = gen_test.generate_test_eds()
     
     p = Particle()
     p.set_mask(mask)
@@ -36,7 +36,7 @@ def test_store_maps():
     
 def test_store_spectrum():
     mask = gen_test.generate_test_image(hspy=False)
-    si = gen_test.generate_test_si()
+    si = gen_test.generate_test_eds()
     
     p = Particle()
     p.set_mask(mask)
