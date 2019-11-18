@@ -17,7 +17,10 @@ def test_store_image():
     p = Particle()
     p.set_mask(mask)
     
-    PAnalysis.store_image(p,image)
+    params = PAnalysis.parameters()
+    params.generate()
+    
+    PAnalysis.store_image(p,image,params)
     
     nptest.assert_allclose(p.image.data,image.data[16:184,16:184])
     
@@ -28,7 +31,10 @@ def test_store_maps():
     p = Particle()
     p.set_mask(mask)
     
-    PAnalysis.store_maps(p,si)
+    params = PAnalysis.parameters()
+    params.generate()
+    
+    PAnalysis.store_maps(p,si,params)
     
     au_map = si.get_lines_intensity()[0]
     
@@ -102,3 +108,16 @@ def test_particleanalysis():
     eds_particle_spectrum = eds_particle.sum()
     nptest.assert_allclose(p.spectrum['EDS_TEM'].data,eds_particle_spectrum.data)
     nptest.assert_allclose(p.composition['Au'],46.94530019)
+    
+def test_normalize_boxing():
+    mask = gen_test.generate_test_image2(hspy=False)
+    image = gen_test.generate_test_image2(hspy=True)
+    
+    params = PAnalysis.parameters()
+    params.generate(store_im=True)
+    
+    particles = PAnalysis.ParticleAnalysis(image,params,mask=mask)
+    
+    particles.normalize_boxing()
+    
+    assert particles.list[0].image.data.shape == (68,68)

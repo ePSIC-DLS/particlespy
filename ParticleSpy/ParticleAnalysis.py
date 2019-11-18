@@ -91,7 +91,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         p.set_eccentricity(eccentricity)
         
         #Set total image intensity
-        intensity = (image*mask).sum()
+        intensity = (image.data*maskp).sum()
         p.set_intensity(intensity)
         
         #Set zoneaxis
@@ -108,7 +108,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         p.set_mask(maskp)
         
         if parameters.store["store_im"]==True:
-            store_image(p,image)
+            store_image(p,image,parameters)
             
         if isinstance(acquisition,list):
             p.spectrum = {}
@@ -140,32 +140,38 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         
     return(particles)
     
-def store_image(particle,image):
+def store_image(particle,image,params):
     ii = np.where(particle.mask)
             
     box_x_min = np.min(ii[0])
     box_x_max = np.max(ii[0])
     box_y_max = np.max(ii[1])
     box_y_min = np.min(ii[1])
-    pad = 5
+    pad = params.store['pad']
     
-    p_boxed = image.isig[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
+    if box_y_min-pad > 0 and box_x_min-pad > 0 and box_x_max+pad < particle.mask.shape[0] and box_y_max+pad < particle.mask.shape[1]:
+        p_boxed = image.isig[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
+    else:
+        p_boxed = image.isig[(box_y_min):(box_y_max),(box_x_min):(box_x_max)]
     particle.store_im(p_boxed)
     
-def store_maps(particle,ac):
+def store_maps(particle,ac,params):
     maps = ac.get_lines_intensity()
     particle.maps_gen()
     
-    for map in maps:
+    for el_map in maps:
         ii = np.where(particle.mask)
                 
         box_x_min = np.min(ii[0])
         box_x_max = np.max(ii[0])
         box_y_max = np.max(ii[1])
         box_y_min = np.min(ii[1])
-        pad = 5
+        pad = params.store['pad']
         
-        p_boxed = map.inav[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
+        if box_y_min-pad > 0 and box_x_min-pad > 0 and box_x_max+pad < particle.mask.shape[0] and box_y_max+pad < particle.mask.shape[1]:
+            p_boxed = el_map.inav[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
+        else:
+            p_boxed = el_map.inav[(box_y_min):(box_y_max),(box_x_min):(box_x_max)]
         particle.store_map(p_boxed,p_boxed.metadata.Sample.elements[0])
         
 def store_spectrum(particle,ac,stype):
@@ -187,7 +193,7 @@ def get_composition(particle,params):
 class parameters(object):
     """A parameters object."""
     
-    def generate(self,threshold='otsu',watershed=False,invert=False,min_size=0,store_im=False,rb_kernel=0,gaussian=0,local_size=101):
+    def generate(self,threshold='otsu',watershed=False,invert=False,min_size=0,store_im=False,pad=5,rb_kernel=0,gaussian=0,local_size=101):
         self.segment = {}
         self.segment['threshold'] = threshold
         self.segment['watershed'] = watershed
@@ -199,6 +205,7 @@ class parameters(object):
         
         self.store = {}
         self.store['store_im'] = store_im
+        self.store['pad'] = pad
         
         self.generate_eds()
         
@@ -224,6 +231,7 @@ class parameters(object):
         segment.attrs["rb_kernel"] = self.segment['rb_kernel']
         segment.attrs["gaussian"] = self.segment['gaussian']
         store.attrs['store_im'] = self.store['store_im']
+        store.attrs['pad'] = self.store['pad']
         store.attrs['store_maps'] = self.store['store_maps']
         eds.attrs['method'] = self.eds['method']
         eds.attrs['elements'] = self.eds['elements']
@@ -249,6 +257,7 @@ class parameters(object):
         self.segment['rb_kernel'] = segment.attrs["rb_kernel"]
         self.segment['gaussian'] = segment.attrs["gaussian"]
         self.store['store_im'] = store.attrs['store_im']
+        self.store['pad'] = store.attrs['pad']
         self.store['store_maps'] = store.attrs['store_maps']
         self.eds['method'] = eds.attrs['method']
         self.eds['elements'] = eds.attrs['elements']

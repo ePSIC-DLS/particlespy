@@ -20,6 +20,20 @@ def generate_test_image(hspy=True):
         arr.axes_manager[1].scale = 1
         arr.axes_manager[1].units = "nm"
     return(arr)
+    
+def generate_test_image2(hspy=True):
+    arr = np.zeros((200, 200))
+    rr, cc = draw.circle(50, 50, radius=20, shape=arr.shape)
+    arr[rr, cc] = 1
+    rr, cc = draw.circle(150, 150, radius=30, shape=arr.shape)
+    arr[rr, cc] = 1
+    if hspy==True:
+        arr = hs.signals.Signal2D(arr)
+        arr.axes_manager[0].scale = 1
+        arr.axes_manager[0].units = "nm"
+        arr.axes_manager[1].scale = 1
+        arr.axes_manager[1].units = "nm"
+    return(arr)
 
 def generate_test_eds():
     arr = np.zeros((200,200,2048))
