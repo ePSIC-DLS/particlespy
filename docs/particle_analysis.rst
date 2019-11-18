@@ -65,7 +65,7 @@ Particle Analysis can do the following processing on EDS data:
     >>> params = ps.parameters.load()
     >>> params.generate_eds(eds_method='CL',elements=['Pt','Au'],factors=[1.7,1.9],store_maps=False)
     >>> particles = ps.ParticleAnalysis(data, params)
-    
+
 Particle Segmentation with a Pre-Generated Mask
 -----------------------------------------------
 
@@ -83,3 +83,13 @@ If you have used the manual segmentation editor in :py:meth:`~.SegUI` you can si
 .. code-block:: python
     
     >>> particles = ps.ParticleAnalysis(data, params, mask='UI')
+    
+Normalize Particle Image Sizes
+------------------------------
+Sometimes further processing requires that all particle images have the same dimensions.
+In ParticleSpy this can be readily achieved using the :py:meth:`~.Particle_list.normalize_boxing` function.
+The function will set all image dimensions to the largest x and y values in the particle list.
+
+.. code-block:: python
+
+    >>> particles.normalize_boxing()
