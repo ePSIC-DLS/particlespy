@@ -30,12 +30,12 @@ The calculated parameters include:
 
 * Total particle intensity
 
-* Zone axis (if atomic resolution images of fcc structure, looking to expand this!)
-
 .. code-block:: python
 
     >>> #Syntax for accessing particle properties.
     >>> particles.list[0].properties['area']
+    
+For more information on particle properties see :ref:`properties`.
 
 Combining Particles from Multiple Images
 ----------------------------------------
