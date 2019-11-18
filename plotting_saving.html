@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Plotting and Saving &mdash; ParticleSpy 0.0.2 documentation</title>
+  <title>Plotting and Saving &mdash; ParticleSpy 0.2.0 documentation</title>
   
 
   
@@ -35,7 +35,6 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="ParticleSpy" href="source/modules.html" />
     <link rel="prev" title="Particle Analysis" href="particle_analysis.html" /> 
 </head>
 
@@ -60,7 +59,7 @@
             
             
               <div class="version">
-                0.0.2
+                0.2.0
               </div>
             
           
@@ -90,10 +89,10 @@
 <li class="toctree-l1"><a class="reference internal" href="segmentation.html">Segmentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="particle_analysis.html">Particle Analysis</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Plotting and Saving</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ploting-radial-profiles">Ploting Radial Profiles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#saving-particle-images-and-maps">Saving Particle Images and Maps</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="source/modules.html">ParticleSpy</a></li>
 </ul>
 
             
@@ -169,6 +168,19 @@ This method plots a histogram of any specified property, as long as you have add
 </pre></div>
 </div>
 <p>In the above code it is possible to plot particle area because this is automatically calculated in the ParticleAnalysis function.</p>
+<div class="section" id="ploting-radial-profiles">
+<h2>Ploting Radial Profiles<a class="headerlink" href="#ploting-radial-profiles" title="Permalink to this headline">¶</a></h2>
+<p>ParticleSpy provides the ability to plot a radial profile (that is an intensity profile from particle centre to edge) of image intensity or EDS signal intensity.
+A radial profile can be very useful for illustrating distributions in particles.</p>
+<p>The following code shows how to plot a radial profile of image intensity.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rp</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">radial_profile</span><span class="p">(</span><span class="n">particle</span><span class="p">,[</span><span class="s1">&#39;Image&#39;</span><span class="p">],</span><span class="n">plot</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It is also possible to plot the intensity of certain elements from an EDS signal.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rp</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">radial_profile</span><span class="p">(</span><span class="n">particle</span><span class="p">,[</span><span class="s1">&#39;Pt&#39;</span><span class="p">,</span><span class="s1">&#39;Ni&#39;</span><span class="p">],</span><span class="n">plot</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="saving-particle-images-and-maps">
 <h2>Saving Particle Images and Maps<a class="headerlink" href="#saving-particle-images-and-maps" title="Permalink to this headline">¶</a></h2>
 <p>In order to save images and maps of particles it is necessary to use Hyperspy’s save function.</p>
@@ -186,8 +198,6 @@ This method plots a histogram of any specified property, as long as you have add
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="source/modules.html" class="btn btn-neutral float-right" title="ParticleSpy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
       
         <a href="particle_analysis.html" class="btn btn-neutral float-left" title="Particle Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
@@ -198,7 +208,7 @@ This method plots a histogram of any specified property, as long as you have add
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, ePSIC
+        &copy; Copyright 2019, ePSIC
 
     </p>
   </div>

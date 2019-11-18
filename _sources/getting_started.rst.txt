@@ -20,7 +20,7 @@ The easiest way to install the latest stable build of ParticleSpy is via pip. Th
 Installing from Github
 ----------------------
 
-If you would like to use a development version of Hyperspy downloaded from Github you need to have a python environment with Hyperspy installed. 
+If you would like to use a development version of ParticleSpy downloaded from Github you need to have a python environment with Hyperspy installed. 
 Full instructions for Hyperpsy installation can be found at 
 `http://hyperspy.org/hyperspy-doc/v1.3/user_guide/install.html <http://hyperspy.org/hyperspy-doc/v1.3/user_guide/install.html>`_.
 
@@ -61,5 +61,21 @@ You can now use the chosen parameters to do your particle analysis:
     >>> particles = ps.ParticleAnalysis(image,params)
 
 The variable particles is now assigned to a particle list object which contains data on all of the segmented particles.
+
+Saving and Loading Particles
+============================
+
+Once you have a segmented particles list this can be saved to disk as follows:
+
+.. code-block:: python
+
+    >>> particles.save(filename)
+    
+Once saved, a particles list can be loaded from a saved file by using the :py:meth:`~.load` function.
+
+.. code-block:: python
+
+    >>> particles = ps.load(filename)
+
 
 For further examples of using the package you can view the example Jupyter notebook `here <https://github.com/TomSlater/ParticleSpy/blob/master/ParticleSpy/Basic%20Example.ipynb>`_. 

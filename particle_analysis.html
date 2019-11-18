@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Particle Analysis &mdash; ParticleSpy 0.0.2 documentation</title>
+  <title>Particle Analysis &mdash; ParticleSpy 0.2.0 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                0.0.2
+                0.2.0
               </div>
             
           
@@ -96,7 +96,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="plotting_saving.html">Plotting and Saving</a></li>
-<li class="toctree-l1"><a class="reference internal" href="source/modules.html">ParticleSpy</a></li>
 </ul>
 
             
@@ -163,7 +162,7 @@
             
   <div class="section" id="particle-analysis">
 <span id="id1"></span><h1>Particle Analysis<a class="headerlink" href="#particle-analysis" title="Permalink to this headline">¶</a></h1>
-<p>Once you have chosen your segmentation parameters and successfully prepared a prameters object you can use this to perform Particle Analysis.</p>
+<p>Once you have chosen your segmentation parameters and have successfully prepared a parameters object you can use this to perform Particle Analysis.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">hyperspy.api</span> <span class="kn">as</span> <span class="nn">hs</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">hs</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;ParticleSpy/Data/JEOL HAADF Image.dm4&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">parameters</span><span class="p">()</span>
@@ -180,12 +179,12 @@
 <li><p>Circularity</p></li>
 <li><p>Eccentricity</p></li>
 <li><p>Total particle intensity</p></li>
-<li><p>Zone axis (if atomic resolution images of fcc structure, looking to expand this!)</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1">#Syntax for accessing particle properties.</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span><span class="o">.</span><span class="n">list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;area&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
+<p>For more information on particle properties see <span class="xref std std-ref">properties</span>.</p>
 <div class="section" id="combining-particles-from-multiple-images">
 <h2>Combining Particles from Multiple Images<a class="headerlink" href="#combining-particles-from-multiple-images" title="Permalink to this headline">¶</a></h2>
 <p>It is possible to analyse particles from multiple images by passing a previously populated Particle_list object to <code class="xref py py-meth docutils literal notranslate"><span class="pre">ParticleAnalysis()</span></code> instead of returning a new Particle_list.
@@ -257,7 +256,7 @@ The function will set all image dimensions to the largest x and y values in the 
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, ePSIC
+        &copy; Copyright 2019, ePSIC
 
     </p>
   </div>

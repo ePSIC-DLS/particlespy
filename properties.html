@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Search &mdash; ParticleSpy 0.2.0 documentation</title>
+  <title>Particle Properties &mdash; ParticleSpy 0.2.0 documentation</title>
   
 
   
@@ -25,7 +25,6 @@
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
-        <script type="text/javascript" src="_static/searchtools.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -35,7 +34,7 @@
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="#" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -66,7 +65,7 @@
 
           
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="#" method="get">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -134,12 +133,14 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Search</li>
+      <li>Particle Properties</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
+            <a href="_sources/properties.rst.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
     
@@ -151,19 +152,70 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <noscript>
-  <div id="fallback" class="admonition warning">
-    <p class="last">
-      Please activate JavaScript to enable the search
-      functionality.
-    </p>
-  </div>
-  </noscript>
+  <div class="section" id="particle-properties">
+<span id="particle-analysis"></span><h1>Particle Properties<a class="headerlink" href="#particle-properties" title="Permalink to this headline">¶</a></h1>
+<p>One important aspect of ParticleSpy are the properties associated with each Particle object.</p>
+<div class="section" id="native-properties">
+<h2>Native Properties<a class="headerlink" href="#native-properties" title="Permalink to this headline">¶</a></h2>
+<p>When using the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ParticleAnalysis()</span></code> function ParticleSpy is able to calculate a number of “native” properties listed in the table below.</p>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Particle properties</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 30%" />
+<col style="width: 40%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Area</p></td>
+<td><p>area</p></td>
+<td><p>The particle area in calibrated units.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Equivalent circular diameter</p></td>
+<td><p>equivalent circular diameter</p></td>
+<td><p>The diameter of a circle of the same
+area as the particle.</p></td>
+</tr>
+<tr class="row-even"><td><p>Major axis length</p></td>
+<td><p>major axis length</p></td>
+<td><p>The length of the longest axis of an
+ellipse describing the particle.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Minor axis length</p></td>
+<td><p>minor axis length</p></td>
+<td><p>The length of the shortest axis of an
+ellipse describing the particle.</p></td>
+</tr>
+<tr class="row-even"><td><p>Circularity</p></td>
+<td><p>circularity</p></td>
+<td><p>The circularity of the particle.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Eccentricity</p></td>
+<td><p>eccentricity</p></td>
+<td><p>The eccentricity of the particle.</p></td>
+</tr>
+<tr class="row-even"><td><p>Total intensity</p></td>
+<td><p>intensity</p></td>
+<td><p>The sum of intensity contained within
+the segmented region of the image.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="adding-properties">
+<h2>Adding Properties<a class="headerlink" href="#adding-properties" title="Permalink to this headline">¶</a></h2>
+<p>In addition to the “native” properties it is possible to add any additional properties using the <a class="reference internal" href="source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle.set_property" title="ParticleSpy.ptcl_class.Particle.set_property"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_property()</span></code></a> function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span><span class="o">.</span><span class="n">list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;property name&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
 
-  
-  <div id="search-results">
-  
-  </div>
 
            </div>
            
@@ -201,14 +253,7 @@
   
   
     
-  
-  <script type="text/javascript">
-    jQuery(function() { Search.loadIndex("searchindex.js"); });
-  </script>
-  
-  <script type="text/javascript" id="searchindexloader"></script>
    
-
 
 </body>
 </html>

@@ -18,6 +18,24 @@ An example of plotting a histogram of particle areas in shown here:
 In the above code it is possible to plot particle area because this is automatically calculated in the ParticleAnalysis function.
 
 
+Ploting Radial Profiles
+-----------------------
+
+ParticleSpy provides the ability to plot a radial profile (that is an intensity profile from particle centre to edge) of image intensity or EDS signal intensity.
+A radial profile can be very useful for illustrating distributions in particles.
+
+The following code shows how to plot a radial profile of image intensity.
+
+.. code-block:: python
+
+    >>> rp = ps.radial_profile(particle,['Image'],plot=True)
+    
+It is also possible to plot the intensity of certain elements from an EDS signal.
+
+.. code-block:: python
+
+    >>> rp = ps.radial_profile(particle,['Pt','Ni'],plot=True)
+
 Saving Particle Images and Maps
 -------------------------------
 

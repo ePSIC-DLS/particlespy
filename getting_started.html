@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Getting started &mdash; ParticleSpy 0.0.2 documentation</title>
+  <title>Getting started &mdash; ParticleSpy 0.2.0 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                0.0.2
+                0.2.0
               </div>
             
           
@@ -93,12 +93,12 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#using-particlespy">Using ParticleSpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#saving-and-loading-particles">Saving and Loading Particles</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="segmentation.html">Segmentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="particle_analysis.html">Particle Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting_saving.html">Plotting and Saving</a></li>
-<li class="toctree-l1"><a class="reference internal" href="source/modules.html">ParticleSpy</a></li>
 </ul>
 
             
@@ -176,7 +176,7 @@
 </div>
 <div class="section" id="installing-from-github">
 <h3>Installing from Github<a class="headerlink" href="#installing-from-github" title="Permalink to this headline">¶</a></h3>
-<p>If you would like to use a development version of Hyperspy downloaded from Github you need to have a python environment with Hyperspy installed.
+<p>If you would like to use a development version of ParticleSpy downloaded from Github you need to have a python environment with Hyperspy installed.
 Full instructions for Hyperpsy installation can be found at
 <a class="reference external" href="http://hyperspy.org/hyperspy-doc/v1.3/user_guide/install.html">http://hyperspy.org/hyperspy-doc/v1.3/user_guide/install.html</a>.</p>
 <p>You then need to install from the git repository using git. If you have git installed
@@ -207,6 +207,17 @@ to a parameters object by doing the following:</p>
 </pre></div>
 </div>
 <p>The variable particles is now assigned to a particle list object which contains data on all of the segmented particles.</p>
+</div>
+<div class="section" id="saving-and-loading-particles">
+<h2>Saving and Loading Particles<a class="headerlink" href="#saving-and-loading-particles" title="Permalink to this headline">¶</a></h2>
+<p>Once you have a segmented particles list this can be saved to disk as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Once saved, a particles list can be loaded from a saved file by using the <a class="reference internal" href="source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.parameters.load" title="ParticleSpy.ParticleAnalysis.parameters.load"><code class="xref py py-meth docutils literal notranslate"><span class="pre">load()</span></code></a> function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>For further examples of using the package you can view the example Jupyter notebook <a class="reference external" href="https://github.com/TomSlater/ParticleSpy/blob/master/ParticleSpy/Basic%20Example.ipynb">here</a>.</p>
 </div>
 </div>
@@ -231,7 +242,7 @@ to a parameters object by doing the following:</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, ePSIC
+        &copy; Copyright 2019, ePSIC
 
     </p>
   </div>
