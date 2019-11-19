@@ -167,6 +167,7 @@ This method plots a histogram of any specified property, as long as you have add
 <span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">area</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
 </pre></div>
 </div>
+<img alt="_images/area_dist.png" class="align-center" src="_images/area_dist.png" />
 <p>In the above code it is possible to plot particle area because this is automatically calculated in the ParticleAnalysis function.</p>
 <div class="section" id="ploting-radial-profiles">
 <h2>Ploting Radial Profiles<a class="headerlink" href="#ploting-radial-profiles" title="Permalink to this headline">¶</a></h2>
@@ -176,10 +177,12 @@ A radial profile can be very useful for illustrating distributions in particles.
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rp</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">radial_profile</span><span class="p">(</span><span class="n">particle</span><span class="p">,[</span><span class="s1">&#39;Image&#39;</span><span class="p">],</span><span class="n">plot</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 </div>
+<img alt="_images/radial_profile_adf.png" class="align-center" src="_images/radial_profile_adf.png" />
 <p>It is also possible to plot the intensity of certain elements from an EDS signal.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rp</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">radial_profile</span><span class="p">(</span><span class="n">particle</span><span class="p">,[</span><span class="s1">&#39;Pt&#39;</span><span class="p">,</span><span class="s1">&#39;Ni&#39;</span><span class="p">],</span><span class="n">plot</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 </div>
+<img alt="_images/radial_profile_eds.png" class="align-center" src="_images/radial_profile_eds.png" />
 </div>
 <div class="section" id="saving-particle-images-and-maps">
 <h2>Saving Particle Images and Maps<a class="headerlink" href="#saving-particle-images-and-maps" title="Permalink to this headline">¶</a></h2>
