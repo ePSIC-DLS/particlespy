@@ -20,13 +20,13 @@ sys.path.insert(0, os.path.abspath('../ParticleSpy/..'))
 # -- Project information -----------------------------------------------------
 
 project = 'ParticleSpy'
-copyright = '2018, ePSIC'
+copyright = '2019, ePSIC'
 author = 'ePSIC'
 
 # The short X.Y version
-version = '0.0.2'
+version = '0.2.0'
 # The full version, including alpha/beta/rc tags
-release = '0.0.2'
+release = '0.2.0'
 
 
 # -- General configuration ---------------------------------------------------

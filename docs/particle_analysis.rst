@@ -4,7 +4,7 @@
 Particle Analysis
 *****************
 
-Once you have chosen your segmentation parameters and successfully prepared a prameters object you can use this to perform Particle Analysis.
+Once you have chosen your segmentation parameters and have successfully prepared a parameters object you can use this to perform Particle Analysis.
 
 .. code-block:: python
 
@@ -30,12 +30,12 @@ The calculated parameters include:
 
 * Total particle intensity
 
-* Zone axis (if atomic resolution images of fcc structure, looking to expand this!)
-
 .. code-block:: python
 
     >>> #Syntax for accessing particle properties.
     >>> particles.list[0].properties['area']
+    
+For more information on particle properties see :ref:`properties`.
 
 Combining Particles from Multiple Images
 ----------------------------------------
