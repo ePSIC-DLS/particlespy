@@ -46,18 +46,12 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
     #Check if input is list of signal objects or single one
     if isinstance(acquisition,list):
         image = acquisition[0]
-        ac_types = []
-        for ac in acquisition[1:]:
-            if ac.metadata.Signal.signal_type == 'EDS_TEM':
-                ac_types.append(ac.metadata.Signal.signal_type)
-            else:
-                warnings.warn("You have input data that does not have a defined signal type and therefore will not be processed."+
-                              " You need to define signal_type in the metadata for anything other than the first dataset.")
     else:
         image = acquisition
-        ac_types = 'Image only'
     
-    if mask.sum()==0:
+    if mask == 'UI':
+        labeled = label(np.load(inspect.getfile(process).rpartition('\\')[0]+'/Parameters/manual_mask.npy'))
+    elif mask.sum()==0:
         labeled = process(image,parameters)
         #labels = np.unique(labeled).tolist() #some labeled number have been removed by "remove_small_holes" function
     else:
@@ -97,7 +91,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         p.set_eccentricity(eccentricity)
         
         #Set total image intensity
-        intensity = (image*mask).sum()
+        intensity = (image.data*maskp).sum()
         p.set_intensity(intensity)
         
         #Set zoneaxis
@@ -114,70 +108,92 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         p.set_mask(maskp)
         
         if parameters.store["store_im"]==True:
-            store_image(p,image)
+            store_image(p,image,parameters)
             
-        if isinstance(ac_types,list):
+        if isinstance(acquisition,list):
+            p.spectrum = {}
             for ac in acquisition:
                 if ac.metadata.Signal.signal_type == 'EDS_TEM':
                     ac.set_elements(parameters.eds['elements'])
                     ac.add_lines()
-                    store_spectrum(p,ac,'EDS')
-                    if parameters.store["store_maps"]==True:
-                        store_maps(p,ac)
+                    store_spectrum(p,ac,'EDS_TEM')
+                    if parameters.store["store_maps"]:
+                        store_maps(p,ac,parameters)
                     if parameters.eds["factors"]!=False:
                         get_composition(p,parameters)
+                elif ac.metadata.Signal.signal_type == 'EELS':
+                    ac.add_elements(parameters.eds['elements'])
+                    if 'high-loss' in ac.metadata.General.title:
+                        store_spectrum(p,ac,'EELS-HL')
+                    elif 'low-loss' in ac.metadata.General.title:
+                        store_spectrum(p,ac,'EELS-LL')
+                    else:
+                        store_spectrum(p,ac,ac.metadata.Signal.signal_type)
+                else:
+                    if ac.metadata.Signal.signal_type:
+                        store_spectrum(p,ac,ac.metadata.Signal.signal_type)
+                    else:
+                        warnings.warn("You have input data that does not have a defined signal type and therefore will not be processed."+
+                              " You need to define signal_type in the metadata for anything other than the first dataset.")
         
         particles.append(p)
         
     return(particles)
     
-def store_image(particle,image):
+def store_image(particle,image,params):
     ii = np.where(particle.mask)
             
     box_x_min = np.min(ii[0])
     box_x_max = np.max(ii[0])
     box_y_max = np.max(ii[1])
     box_y_min = np.min(ii[1])
-    pad = 5
+    pad = params.store['pad']
     
-    p_boxed = image.isig[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
+    if box_y_min-pad > 0 and box_x_min-pad > 0 and box_x_max+pad < particle.mask.shape[0] and box_y_max+pad < particle.mask.shape[1]:
+        p_boxed = image.isig[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
+    else:
+        p_boxed = image.isig[(box_y_min):(box_y_max),(box_x_min):(box_x_max)]
     particle.store_im(p_boxed)
     
-def store_maps(particle,ac):
+def store_maps(particle,ac,params):
     maps = ac.get_lines_intensity()
     particle.maps_gen()
     
-    for map in maps:
+    for el_map in maps:
         ii = np.where(particle.mask)
                 
         box_x_min = np.min(ii[0])
         box_x_max = np.max(ii[0])
         box_y_max = np.max(ii[1])
         box_y_min = np.min(ii[1])
-        pad = 5
+        pad = params.store['pad']
         
-        p_boxed = map.inav[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
+        if box_y_min-pad > 0 and box_x_min-pad > 0 and box_x_max+pad < particle.mask.shape[0] and box_y_max+pad < particle.mask.shape[1]:
+            p_boxed = el_map.inav[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
+        else:
+            p_boxed = el_map.inav[(box_y_min):(box_y_max),(box_x_min):(box_x_max)]
         particle.store_map(p_boxed,p_boxed.metadata.Sample.elements[0])
         
 def store_spectrum(particle,ac,stype):
     ac_particle = ac.transpose()*particle.mask
     ac_particle = ac_particle.transpose()
     ac_particle_spectrum = ac_particle.sum()
-    ac_particle_spectrum.set_signal_type("EDS_TEM")
+    if '-' in stype:
+        ac_particle_spectrum.set_signal_type(stype.rpartition('-')[0])
+    else:
+        ac_particle_spectrum.set_signal_type(stype)
     particle.store_spectrum(ac_particle_spectrum,stype)
         
 def get_composition(particle,params):
-    #print(particle.spectrum['EDS'])
-    bw = particle.spectrum['EDS'].estimate_background_windows(line_width=[5.0, 2.0])
-    #print(bw)
-    intensities = particle.spectrum['EDS'].get_lines_intensity(background_windows=bw)
-    atomic_percent = particle.spectrum['EDS'].quantification(intensities, method=params.eds['method'],factors=params.eds['factors'])
+    bw = particle.spectrum['EDS_TEM'].estimate_background_windows(line_width=[5.0, 2.0])
+    intensities = particle.spectrum['EDS_TEM'].get_lines_intensity(background_windows=bw)
+    atomic_percent = particle.spectrum['EDS_TEM'].quantification(intensities, method=params.eds['method'],factors=params.eds['factors'])
     particle.store_composition(atomic_percent)
     
 class parameters(object):
     """A parameters object."""
     
-    def generate(self,threshold='otsu',watershed=False,invert=False,min_size=0,store_im=False,rb_kernel=0,gaussian=0,local_size=101):
+    def generate(self,threshold='otsu',watershed=False,invert=False,min_size=0,store_im=False,pad=5,rb_kernel=0,gaussian=0,local_size=101):
         self.segment = {}
         self.segment['threshold'] = threshold
         self.segment['watershed'] = watershed
@@ -189,6 +205,7 @@ class parameters(object):
         
         self.store = {}
         self.store['store_im'] = store_im
+        self.store['pad'] = pad
         
         self.generate_eds()
         
@@ -214,6 +231,7 @@ class parameters(object):
         segment.attrs["rb_kernel"] = self.segment['rb_kernel']
         segment.attrs["gaussian"] = self.segment['gaussian']
         store.attrs['store_im'] = self.store['store_im']
+        store.attrs['pad'] = self.store['pad']
         store.attrs['store_maps'] = self.store['store_maps']
         eds.attrs['method'] = self.eds['method']
         eds.attrs['elements'] = self.eds['elements']
@@ -239,6 +257,7 @@ class parameters(object):
         self.segment['rb_kernel'] = segment.attrs["rb_kernel"]
         self.segment['gaussian'] = segment.attrs["gaussian"]
         self.store['store_im'] = store.attrs['store_im']
+        self.store['pad'] = store.attrs['pad']
         self.store['store_maps'] = store.attrs['store_maps']
         self.eds['method'] = eds.attrs['method']
         self.eds['elements'] = eds.attrs['elements']
