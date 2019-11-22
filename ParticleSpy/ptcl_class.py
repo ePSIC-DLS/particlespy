@@ -10,6 +10,7 @@ import numpy as np
 from scipy.ndimage import interpolation
 from ParticleSpy.particle_save import save_plist
 from sklearn import feature_extraction, cluster
+import itertools as it
 
 class Particle(object):
     """A segmented particle object.
@@ -209,15 +210,23 @@ class Particle_list(object):
             particle.image.axes_manager[1].size = particle.image.data.shape[1]
             
     def cluster_particles(self,algorithm='Kmeans',properties=None,n_clusters=2):
-        feature_array = extract_features(self,properties)
+        feature_array = _extract_features(self,properties)
         
         if algorithm=='Kmeans':
             cluster_out = cluster.KMeans(n_clusters=n_clusters).fit_predict(feature_array)
             
         for i,p in enumerate(self.list):
             p.cluster_number = cluster_out[i]
+        
+        plist_clusters = []
+        for n in n_clusters:
+            p_list_new = Particle_list()
+            p_list_new.list = list(it.compress(self.list,[c==n for c in cluster_out]))
+            plist_clusters.append(p_list_new)
+        
+        return(plist_clusters)
 
-def extract_features(particles,properties=None):
+def _extract_features(particles,properties=None):
     if properties==None:
         properties = particles.list[0].properties
     
