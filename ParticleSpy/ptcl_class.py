@@ -140,31 +140,72 @@ class Particle_list(object):
         plt.xlabel("Circularity")
         plt.ylabel("No. of particles")
         
-    def plot(self,prop='area',bins=20):
+    def plot(self,prop_list=['area'],bins=20):
         """
-        Displays a histogram of the chosen particle property.
+        Plots properties of all particles in the Particle_list.
+        
+        If one property given, displays a histogram of the chosen particle property.
+        
+        If two properties given, displays a scatter plot of the two properties.
         
         Parameters
         ----------
-        prop : str
-            The name of the property to plot as a histogram.
+        prop_list : list
+            A list of the name of the properties to plot.
         bins : int
-            The number of bins in the histogram.
+            The number of bins in the histogram if plotting one property.
+            
+        Examples
+        --------
+        
+        particles.plot(['area'], bins=20)
+        
+        particles.plot(['equivalent circular diameter','circularity'])
         
         """
         
+        if len(prop_list) == 1:
+            self._plot_one_property(prop_list[0],bins)
+        elif len(prop_list) == 2:
+            self._plot_two_properties(prop_list)
+        else:
+            print("Can only plot one or two properties, please change the length of the property list.")
+        plt.show()
+        
+    def _plot_one_property(self,prop,bins):
         property_list = []
         
         for p in self.list:
             property_list.append(p.properties[prop]['value'])
             
-        plt.hist(property_list,bins=bins)
+        plt.hist(property_list,bins=bins,alpha=0.5)
+        
         if self.list[0].properties[prop]['units'] == None:
             plt.xlabel(prop.capitalize())
         else:
             plt.xlabel(prop.capitalize()+" ("+self.list[0].properties[prop]['units']+")")
         plt.ylabel("No. of particles")
-        plt.show()
+        
+    def _plot_two_properties(self,prop_list):
+        
+        property_list_one = []
+        property_list_two = []
+        
+        for p in self.list:
+            property_list_one.append(p.properties[prop_list[0]]['value'])
+            property_list_two.append(p.properties[prop_list[1]]['value'])
+            
+        plt.scatter(property_list_one,property_list_two,alpha=0.5)
+        
+        if self.list[0].properties[prop_list[0]]['units'] == None:
+            plt.xlabel(prop_list[0].capitalize())
+        else:
+            plt.xlabel(prop_list[0].capitalize()+" ("+self.list[0].properties[prop_list[0]]['units']+")")
+        
+        if self.list[0].properties[prop_list[1]]['units'] == None:
+            plt.ylabel(prop_list[1].capitalize())
+        else:
+            plt.ylabel(prop_list[1].capitalize()+" ("+self.list[0].properties[prop_list[1]]['units']+")")
         
     def normalize_boxing(self,even=False):
         """
