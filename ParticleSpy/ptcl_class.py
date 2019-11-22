@@ -210,7 +210,7 @@ class Particle_list(object):
             particle.image.axes_manager[1].size = particle.image.data.shape[1]
             
     def cluster_particles(self,algorithm='Kmeans',properties=None,n_clusters=2):
-        feature_array = _extract_features(self,properties)
+        vec,feature_array = _extract_features(self,properties)
         
         if algorithm=='Kmeans':
             cluster_out = cluster.KMeans(n_clusters=n_clusters).fit_predict(feature_array)
@@ -219,7 +219,7 @@ class Particle_list(object):
             p.cluster_number = cluster_out[i]
         
         plist_clusters = []
-        for n in n_clusters:
+        for n in range(n_clusters):
             p_list_new = Particle_list()
             p_list_new.list = list(it.compress(self.list,[c==n for c in cluster_out]))
             plist_clusters.append(p_list_new)
