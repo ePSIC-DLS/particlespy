@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.ndimage import interpolation
 from ParticleSpy.particle_save import save_plist
+from sklearn import feature_extraction, cluster
 
 class Particle(object):
     """A segmented particle object.
@@ -206,3 +207,25 @@ class Particle_list(object):
             
             particle.image.axes_manager[0].size = particle.image.data.shape[0]
             particle.image.axes_manager[1].size = particle.image.data.shape[1]
+            
+    def cluster_particles(self,algorithm='Kmeans',properties=None,n_clusters=2):
+        feature_array = extract_features(self,properties)
+        
+        if algorithm=='Kmeans':
+            cluster_out = cluster.KMeans(n_clusters=n_clusters).fit_predict(feature_array)
+            
+        for i,p in enumerate(self.list):
+            p.cluster_number = cluster_out[i]
+
+def extract_features(particles,properties=None):
+    if properties==None:
+        properties = particles.list[0].properties
+    
+    properties_list = []
+    for particle in particles.list:
+        properties_list.append({p:particle.properties[p]['value'] for p in properties})
+        
+    vec = feature_extraction.DictVectorizer()
+    vectorized = vec.fit_transform(properties_list)
+        
+    return(vec,vectorized)
