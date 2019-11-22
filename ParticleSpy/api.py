@@ -30,8 +30,8 @@ def plot(particle_lists,prop_list=['area'],bins=20):
         ----------
         particle_lists : list
             A list of Particle_list objects.
-        prop_list : list
-            A list of the name of the properties to plot.
+        prop_list : str or list
+            The name of a property or a list of the properties to plot.
         bins : int
             The number of bins in the histogram if plotting one property.
             
@@ -43,12 +43,15 @@ def plot(particle_lists,prop_list=['area'],bins=20):
         """
         
         for p in particle_lists:
-            if len(prop_list) == 1:
-                    p._plot_one_property(prop_list[0],bins)
-            elif len(prop_list) == 2:
-                    p._plot_two_properties(prop_list)
+            if isinstance(prop_list,str):
+                p._plot_one_property(prop_list,bins)
             else:
-                print("Can only plot one or two properties, please change the length of the property list.")
-                break
+                if len(prop_list) == 1:
+                        p._plot_one_property(prop_list[0],bins)
+                elif len(prop_list) == 2:
+                        p._plot_two_properties(prop_list)
+                else:
+                    print("Can only plot one or two properties, please change the length of the property list.")
+                    break
         
         plt.show()

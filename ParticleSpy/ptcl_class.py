@@ -150,26 +150,30 @@ class Particle_list(object):
         
         Parameters
         ----------
-        prop_list : list
-            A list of the name of the properties to plot.
+        prop_list : str or list
+            A particle property or a list of the names of the properties to plot.
         bins : int
             The number of bins in the histogram if plotting one property.
             
         Examples
         --------
         
-        particles.plot(['area'], bins=20)
+        particles.plot('area', bins=20)
         
         particles.plot(['equivalent circular diameter','circularity'])
         
         """
         
-        if len(prop_list) == 1:
-            self._plot_one_property(prop_list[0],bins)
-        elif len(prop_list) == 2:
-            self._plot_two_properties(prop_list)
+        if isinstance(prop_list,str):
+            self._plot_one_property(prop_list,bins)
         else:
-            print("Can only plot one or two properties, please change the length of the property list.")
+            if len(prop_list) == 1:
+                self._plot_one_property(prop_list[0],bins)
+            elif len(prop_list) == 2:
+                self._plot_two_properties(prop_list)
+            else:
+                print("Can only plot one or two properties, please change the length of the property list.")
+        
         plt.show()
         
     def _plot_one_property(self,prop,bins):
