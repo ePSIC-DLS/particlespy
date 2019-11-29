@@ -210,6 +210,18 @@ class Particle_list(object):
             particle.image.axes_manager[1].size = particle.image.data.shape[1]
             
     def cluster_particles(self,algorithm='Kmeans',properties=None,n_clusters=2):
+        """
+        Cluster particles in to different populations based on specified properties.
+        
+        Parameters
+        ----------
+        algorithm: str
+            The algorithm to use for clustering.
+        properties: list
+            A list of the properties upon which to base the clustering.
+        n_clusters: int
+            The number of clusters to split the data into.
+        """
         vec,feature_array = _extract_features(self,properties)
         
         if algorithm=='Kmeans':
