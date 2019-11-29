@@ -5,7 +5,7 @@ import os
 def test_clustering():
     my_path = os.path.dirname(__file__)
     
-    data = hs.load(os.path.join(os.par_dir(my_path), 'Data/SiO2 HAADF Image.hspy'))
+    data = hs.load(os.path.join(os.path.par_dir(my_path), 'Data/SiO2 HAADF Image.hspy'))
     
     params = ps.parameters()
     params.generate(threshold='otsu',watershed=True,min_size=5,rb_kernel=100)
