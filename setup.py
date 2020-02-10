@@ -4,7 +4,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 install_requires=["hyperspy",
-                  "scikit-image>=0.15"]
+                  "scikit-image>=0.15",
+                  "scikit-learn>=0.21"]
 
 try:
     import PyQt5  # noqa
@@ -12,7 +13,7 @@ except ImportError:
     try:
         import PySide2  # noqa
     except ImportError:
-        install_requires.append('PyQt5')
+        install_requires.append('PyQt5==5.14.0')
 
 setuptools.setup(
     name="particlespy",
