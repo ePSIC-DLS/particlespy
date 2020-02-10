@@ -13,4 +13,4 @@ def test_clustering():
     
     new_plists = particles.cluster_particles(properties=['area','circularity'])
     
-    assert len(new_plists[0].list) == 43 or len(new_plists[0].list) == 59
+    assert len(new_plists[0].list) == 45 or len(new_plists[0].list) == 57
