@@ -86,6 +86,21 @@ If you have used the manual segmentation editor in :py:meth:`~.SegUI` you can si
 .. code-block:: python
     
     >>> particles = ps.ParticleAnalysis(data, params, mask='UI')
+
+Cluster Particles Based on Properties
+-------------------------------------
+It is possible to do a simple k-nearest neighbours clustering of particles based on their properties.
+This can be done using the :py:meth:`~.Particle_list.cluster_particles` function.
+For example, if you wanted to separate the particles in to two clusters based on their area and ADF intensity, you could do:
+
+.. code-block:: python
+
+    >>> clustered_particles = particles.cluster_particles(properties=['area','intensity'],n_clusters=2)
+    >>> ps.plot(clustered_particles,properties=['area','intensity'])
+
+The variable clustered_particles now contains two separate particle lists.
+
+Clustering can be done for an arbitrary number of properties, including manually added parameters.
     
 Normalize Particle Image Sizes
 ------------------------------
