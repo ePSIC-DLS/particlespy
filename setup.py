@@ -13,7 +13,7 @@ except ImportError:
     try:
         import PySide2  # noqa
     except ImportError:
-        install_requires.append('PyQt5')
+        install_requires.append('PyQt5==5.14.0')
 
 setuptools.setup(
     name="particlespy",
