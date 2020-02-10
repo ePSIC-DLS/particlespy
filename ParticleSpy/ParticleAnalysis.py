@@ -67,8 +67,8 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         maskp[labeled==region.label] = 1
         
         #Calculate average background around image
-        dilated_mask = morphology.binary_dilation(maskp)
-        dilated_mask2 = morphology.binary_dilation(dilated_mask)
+        dilated_mask = morphology.binary_dilation(maskp.astype(int))
+        dilated_mask2 = morphology.binary_dilation(dilated_mask.astype(int))
         boundary_mask = dilated_mask2 - dilated_mask
         p.background = np.sum(boundary_mask*image.data)/np.count_nonzero(boundary_mask)
         
