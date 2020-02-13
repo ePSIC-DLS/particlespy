@@ -51,13 +51,15 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
     
     if mask == 'UI':
         labeled = label(np.load(inspect.getfile(process).rpartition('\\')[0]+'/Parameters/manual_mask.npy'))
+        plt.imshow(labeled)
+        #morphology.remove_small_objects(labeled,30,in_place=True)
     elif mask.sum()==0:
         labeled = process(image,parameters)
         #labels = np.unique(labeled).tolist() #some labeled number have been removed by "remove_small_holes" function
     else:
         labeled = label(mask)
         
-    for region in regionprops(labeled): #'count' start with 1, 0 is background
+    for region in regionprops(labeled, coordinates='rc'): #'count' start with 1, 0 is background
         p = Particle()
         
         p_im = np.zeros_like(image.data)
@@ -97,7 +99,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         p.set_eccentricity(eccentricity)
         
         #Set total image intensity
-        intensity = (image.data*maskp).sum() - p.background
+        intensity = ((image.data - p.background)*maskp).sum()
         p.set_intensity(intensity)
         
         #Set zoneaxis
@@ -118,7 +120,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
             
         if isinstance(acquisition,list):
             p.spectrum = {}
-            for ac in acquisition:
+            for ac in acquisition[1:]:
                 if ac.metadata.Signal.signal_type == 'EDS_TEM':
                     ac.set_elements(parameters.eds['elements'])
                     ac.add_lines()
@@ -128,7 +130,6 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
                     if parameters.eds["factors"]!=False:
                         get_composition(p,parameters)
                 elif ac.metadata.Signal.signal_type == 'EELS':
-                    ac.add_elements(parameters.eds['elements'])
                     if 'high-loss' in ac.metadata.General.title:
                         store_spectrum(p,ac,'EELS-HL')
                     elif 'low-loss' in ac.metadata.General.title:
