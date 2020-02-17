@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.ndimage import interpolation
 from ParticleSpy.particle_save import save_plist
+from sklearn import feature_extraction, cluster
+import itertools as it
 
 class Particle(object):
     """A segmented particle object.
@@ -140,31 +142,76 @@ class Particle_list(object):
         plt.xlabel("Circularity")
         plt.ylabel("No. of particles")
         
-    def plot(self,prop='area',bins=20):
+    def plot(self,prop_list=['area'],bins=20):
         """
-        Displays a histogram of the chosen particle property.
+        Plots properties of all particles in the Particle_list.
+        
+        If one property given, displays a histogram of the chosen particle property.
+        
+        If two properties given, displays a scatter plot of the two properties.
         
         Parameters
         ----------
-        prop : str
-            The name of the property to plot as a histogram.
+        prop_list : str or list
+            A particle property or a list of the names of the properties to plot.
         bins : int
-            The number of bins in the histogram.
+            The number of bins in the histogram if plotting one property.
+            
+        Examples
+        --------
+        
+        particles.plot('area', bins=20)
+        
+        particles.plot(['equivalent circular diameter','circularity'])
         
         """
         
+        if isinstance(prop_list,str):
+            self._plot_one_property(prop_list,bins)
+        else:
+            if len(prop_list) == 1:
+                self._plot_one_property(prop_list[0],bins)
+            elif len(prop_list) == 2:
+                self._plot_two_properties(prop_list)
+            else:
+                print("Can only plot one or two properties, please change the length of the property list.")
+        
+        plt.show()
+        
+    def _plot_one_property(self,prop,bins):
         property_list = []
         
         for p in self.list:
             property_list.append(p.properties[prop]['value'])
             
-        plt.hist(property_list,bins=bins)
+        plt.hist(property_list,bins=bins,alpha=0.5)
+        
         if self.list[0].properties[prop]['units'] == None:
             plt.xlabel(prop.capitalize())
         else:
             plt.xlabel(prop.capitalize()+" ("+self.list[0].properties[prop]['units']+")")
         plt.ylabel("No. of particles")
-        plt.show()
+        
+    def _plot_two_properties(self,prop_list):
+        
+        property_list_one = []
+        property_list_two = []
+        
+        for p in self.list:
+            property_list_one.append(p.properties[prop_list[0]]['value'])
+            property_list_two.append(p.properties[prop_list[1]]['value'])
+            
+        plt.scatter(property_list_one,property_list_two,alpha=0.5)
+        
+        if self.list[0].properties[prop_list[0]]['units'] == None:
+            plt.xlabel(prop_list[0].capitalize())
+        else:
+            plt.xlabel(prop_list[0].capitalize()+" ("+self.list[0].properties[prop_list[0]]['units']+")")
+        
+        if self.list[0].properties[prop_list[1]]['units'] == None:
+            plt.ylabel(prop_list[1].capitalize())
+        else:
+            plt.ylabel(prop_list[1].capitalize()+" ("+self.list[0].properties[prop_list[1]]['units']+")")
         
     def normalize_boxing(self,even=False):
         """
@@ -206,3 +253,45 @@ class Particle_list(object):
             
             particle.image.axes_manager[0].size = particle.image.data.shape[0]
             particle.image.axes_manager[1].size = particle.image.data.shape[1]
+            
+    def cluster_particles(self,algorithm='Kmeans',properties=None,n_clusters=2):
+        """
+        Cluster particles in to different populations based on specified properties.
+        
+        Parameters
+        ----------
+        algorithm: str
+            The algorithm to use for clustering.
+        properties: list
+            A list of the properties upon which to base the clustering.
+        n_clusters: int
+            The number of clusters to split the data into.
+        """
+        vec,feature_array = _extract_features(self,properties)
+        
+        if algorithm=='Kmeans':
+            cluster_out = cluster.KMeans(n_clusters=n_clusters).fit_predict(feature_array)
+            
+        for i,p in enumerate(self.list):
+            p.cluster_number = cluster_out[i]
+        
+        plist_clusters = []
+        for n in range(n_clusters):
+            p_list_new = Particle_list()
+            p_list_new.list = list(it.compress(self.list,[c==n for c in cluster_out]))
+            plist_clusters.append(p_list_new)
+        
+        return(plist_clusters)
+
+def _extract_features(particles,properties=None):
+    if properties==None:
+        properties = particles.list[0].properties
+    
+    properties_list = []
+    for particle in particles.list:
+        properties_list.append({p:particle.properties[p]['value'] for p in properties})
+        
+    vec = feature_extraction.DictVectorizer()
+    vectorized = vec.fit_transform(properties_list)
+        
+    return(vec,vectorized)
