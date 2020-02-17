@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -367,6 +367,23 @@ update(self, int, int, int, int)</p>
 <code class="sig-prename descclassname">ParticleSpy.api.</code><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/api.html#load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.api.load" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="function">
+<dt id="ParticleSpy.api.plot">
+<code class="sig-prename descclassname">ParticleSpy.api.</code><code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param">particle_lists, prop_list=['area'], bins=20</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/api.html#plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.api.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots properties of all particles in the Particle_lists.</p>
+<p>If one property given, displays a histogram of the chosen particle property.</p>
+<p>If two properties given, displays a scatter plot of the two properties.</p>
+<dl class="simple">
+<dt>particle_lists<span class="classifier">list</span></dt><dd><p>A list of Particle_list objects.</p>
+</dd>
+<dt>prop_list<span class="classifier">str or list</span></dt><dd><p>The name of a property or a list of the properties to plot.</p>
+</dd>
+<dt>bins<span class="classifier">int</span></dt><dd><p>The number of bins in the histogram if plotting one property.</p>
+</dd>
+</dl>
+<p>plot([particles],[‘area’])</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-ParticleSpy.find_zoneaxis">
 <span id="particlespy-find-zoneaxis-module"></span><h2>ParticleSpy.find_zoneaxis module<a class="headerlink" href="#module-ParticleSpy.find_zoneaxis" title="Permalink to this headline">¶</a></h2>
@@ -510,7 +527,7 @@ update(self, int, int, int, int)</p>
 <dt>units :</dt><dd><p>The units of the property.</p>
 </dd>
 </dl>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">particle</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;area&#39;</span><span class="p">,</span><span class="mf">10.0</span><span class="p">,</span><span class="s1">&#39;nm&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">particle</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;area&#39;</span><span class="p">,</span><span class="mf">10.0</span><span class="p">,</span><span class="s1">&#39;nm&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -553,25 +570,43 @@ update(self, int, int, int, int)</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="ParticleSpy.ptcl_class.Particle_list.cluster_particles">
+<code class="sig-name descname">cluster_particles</code><span class="sig-paren">(</span><em class="sig-param">algorithm='Kmeans'</em>, <em class="sig-param">properties=None</em>, <em class="sig-param">n_clusters=2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle_list.cluster_particles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle_list.cluster_particles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cluster particles in to different populations based on specified properties.</p>
+<dl class="simple">
+<dt>algorithm: str</dt><dd><p>The algorithm to use for clustering.</p>
+</dd>
+<dt>properties: list</dt><dd><p>A list of the properties upon which to base the clustering.</p>
+</dd>
+<dt>n_clusters: int</dt><dd><p>The number of clusters to split the data into.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="ParticleSpy.ptcl_class.Particle_list.normalize_boxing">
 <code class="sig-name descname">normalize_boxing</code><span class="sig-paren">(</span><em class="sig-param">even=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle_list.normalize_boxing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle_list.normalize_boxing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Normalizes the size of all particle images so that their dimensions are
 equal.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span><span class="o">.</span><span class="n">normalize_boxing</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span><span class="o">.</span><span class="n">normalize_boxing</span><span class="p">()</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="ParticleSpy.ptcl_class.Particle_list.plot">
-<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param">prop='area'</em>, <em class="sig-param">bins=20</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle_list.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle_list.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Displays a histogram of the chosen particle property.</p>
+<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param">prop_list=['area'], bins=20</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle_list.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle_list.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots properties of all particles in the Particle_list.</p>
+<p>If one property given, displays a histogram of the chosen particle property.</p>
+<p>If two properties given, displays a scatter plot of the two properties.</p>
 <dl class="simple">
-<dt>prop<span class="classifier">str</span></dt><dd><p>The name of the property to plot as a histogram.</p>
+<dt>prop_list<span class="classifier">str or list</span></dt><dd><p>A particle property or a list of the names of the properties to plot.</p>
 </dd>
-<dt>bins<span class="classifier">int</span></dt><dd><p>The number of bins in the histogram.</p>
+<dt>bins<span class="classifier">int</span></dt><dd><p>The number of bins in the histogram if plotting one property.</p>
 </dd>
 </dl>
+<p>particles.plot(‘area’, bins=20)</p>
+<p>particles.plot([‘equivalent circular diameter’,’circularity’])</p>
 </dd></dl>
 
 <dl class="method">

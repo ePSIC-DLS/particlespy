@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -161,15 +161,15 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.ndimage</span> <span class="k">as</span> <span class="nn">ndi</span>
 
-<span class="kn">from</span> <span class="nn">skimage.filters</span> <span class="k">import</span> <span class="n">threshold_otsu</span><span class="p">,</span> <span class="n">threshold_mean</span><span class="p">,</span> <span class="n">threshold_minimum</span>
-<span class="kn">from</span> <span class="nn">skimage.filters</span> <span class="k">import</span> <span class="n">threshold_yen</span><span class="p">,</span> <span class="n">threshold_isodata</span><span class="p">,</span> <span class="n">threshold_li</span>
-<span class="kn">from</span> <span class="nn">skimage.filters</span> <span class="k">import</span> <span class="n">threshold_local</span><span class="p">,</span> <span class="n">rank</span>
+<span class="kn">from</span> <span class="nn">skimage.filters</span> <span class="kn">import</span> <span class="n">threshold_otsu</span><span class="p">,</span> <span class="n">threshold_mean</span><span class="p">,</span> <span class="n">threshold_minimum</span>
+<span class="kn">from</span> <span class="nn">skimage.filters</span> <span class="kn">import</span> <span class="n">threshold_yen</span><span class="p">,</span> <span class="n">threshold_isodata</span><span class="p">,</span> <span class="n">threshold_li</span>
+<span class="kn">from</span> <span class="nn">skimage.filters</span> <span class="kn">import</span> <span class="n">threshold_local</span><span class="p">,</span> <span class="n">rank</span>
 
-<span class="kn">from</span> <span class="nn">skimage.measure</span> <span class="k">import</span> <span class="n">label</span>
-<span class="kn">from</span> <span class="nn">skimage.morphology</span> <span class="k">import</span> <span class="n">remove_small_objects</span><span class="p">,</span> <span class="n">watershed</span><span class="p">,</span> <span class="n">square</span><span class="p">,</span> <span class="n">white_tophat</span><span class="p">,</span> <span class="n">disk</span>
-<span class="kn">from</span> <span class="nn">skimage.segmentation</span> <span class="k">import</span> <span class="n">clear_border</span>
-<span class="kn">from</span> <span class="nn">skimage.feature</span> <span class="k">import</span> <span class="n">peak_local_max</span>
-<span class="kn">from</span> <span class="nn">skimage.util</span> <span class="k">import</span> <span class="n">invert</span>
+<span class="kn">from</span> <span class="nn">skimage.measure</span> <span class="kn">import</span> <span class="n">label</span>
+<span class="kn">from</span> <span class="nn">skimage.morphology</span> <span class="kn">import</span> <span class="n">remove_small_objects</span><span class="p">,</span> <span class="n">watershed</span><span class="p">,</span> <span class="n">square</span><span class="p">,</span> <span class="n">white_tophat</span><span class="p">,</span> <span class="n">disk</span>
+<span class="kn">from</span> <span class="nn">skimage.segmentation</span> <span class="kn">import</span> <span class="n">clear_border</span>
+<span class="kn">from</span> <span class="nn">skimage.feature</span> <span class="kn">import</span> <span class="n">peak_local_max</span>
+<span class="kn">from</span> <span class="nn">skimage.util</span> <span class="kn">import</span> <span class="n">invert</span>
 
 <div class="viewcode-block" id="process"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.segptcls.process">[docs]</a><span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">param</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>

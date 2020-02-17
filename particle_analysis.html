@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -92,6 +92,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#combining-particles-from-multiple-images">Combining Particles from Multiple Images</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#spectrum-analysis">Spectrum Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#particle-segmentation-with-a-pre-generated-mask">Particle Segmentation with a Pre-Generated Mask</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cluster-particles-based-on-properties">Cluster Particles Based on Properties</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#normalize-particle-image-sizes">Normalize Particle Image Sizes</a></li>
 </ul>
 </li>
@@ -163,7 +164,7 @@
   <div class="section" id="particle-analysis">
 <span id="id1"></span><h1>Particle Analysis<a class="headerlink" href="#particle-analysis" title="Permalink to this headline">¶</a></h1>
 <p>Once you have chosen your segmentation parameters and have successfully prepared a parameters object you can use this to perform Particle Analysis.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">hyperspy.api</span> <span class="kn">as</span> <span class="nn">hs</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">hyperspy.api</span> <span class="k">as</span> <span class="nn">hs</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">hs</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;ParticleSpy/Data/JEOL HAADF Image.dm4&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">parameters</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">params</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
@@ -206,7 +207,7 @@ The only requirement is that the navigation dimensions of the additional data ar
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">image</span><span class="p">,</span><span class="n">eds_si</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span><span class="o">.</span><span class="n">generate_eds</span><span class="p">(</span><span class="n">eds_method</span><span class="o">=</span><span class="s1">&#39;CL&#39;</span><span class="p">,</span><span class="n">elements</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Pt&#39;</span><span class="p">,</span><span class="s1">&#39;Au&#39;</span><span class="p">],</span><span class="n">factors</span><span class="o">=</span><span class="p">[</span><span class="mf">1.7</span><span class="p">,</span><span class="mf">1.9</span><span class="p">],</span><span class="n">store_maps</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span><span class="o">.</span><span class="n">generate_eds</span><span class="p">(</span><span class="n">eds_method</span><span class="o">=</span><span class="s1">&#39;CL&#39;</span><span class="p">,</span><span class="n">elements</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Pt&#39;</span><span class="p">,</span><span class="s1">&#39;Au&#39;</span><span class="p">],</span><span class="n">factors</span><span class="o">=</span><span class="p">[</span><span class="mf">1.7</span><span class="p">,</span><span class="mf">1.9</span><span class="p">],</span><span class="n">store_maps</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">ParticleAnalysis</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -224,6 +225,18 @@ In order to use a pre-generated mask it is possible to pass a mask argument to <
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">ParticleAnalysis</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="s1">&#39;UI&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="cluster-particles-based-on-properties">
+<h2>Cluster Particles Based on Properties<a class="headerlink" href="#cluster-particles-based-on-properties" title="Permalink to this headline">¶</a></h2>
+<p>It is possible to do a simple k-nearest neighbours clustering of particles based on their properties.
+This can be done using the <a class="reference internal" href="source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle_list.cluster_particles" title="ParticleSpy.ptcl_class.Particle_list.cluster_particles"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cluster_particles()</span></code></a> function.
+For example, if you wanted to separate the particles in to two clusters based on their area and ADF intensity, you could do:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">clustered_particles</span> <span class="o">=</span> <span class="n">particles</span><span class="o">.</span><span class="n">cluster_particles</span><span class="p">(</span><span class="n">properties</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;area&#39;</span><span class="p">,</span><span class="s1">&#39;intensity&#39;</span><span class="p">],</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ps</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">clustered_particles</span><span class="p">,</span><span class="n">properties</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;area&#39;</span><span class="p">,</span><span class="s1">&#39;intensity&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>The variable clustered_particles now contains two separate particle lists.</p>
+<p>Clustering can be done for an arbitrary number of properties, including manually added parameters.</p>
 </div>
 <div class="section" id="normalize-particle-image-sizes">
 <h2>Normalize Particle Image Sizes<a class="headerlink" href="#normalize-particle-image-sizes" title="Permalink to this headline">¶</a></h2>

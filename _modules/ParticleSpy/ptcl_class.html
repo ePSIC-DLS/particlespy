@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -160,8 +160,10 @@
 
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy.ndimage</span> <span class="k">import</span> <span class="n">interpolation</span>
-<span class="kn">from</span> <span class="nn">ParticleSpy.particle_save</span> <span class="k">import</span> <span class="n">save_plist</span>
+<span class="kn">from</span> <span class="nn">scipy.ndimage</span> <span class="kn">import</span> <span class="n">interpolation</span>
+<span class="kn">from</span> <span class="nn">ParticleSpy.particle_save</span> <span class="kn">import</span> <span class="n">save_plist</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">feature_extraction</span><span class="p">,</span> <span class="n">cluster</span>
+<span class="kn">import</span> <span class="nn">itertools</span> <span class="k">as</span> <span class="nn">it</span>
 
 <div class="viewcode-block" id="Particle"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle">[docs]</a><span class="k">class</span> <span class="nc">Particle</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A segmented particle object.</span>
@@ -187,7 +189,7 @@
 <span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="p">{}</span>
     
 <div class="viewcode-block" id="Particle.set_origin"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle.set_origin">[docs]</a>    <span class="k">def</span> <span class="nf">set_origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="p">):</span>
@@ -256,7 +258,7 @@
 <div class="viewcode-block" id="Particle_list"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle_list">[docs]</a><span class="k">class</span> <span class="nc">Particle_list</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A particle list object.&quot;&quot;&quot;</span>
     
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">list</span> <span class="o">=</span> <span class="p">[]</span>
     
 <div class="viewcode-block" id="Particle_list.append"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle_list.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">particle</span><span class="p">):</span>
@@ -293,31 +295,76 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Circularity&quot;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;No. of particles&quot;</span><span class="p">)</span></div>
         
-<div class="viewcode-block" id="Particle_list.plot"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle_list.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">prop</span><span class="o">=</span><span class="s1">&#39;area&#39;</span><span class="p">,</span><span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+<div class="viewcode-block" id="Particle_list.plot"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle_list.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">prop_list</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;area&#39;</span><span class="p">],</span><span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Displays a histogram of the chosen particle property.</span>
+<span class="sd">        Plots properties of all particles in the Particle_list.</span>
+<span class="sd">        </span>
+<span class="sd">        If one property given, displays a histogram of the chosen particle property.</span>
+<span class="sd">        </span>
+<span class="sd">        If two properties given, displays a scatter plot of the two properties.</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        prop : str</span>
-<span class="sd">            The name of the property to plot as a histogram.</span>
+<span class="sd">        prop_list : str or list</span>
+<span class="sd">            A particle property or a list of the names of the properties to plot.</span>
 <span class="sd">        bins : int</span>
-<span class="sd">            The number of bins in the histogram.</span>
+<span class="sd">            The number of bins in the histogram if plotting one property.</span>
+<span class="sd">            </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        </span>
+<span class="sd">        particles.plot(&#39;area&#39;, bins=20)</span>
+<span class="sd">        </span>
+<span class="sd">        particles.plot([&#39;equivalent circular diameter&#39;,&#39;circularity&#39;])</span>
 <span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prop_list</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_plot_one_property</span><span class="p">(</span><span class="n">prop_list</span><span class="p">,</span><span class="n">bins</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">prop_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_plot_one_property</span><span class="p">(</span><span class="n">prop_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">bins</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">prop_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_plot_two_properties</span><span class="p">(</span><span class="n">prop_list</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Can only plot one or two properties, please change the length of the property list.&quot;</span><span class="p">)</span>
+        
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+        
+    <span class="k">def</span> <span class="nf">_plot_one_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">prop</span><span class="p">,</span><span class="n">bins</span><span class="p">):</span>
         <span class="n">property_list</span> <span class="o">=</span> <span class="p">[]</span>
         
         <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">:</span>
             <span class="n">property_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
             
-        <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">property_list</span><span class="p">,</span><span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">property_list</span><span class="p">,</span><span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop</span><span class="p">][</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="o">+</span><span class="s2">&quot; (&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop</span><span class="p">][</span><span class="s1">&#39;units&#39;</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;No. of particles&quot;</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+        
+    <span class="k">def</span> <span class="nf">_plot_two_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">prop_list</span><span class="p">):</span>
+        
+        <span class="n">property_list_one</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">property_list_two</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">:</span>
+            <span class="n">property_list_one</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
+            <span class="n">property_list_two</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
+            
+        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">property_list_one</span><span class="p">,</span><span class="n">property_list_two</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">prop_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">prop_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="o">+</span><span class="s2">&quot; (&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="s1">&#39;units&#39;</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">prop_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">prop_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="o">+</span><span class="s2">&quot; (&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="s1">&#39;units&#39;</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
         
 <div class="viewcode-block" id="Particle_list.normalize_boxing"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle_list.normalize_boxing">[docs]</a>    <span class="k">def</span> <span class="nf">normalize_boxing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">even</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -358,7 +405,49 @@
             <span class="n">particle</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">new_im</span>
             
             <span class="n">particle</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">particle</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div></div>
+            <span class="n">particle</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+            
+<div class="viewcode-block" id="Particle_list.cluster_particles"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle_list.cluster_particles">[docs]</a>    <span class="k">def</span> <span class="nf">cluster_particles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;Kmeans&#39;</span><span class="p">,</span><span class="n">properties</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cluster particles in to different populations based on specified properties.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        algorithm: str</span>
+<span class="sd">            The algorithm to use for clustering.</span>
+<span class="sd">        properties: list</span>
+<span class="sd">            A list of the properties upon which to base the clustering.</span>
+<span class="sd">        n_clusters: int</span>
+<span class="sd">            The number of clusters to split the data into.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vec</span><span class="p">,</span><span class="n">feature_array</span> <span class="o">=</span> <span class="n">_extract_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">properties</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">algorithm</span><span class="o">==</span><span class="s1">&#39;Kmeans&#39;</span><span class="p">:</span>
+            <span class="n">cluster_out</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">n_clusters</span><span class="p">)</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">feature_array</span><span class="p">)</span>
+            
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">):</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">cluster_number</span> <span class="o">=</span> <span class="n">cluster_out</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        
+        <span class="n">plist_clusters</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_clusters</span><span class="p">):</span>
+            <span class="n">p_list_new</span> <span class="o">=</span> <span class="n">Particle_list</span><span class="p">()</span>
+            <span class="n">p_list_new</span><span class="o">.</span><span class="n">list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">it</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">,[</span><span class="n">c</span><span class="o">==</span><span class="n">n</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cluster_out</span><span class="p">]))</span>
+            <span class="n">plist_clusters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p_list_new</span><span class="p">)</span>
+        
+        <span class="k">return</span><span class="p">(</span><span class="n">plist_clusters</span><span class="p">)</span></div></div>
+
+<span class="k">def</span> <span class="nf">_extract_features</span><span class="p">(</span><span class="n">particles</span><span class="p">,</span><span class="n">properties</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">properties</span><span class="o">==</span><span class="kc">None</span><span class="p">:</span>
+        <span class="n">properties</span> <span class="o">=</span> <span class="n">particles</span><span class="o">.</span><span class="n">list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span>
+    
+    <span class="n">properties_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">particles</span><span class="o">.</span><span class="n">list</span><span class="p">:</span>
+        <span class="n">properties_list</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="n">p</span><span class="p">:</span><span class="n">particle</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">properties</span><span class="p">})</span>
+        
+    <span class="n">vec</span> <span class="o">=</span> <span class="n">feature_extraction</span><span class="o">.</span><span class="n">DictVectorizer</span><span class="p">()</span>
+    <span class="n">vectorized</span> <span class="o">=</span> <span class="n">vec</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">properties_list</span><span class="p">)</span>
+        
+    <span class="k">return</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span><span class="n">vectorized</span><span class="p">)</span>
 </pre></div>
 
            </div>

@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -161,25 +161,34 @@
 <span id="plotting-saving"></span><h1>Plotting and Saving<a class="headerlink" href="#plotting-and-saving" title="Permalink to this headline">¶</a></h1>
 <p>One of the main benefits of ParticleSpy is the ability to plot particle properties natively.
 The main method for plotting particle properties is <a class="reference internal" href="source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle_list.plot" title="ParticleSpy.ptcl_class.Particle_list.plot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">plot()</span></code></a>.
-This method plots a histogram of any specified property, as long as you have added this property to each particle (either automatically or manually).</p>
+This method plots either a histogram of any specified property or a scatter plot of two properties, as long as you have added these properties to each particle (either automatically or manually).</p>
 <p>An example of plotting a histogram of particle areas in shown here:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">ParticleAnalysis</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">generated_mask</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">area</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;area&#39;</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="_images/area_dist.png" class="align-center" src="_images/area_dist.png" />
 <p>In the above code it is possible to plot particle area because this is automatically calculated in the ParticleAnalysis function.</p>
+<p>To plot a scatter plot of two properties you simply need to specify two properties in the arguments:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">&#39;area&#39;</span><span class="p">,</span><span class="s1">&#39;circularity&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<img alt="_images/area_circ_scatter.png" class="align-center" src="_images/area_circ_scatter.png" />
+<p>Plotting of more than one Particle_list can be done using the top level <code class="xref py py-meth docutils literal notranslate"><span class="pre">plot()</span></code> function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ps</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">particles1</span><span class="p">,</span><span class="n">particles2</span><span class="p">],[</span><span class="s1">&#39;area&#39;</span><span class="p">,</span><span class="s1">&#39;circularity&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
 <div class="section" id="ploting-radial-profiles">
 <h2>Ploting Radial Profiles<a class="headerlink" href="#ploting-radial-profiles" title="Permalink to this headline">¶</a></h2>
 <p>ParticleSpy provides the ability to plot a radial profile (that is an intensity profile from particle centre to edge) of image intensity or EDS signal intensity.
 A radial profile can be very useful for illustrating distributions in particles.</p>
 <p>The following code shows how to plot a radial profile of image intensity.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rp</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">radial_profile</span><span class="p">(</span><span class="n">particle</span><span class="p">,[</span><span class="s1">&#39;Image&#39;</span><span class="p">],</span><span class="n">plot</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rp</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">radial_profile</span><span class="p">(</span><span class="n">particle</span><span class="p">,[</span><span class="s1">&#39;Image&#39;</span><span class="p">],</span><span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="_images/radial_profile_adf.png" class="align-center" src="_images/radial_profile_adf.png" />
 <p>It is also possible to plot the intensity of certain elements from an EDS signal.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rp</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">radial_profile</span><span class="p">(</span><span class="n">particle</span><span class="p">,[</span><span class="s1">&#39;Pt&#39;</span><span class="p">,</span><span class="s1">&#39;Ni&#39;</span><span class="p">],</span><span class="n">plot</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rp</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">radial_profile</span><span class="p">(</span><span class="n">particle</span><span class="p">,[</span><span class="s1">&#39;Pt&#39;</span><span class="p">,</span><span class="s1">&#39;Ni&#39;</span><span class="p">],</span><span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="_images/radial_profile_eds.png" class="align-center" src="_images/radial_profile_eds.png" />
