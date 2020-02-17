@@ -8,7 +8,7 @@ Created on Tue Jul 31 13:35:23 2018
 from ParticleSpy.segptcls import process
 import numpy as np
 from ParticleSpy.ptcl_class import Particle, Particle_list
-from skimage import filters, morphology
+from skimage import filters
 from skimage.measure import label, regionprops, perimeter
 import ParticleSpy.find_zoneaxis as zone
 import warnings
@@ -51,15 +51,13 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
     
     if mask == 'UI':
         labeled = label(np.load(inspect.getfile(process).rpartition('\\')[0]+'/Parameters/manual_mask.npy'))
-        plt.imshow(labeled)
-        #morphology.remove_small_objects(labeled,30,in_place=True)
     elif mask.sum()==0:
         labeled = process(image,parameters)
         #labels = np.unique(labeled).tolist() #some labeled number have been removed by "remove_small_holes" function
     else:
         labeled = label(mask)
         
-    for region in regionprops(labeled, coordinates='rc'): #'count' start with 1, 0 is background
+    for region in regionprops(labeled): #'count' start with 1, 0 is background
         p = Particle()
         
         p_im = np.zeros_like(image.data)
@@ -67,12 +65,6 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         
         maskp = np.zeros_like(image.data)
         maskp[labeled==region.label] = 1
-        
-        #Calculate average background around image
-        dilated_mask = morphology.binary_dilation(maskp).astype(int)
-        dilated_mask2 = morphology.binary_dilation(dilated_mask).astype(int)
-        boundary_mask = dilated_mask2 - dilated_mask
-        p.background = np.sum(boundary_mask*image.data)/np.count_nonzero(boundary_mask)
         
         #origin = ac_number
         #p.set_origin(origin)
@@ -99,7 +91,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         p.set_eccentricity(eccentricity)
         
         #Set total image intensity
-        intensity = ((image.data - p.background)*maskp).sum()
+        intensity = (image.data*maskp).sum()
         p.set_intensity(intensity)
         
         #Set zoneaxis
@@ -120,7 +112,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
             
         if isinstance(acquisition,list):
             p.spectrum = {}
-            for ac in acquisition[1:]:
+            for ac in acquisition:
                 if ac.metadata.Signal.signal_type == 'EDS_TEM':
                     ac.set_elements(parameters.eds['elements'])
                     ac.add_lines()
@@ -130,6 +122,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
                     if parameters.eds["factors"]!=False:
                         get_composition(p,parameters)
                 elif ac.metadata.Signal.signal_type == 'EELS':
+                    ac.add_elements(parameters.eds['elements'])
                     if 'high-loss' in ac.metadata.General.title:
                         store_spectrum(p,ac,'EELS-HL')
                     elif 'low-loss' in ac.metadata.General.title:

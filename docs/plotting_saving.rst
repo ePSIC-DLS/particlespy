@@ -6,34 +6,19 @@ Plotting and Saving
 
 One of the main benefits of ParticleSpy is the ability to plot particle properties natively.
 The main method for plotting particle properties is :py:meth:`~.Particle_list.plot`.
-This method plots either a histogram of any specified property or a scatter plot of two properties, as long as you have added these properties to each particle (either automatically or manually).
+This method plots a histogram of any specified property, as long as you have added this property to each particle (either automatically or manually).
 
 An example of plotting a histogram of particle areas in shown here:
 
 .. code-block:: python
 
     >>> particles = ps.ParticleAnalysis(data, params, mask=generated_mask)
-    >>> particles.plot('area', bins = 20)
+    >>> particles.plot(area, bins = 20)
 
 .. image:: _static/area_dist.png
     :align: center
 
 In the above code it is possible to plot particle area because this is automatically calculated in the ParticleAnalysis function.
-
-To plot a scatter plot of two properties you simply need to specify two properties in the arguments:
-
-.. code-block:: python
-
-    >>> particles.plot(['area','circularity'])
-    
-.. image:: _static/area_circ_scatter.png
-    :align: center
-    
-Plotting of more than one Particle_list can be done using the top level :py:meth:`~.api.plot` function:
-
-.. code-block:: python
-
-    >>> ps.plot([particles1,particles2],['area','circularity'])
 
 
 Ploting Radial Profiles

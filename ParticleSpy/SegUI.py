@@ -248,12 +248,12 @@ class Application(QMainWindow):
         self.label.setPixmap(pixmap2)
         
         self.prev_params.load()
-        self.prev_params.save(filename=inspect.getfile(process).rpartition('\\')[0]+'/parameters/parameters_previous.hdf5')
+        self.prev_params.save(filename=inspect.getfile(process).rpartition('\\')[0]+'/Parameters/parameters_previous.hdf5')
         
         self.params.save()
         
     def undo(self):
-        self.params.load(filename='parameters/parameters_previous.hdf5')
+        self.params.load(filename='Parameters/parameters_previous.hdf5')
         
         labels = process(self.im_hs,self.params)
         labels = np.uint8(labels*(256/labels.max()))
@@ -325,7 +325,7 @@ class Canvas(QLabel):
             pixmap = QPixmap(qi)
             
             painter = QPainter(self.pixmap())
-            painter.setOpacity(0.1)
+            painter.setOpacity(0.01)
 
             painter.drawPixmap(0, 0, pixmap)
             painter.end()
@@ -358,8 +358,8 @@ class Canvas(QLabel):
         self.last_y = None
         
     def savearray(self,image):
-        resized = np.array(Image.fromarray(self.array).resize((image.shape[1],image.shape[0])))
-        np.save(inspect.getfile(process).rpartition('\\')[0]+'/parameters/manual_mask',resized)
+        resized = np.array(Image.fromarray(self.array).resize((image.shape[0],image.shape[1])))
+        np.save(inspect.getfile(process).rpartition('\\')[0]+'/Parameters/manual_mask',resized)
 
 
 def main(haadf):
