@@ -30,7 +30,7 @@ The calculated parameters include:
 
 * Total particle intensity
 
-* Centroid
+* X and Y coordinates
 
 .. code-block:: python
 
