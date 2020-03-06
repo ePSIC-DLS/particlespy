@@ -119,6 +119,8 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         #Set mask
         p.set_mask(maskp)
         
+        p.set_property('Frame',None,None)
+        
         if parameters.store["store_im"]==True:
             store_image(p,image,parameters)
             
@@ -149,6 +151,43 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         
         particles.append(p)
         
+    return(particles)
+    
+def ParticleAnalysisSeries(image_series,parameters,particles=None):
+    """
+    Perform segmentation and analysis of times series of particles.
+    
+    Parameters
+    ----------
+    image_series: Hyperpsy signal object or list of hyperspy signal objects.
+        Hyperpsy signal object containing nanoparticle images or a list of signal
+         objects that contains a time series.
+    parameters: Dictionary of parameters
+        The parameters can be input manually in to a dictionary or can be generated
+        using param_generator().
+    particles: list
+        List of already analysed particles that the output can be appended
+        to.
+
+    Returns
+    -------
+    Particle_list object
+    """
+    
+    particles = Particle_list()
+    if isinstance(image_series,list):
+        for i,image in enumerate(image_series):
+            ParticleAnalysis(image,parameters,particles)
+            for particle in particles:
+                if particle.properties['Frame']['value'] == None:
+                    particle.set_property('Frame',i,None)
+    else:
+        for i,image in enumerate(image_series.inav):
+            ParticleAnalysis(image,parameters,particles)
+            for particle in particles:
+                if particle.properties['Frame']['value'] == None:
+                    particle.set_property('Frame',i,None)
+    
     return(particles)
     
 def store_image(particle,image,params):
