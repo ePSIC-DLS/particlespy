@@ -87,6 +87,10 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         diam_units = image.axes_manager[0].units
         p.set_circdiam(cal_circdiam,diam_units)
         
+        #Set particle x, y coordinates
+        p.set_property("x",region.centroid[0]*image.axes_manager[0].scale,image.axes_manager[0].units)
+        p.set_property("y",region.centroid[1]*image.axes_manager[1].scale,image.axes_manager[1].units)
+        
         cal_axes_lengths = (region.major_axis_length*image.axes_manager[0].scale,region.minor_axis_length*image.axes_manager[0].scale)
         #Note: the above only works for square pixels
         p.set_axes_lengths(cal_axes_lengths,diam_units)
