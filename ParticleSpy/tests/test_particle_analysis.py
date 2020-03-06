@@ -108,6 +108,8 @@ def test_particleanalysis():
     eds_particle_spectrum = eds_particle.sum()
     nptest.assert_allclose(p.spectrum['EDS_TEM'].data,eds_particle_spectrum.data)
     nptest.assert_allclose(p.composition['Au'],46.94530019)
+    nptest.assert_allclose(p.properties['x']['value'], 100.)
+    nptest.assert_allclose(p.properties['y']['value'], 100.)
     
 def test_normalize_boxing():
     mask = gen_test.generate_test_image2(hspy=False)

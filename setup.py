@@ -18,7 +18,7 @@ except ImportError:
 setuptools.setup(
     name="particlespy",
     package_dir={'particlespy':'particlespy'},
-    version="0.2.0",
+    version="0.3.0",
     author="Thomas Slater",
     author_email="tjaslater@gmail.com",
     description="A package to perform particle segmentation and analysis",
@@ -31,8 +31,8 @@ setuptools.setup(
     package_data={
         'ParticleSpy':
         [
-            'Data/*.dm4',
-            'Parameters/*.hdf5'
+            'data/*.dm4',
+            'parameters/*.hdf5'
         ],
     },
     classifiers=[

@@ -30,6 +30,8 @@ The calculated parameters include:
 
 * Total particle intensity
 
+* X and Y coordinates
+
 .. code-block:: python
 
     >>> #Syntax for accessing particle properties.
