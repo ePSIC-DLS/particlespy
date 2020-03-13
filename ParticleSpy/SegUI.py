@@ -8,15 +8,15 @@ Created on Mon Oct 22 15:50:08 2018
 from PyQt5.QtWidgets import QCheckBox, QPushButton, QLabel, QMainWindow, QSpinBox
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QComboBox, QTabWidget
 from PyQt5.QtWidgets import QVBoxLayout
-from PyQt5.QtGui import QPixmap, QImage, QColor, QPainter, QBitmap
+from PyQt5.QtGui import QPixmap, QImage, QColor, QPainter
 from PyQt5.QtCore import Qt
 import sys
+import os
 
 import inspect
 import numpy as np
 from skimage.segmentation import mark_boundaries, flood_fill
 from skimage.util import invert
-import matplotlib.pyplot as plt
 from PIL import Image
 
 from ParticleSpy.segptcls import process
@@ -248,7 +248,7 @@ class Application(QMainWindow):
         self.label.setPixmap(pixmap2)
         
         self.prev_params.load()
-        self.prev_params.save(filename=inspect.getfile(process).rpartition('\\')[0]+'/parameters/parameters_previous.hdf5')
+        self.prev_params.save(filename=os.path.dirname(inspect.getfile(process))+'/parameters/parameters_previous.hdf5')
         
         self.params.save()
         
@@ -359,7 +359,7 @@ class Canvas(QLabel):
         
     def savearray(self,image):
         resized = np.array(Image.fromarray(self.array).resize((image.shape[1],image.shape[0])))
-        np.save(inspect.getfile(process).rpartition('\\')[0]+'/parameters/manual_mask',resized)
+        np.save(os.path.dirname(inspect.getfile(process))+'/parameters/manual_mask',resized)
 
 
 def main(haadf):
