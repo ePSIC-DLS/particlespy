@@ -249,7 +249,6 @@ class Application(QMainWindow):
         
         self.prev_params.load()
         self.prev_params.save(filename=os.path.dirname(inspect.getfile(process))+'/parameters/parameters_previous.hdf5')
-        
         self.params.save()
         
     def undo(self):
@@ -360,7 +359,6 @@ class Canvas(QLabel):
     def savearray(self,image):
         resized = np.array(Image.fromarray(self.array).resize((image.shape[1],image.shape[0])))
         np.save(os.path.dirname(inspect.getfile(process))+'/parameters/manual_mask',resized)
-
 
 def main(haadf):
     
