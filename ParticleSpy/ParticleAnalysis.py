@@ -193,6 +193,18 @@ def ParticleAnalysisSeries(image_series,parameters,particles=None):
     return(particles)
 
 def timeseriesanalysis(particles):
+    """
+    Perform tracking of particles for times series data.
+
+    Parameters
+    ----------
+    particles : Particle_list object.
+
+    Returns
+    -------
+    Pandas DataFrame of tracjectories.
+
+    """
     df = pd.DataFrame(columns=['y','x','area','frame'])
     for particle in particles.list:
         df = df.append([{'x':particle.properties['x']['value'],
