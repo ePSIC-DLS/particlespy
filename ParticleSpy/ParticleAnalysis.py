@@ -156,7 +156,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         
     return(particles)
     
-def ParticleAnalysisSeries(image_series,parameters,particles=None):
+def ParticleAnalysisSeries(image_series,parameters,particles=None,masks=[]):
     """
     Perform segmentation and analysis of times series of particles.
     
@@ -180,13 +180,13 @@ def ParticleAnalysisSeries(image_series,parameters,particles=None):
     particles = Particle_list()
     if isinstance(image_series,list):
         for i,image in enumerate(image_series):
-            ParticleAnalysis(image,parameters,particles)
+            ParticleAnalysis(image,parameters,particles,masks[i])
             for particle in particles.list:
                 if particle.properties['frame']['value'] == None:
                     particle.set_property('frame',i,None)
     else:
         for i,image in enumerate(image_series.inav):
-            ParticleAnalysis(image,parameters,particles)
+            ParticleAnalysis(image,parameters,particles,masks[i])
             for particle in particles.list:
                 if particle.properties['frame']['value'] == None:
                     particle.set_property('frame',i,None)

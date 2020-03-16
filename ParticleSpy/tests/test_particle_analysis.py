@@ -115,11 +115,13 @@ def test_series():
     image2 = gen_test.generate_test_image(hspy=True)
     images = [image,image2]
     mask = gen_test.generate_test_image(hspy=False)
+    mask2 = gen_test.generate_test_image(hspy=False)
+    masks = [mask,mask2]
     
     params = PAnalysis.parameters()
     params.generate(store_im=True)
     
-    p_list = PAnalysis.ParticleAnalysisSeries(images,params,mask=mask)
+    p_list = PAnalysis.ParticleAnalysisSeries(images,params,mask=masks)
     
     p = p_list.list[0]
     
