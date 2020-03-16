@@ -16,6 +16,7 @@ import h5py
 import inspect
 import matplotlib.pyplot as plt
 import pandas as pd
+import trackpy
 
 def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
     """
@@ -198,7 +199,9 @@ def timeseriesanalysis(particles):
                          'y':particle.properties['y']['value'],
                          'area':particle.properties['area']['value'],
                          'frame':particle.properties['Frame']['value']}])
-    return(df)
+        
+    t = trackpy.link(df2,5,memory=3)
+    return(t)
     
 def store_image(particle,image,params):
     ii = np.where(particle.mask)
