@@ -122,7 +122,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         #Set mask
         p.set_mask(maskp)
         
-        p.set_property('Frame',None,None)
+        p.set_property('frame',None,None)
         
         if parameters.store["store_im"]==True:
             store_image(p,image,parameters)
