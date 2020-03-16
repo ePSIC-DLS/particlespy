@@ -107,14 +107,14 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         p.set_intensity(intensity)
         
         #Set zoneaxis
-        im_smooth = filters.gaussian(np.uint16(p_im),1)
+        '''im_smooth = filters.gaussian(np.uint16(p_im),1)
         im_zone = np.zeros_like(im_smooth)
         im_zone[im_smooth>0] = im_smooth[im_smooth>0] - im_smooth[im_smooth>0].mean()
         im_zone[im_zone<0] = 0
         p.set_zone(zone.find_zoneaxis(im_zone))
         if p.zone != None:
             plt.imshow(im_zone)
-            plt.show()
+            plt.show()'''
         
         #Set mask
         p.set_mask(maskp)
@@ -178,13 +178,13 @@ def ParticleAnalysisSeries(image_series,parameters,particles=None):
     if isinstance(image_series,list):
         for i,image in enumerate(image_series):
             ParticleAnalysis(image,parameters,particles)
-            for particle in particles:
+            for particle in particles.list:
                 if particle.properties['Frame']['value'] == None:
                     particle.set_property('Frame',i,None)
     else:
         for i,image in enumerate(image_series.inav):
             ParticleAnalysis(image,parameters,particles)
-            for particle in particles:
+            for particle in particles.list:
                 if particle.properties['Frame']['value'] == None:
                     particle.set_property('Frame',i,None)
     
