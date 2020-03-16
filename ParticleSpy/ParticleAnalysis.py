@@ -15,6 +15,7 @@ import warnings
 import h5py
 import inspect
 import matplotlib.pyplot as plt
+import pandas as pd
 
 def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
     """
@@ -189,6 +190,15 @@ def ParticleAnalysisSeries(image_series,parameters,particles=None):
                     particle.set_property('Frame',i,None)
     
     return(particles)
+
+def timeseriesanalysis(particles):
+    df = pd.DataFrame(columns=['y','x','area','frame'])
+    for particle in particles.list:
+        df = df.append([{'x':particle.properties['x']['value'],
+                         'y':particle.properties['y']['value'],
+                         'area':particle.properties['area']['value'],
+                         'frame':particle.properties['Frame']['value']}])
+    return(df)
     
 def store_image(particle,image,params):
     ii = np.where(particle.mask)
