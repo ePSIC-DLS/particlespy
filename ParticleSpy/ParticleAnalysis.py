@@ -213,7 +213,7 @@ def timeseriesanalysis(particles):
                          'area':particle.properties['area']['value'],
                          'frame':particle.properties['frame']['value']}])
         
-    t = trackpy.link(df2,5,memory=3)
+    t = trackpy.link(df,5,memory=3)
     return(t)
     
 def store_image(particle,image,params):
