@@ -181,14 +181,14 @@ def ParticleAnalysisSeries(image_series,parameters,particles=None):
         for i,image in enumerate(image_series):
             ParticleAnalysis(image,parameters,particles)
             for particle in particles.list:
-                if particle.properties['Frame']['value'] == None:
-                    particle.set_property('Frame',i,None)
+                if particle.properties['frame']['value'] == None:
+                    particle.set_property('frame',i,None)
     else:
         for i,image in enumerate(image_series.inav):
             ParticleAnalysis(image,parameters,particles)
             for particle in particles.list:
-                if particle.properties['Frame']['value'] == None:
-                    particle.set_property('Frame',i,None)
+                if particle.properties['frame']['value'] == None:
+                    particle.set_property('frame',i,None)
     
     return(particles)
 
@@ -210,7 +210,7 @@ def timeseriesanalysis(particles):
         df = df.append([{'x':particle.properties['x']['value'],
                          'y':particle.properties['y']['value'],
                          'area':particle.properties['area']['value'],
-                         'frame':particle.properties['Frame']['value']}])
+                         'frame':particle.properties['frame']['value']}])
         
     t = trackpy.link(df2,5,memory=3)
     return(t)
