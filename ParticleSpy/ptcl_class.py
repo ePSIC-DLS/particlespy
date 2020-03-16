@@ -254,7 +254,7 @@ class Particle_list(object):
             particle.image.axes_manager[0].size = particle.image.data.shape[0]
             particle.image.axes_manager[1].size = particle.image.data.shape[1]
             
-    def cluster_particles(self,algorithm='Kmeans',properties=None,n_clusters=2):
+    def cluster_particles(self,algorithm='Kmeans',properties=None,n_clusters=2,eps=100,min_samples=5):
         """
         Cluster particles in to different populations based on specified properties.
         
@@ -271,12 +271,16 @@ class Particle_list(object):
         
         if algorithm=='Kmeans':
             cluster_out = cluster.KMeans(n_clusters=n_clusters).fit_predict(feature_array)
-            
+            start = 0
+        elif algorithm=='DBSCAN':
+            cluster_out = cluster.DBSCAN(eps=eps,min_samples=min_samples).fit_predict(feature_array)
+            start = -1
+        
         for i,p in enumerate(self.list):
             p.cluster_number = cluster_out[i]
         
         plist_clusters = []
-        for n in range(n_clusters):
+        for n in range(start,cluster_out.max()+1):
             p_list_new = Particle_list()
             p_list_new.list = list(it.compress(self.list,[c==n for c in cluster_out]))
             plist_clusters.append(p_list_new)
