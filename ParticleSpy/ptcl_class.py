@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.ndimage import interpolation
 from ParticleSpy.particle_save import save_plist
-from sklearn import feature_extraction, cluster
+from sklearn import feature_extraction, cluster, preprocessing
 import itertools as it
 
 class Particle(object):
@@ -254,7 +254,7 @@ class Particle_list(object):
             particle.image.axes_manager[0].size = particle.image.data.shape[0]
             particle.image.axes_manager[1].size = particle.image.data.shape[1]
             
-    def cluster_particles(self,algorithm='Kmeans',properties=None,n_clusters=2,eps=100,min_samples=5):
+    def cluster_particles(self,algorithm='Kmeans',properties=None,n_clusters=2,eps=0.2,min_samples=5):
         """
         Cluster particles in to different populations based on specified properties.
         
@@ -268,6 +268,8 @@ class Particle_list(object):
             The number of clusters to split the data into.
         """
         vec,feature_array = _extract_features(self,properties)
+        
+        feature_array = preprocessing.scale(feature_array)
         
         if algorithm=='Kmeans':
             cluster_out = cluster.KMeans(n_clusters=n_clusters).fit_predict(feature_array)
@@ -296,6 +298,6 @@ def _extract_features(particles,properties=None):
         properties_list.append({p:particle.properties[p]['value'] for p in properties})
         
     vec = feature_extraction.DictVectorizer()
-    vectorized = vec.fit_transform(properties_list)
+    vectorized = vec.fit_transform(properties_list).toarray()
         
     return(vec,vectorized)
