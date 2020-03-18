@@ -277,6 +277,12 @@ class Particle_list(object):
         elif algorithm=='DBSCAN':
             cluster_out = cluster.DBSCAN(eps=eps,min_samples=min_samples).fit_predict(feature_array)
             start = -1
+        elif algorithm=='OPTICS':
+            cluster_out = cluster.OPTICS(min_samples=min_samples).fit_predict(feature_array)
+            start = -1
+        elif algorithm=='AffinityPropagation':
+            cluster_out = cluster.AffinityPropagation().fit_predict(feature_array)
+            start = 0
         
         for i,p in enumerate(self.list):
             p.cluster_number = cluster_out[i]
