@@ -49,12 +49,13 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
     else:
         image = acquisition
     
-    if mask == 'UI':
+    if mask[0] == 'UI':
         labeled = label(np.load(inspect.getfile(process).rpartition('\\')[0]+'/Parameters/manual_mask.npy'))
         plt.imshow(labeled)
         #morphology.remove_small_objects(labeled,30,in_place=True)
     elif mask.sum()==0:
         labeled = process(image,parameters)
+        plt.imshow(labeled)
         #labels = np.unique(labeled).tolist() #some labeled number have been removed by "remove_small_holes" function
     else:
         labeled = label(mask)
@@ -101,10 +102,13 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         p.set_circularity(circularity)
         eccentricity = region.eccentricity
         p.set_eccentricity(eccentricity)
+        p.set_property("solidity",region.solidity,None)
         
         #Set total image intensity
         intensity = ((image.data - p.background)*maskp).sum()
         p.set_intensity(intensity)
+        p.set_property("intensity_max",((image.data - p.background)*maskp).max(),None)
+        p.set_property("intensity_std",((image.data - p.background)*maskp).std()/p.properties['intensity_max']['value'],None)
         
         '''#Set zoneaxis
         im_smooth = filters.gaussian(np.uint16(p_im),1)
