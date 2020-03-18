@@ -106,7 +106,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         intensity = ((image.data - p.background)*maskp).sum()
         p.set_intensity(intensity)
         
-        #Set zoneaxis
+        '''#Set zoneaxis
         im_smooth = filters.gaussian(np.uint16(p_im),1)
         im_zone = np.zeros_like(im_smooth)
         im_zone[im_smooth>0] = im_smooth[im_smooth>0] - im_smooth[im_smooth>0].mean()
@@ -114,7 +114,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         p.set_zone(zone.find_zoneaxis(im_zone))
         if p.zone != None:
             plt.imshow(im_zone)
-            plt.show()
+            plt.show()'''
         
         #Set mask
         p.set_mask(maskp)
@@ -241,6 +241,7 @@ class parameters(object):
         segment.attrs["min_size"] = self.segment['min_size']
         segment.attrs["rb_kernel"] = self.segment['rb_kernel']
         segment.attrs["gaussian"] = self.segment['gaussian']
+        segment.attrs["local_size"] = self.segment['local_size']
         store.attrs['store_im'] = self.store['store_im']
         store.attrs['pad'] = self.store['pad']
         store.attrs['store_maps'] = self.store['store_maps']
@@ -267,6 +268,7 @@ class parameters(object):
         self.segment['min_size'] = segment.attrs["min_size"]
         self.segment['rb_kernel'] = segment.attrs["rb_kernel"]
         self.segment['gaussian'] = segment.attrs["gaussian"]
+        self.segment['local_size'] = segment.attrs["local_size"]
         self.store['store_im'] = store.attrs['store_im']
         self.store['pad'] = store.attrs['pad']
         self.store['store_maps'] = store.attrs['store_maps']
