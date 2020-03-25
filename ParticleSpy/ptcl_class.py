@@ -262,10 +262,22 @@ class Particle_list(object):
         ----------
         algorithm: str
             The algorithm to use for clustering.
+            Options are 'Kmeans','DBSCAN','OPTICS','AffinityPropagation'.
         properties: list
             A list of the properties upon which to base the clustering.
         n_clusters: int
             The number of clusters to split the data into.
+            Used for Kmeans.
+        eps: float
+            The distance between samples.
+            Used for DBSCAN.
+        min_samples: int
+            The minimum number of samples within the eps distance to be classed as a cluster.
+            Used for DBSCAN and OPTICS.
+        
+        Returns
+        -------
+        List of Particle_list() objects.
         """
         vec,feature_array = _extract_features(self,properties)
         
