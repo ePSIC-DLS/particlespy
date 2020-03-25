@@ -15,6 +15,7 @@ import warnings
 import h5py
 import inspect
 import matplotlib.pyplot as plt
+import os
 
 def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
     """
@@ -49,8 +50,8 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
     else:
         image = acquisition
     
-    if mask[0] == 'UI':
-        labeled = label(np.load(inspect.getfile(process).rpartition('\\')[0]+'/Parameters/manual_mask.npy'))
+    if mask == 'UI':
+        labeled = label(np.load(os.path.dirname(inspect.getfile(process))+'/Parameters/manual_mask.npy'))
         plt.imshow(labeled)
         #morphology.remove_small_objects(labeled,30,in_place=True)
     elif mask.sum()==0:
@@ -232,7 +233,7 @@ class parameters(object):
         
         self.store['store_maps'] = store_maps
     
-    def save(self,filename=inspect.getfile(process).rpartition('\\')[0]+'/Parameters/parameters_current.hdf5'):
+    def save(self,filename=os.path.dirname(inspect.getfile(process))+'/Parameters/parameters_current.hdf5'):
         f = h5py.File(filename,'w')
         
         segment = f.create_group("segment")
@@ -255,7 +256,7 @@ class parameters(object):
         
         f.close()
         
-    def load(self,filename=inspect.getfile(process).rpartition('\\')[0]+'/Parameters/parameters_current.hdf5'):
+    def load(self,filename=os.path.dirname(inspect.getfile(process))+'/Parameters/parameters_current.hdf5'):
         f = h5py.File(filename,'r')
         
         segment = f["segment"]
