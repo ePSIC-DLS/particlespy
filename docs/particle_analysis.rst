@@ -28,9 +28,14 @@ The calculated parameters include:
 
 * Eccentricity
 
+* Solidity
+
 * Total particle intensity
 
+* Maximum particle intensity
+
 * X and Y coordinates
+
 
 .. code-block:: python
 
