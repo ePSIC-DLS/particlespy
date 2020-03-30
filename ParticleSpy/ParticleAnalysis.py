@@ -156,7 +156,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         
     return(particles)
     
-def ParticleAnalysisSeries(image_series,parameters,particles=None,masks=[]):
+def ParticleAnalysisSeries(image_series,parameters,particles=None):
     """
     Perform segmentation and analysis of times series of particles.
     
@@ -180,40 +180,51 @@ def ParticleAnalysisSeries(image_series,parameters,particles=None,masks=[]):
     particles = Particle_list()
     if isinstance(image_series,list):
         for i,image in enumerate(image_series):
-            ParticleAnalysis(image,parameters,particles,masks[i])
+            ParticleAnalysis(image,parameters,particles)
             for particle in particles.list:
                 if particle.properties['frame']['value'] == None:
                     particle.set_property('frame',i,None)
     else:
         for i,image in enumerate(image_series.inav):
-            ParticleAnalysis(image,parameters,particles,masks[i])
+            ParticleAnalysis(image,parameters,particles)
             for particle in particles.list:
                 if particle.properties['frame']['value'] == None:
                     particle.set_property('frame',i,None)
     
     return(particles)
 
-def timeseriesanalysis(particles):
+def timeseriesanalysis(particles,max_dist=1,memory=3,properties=['area']):
     """
     Perform tracking of particles for times series data.
 
     Parameters
     ----------
     particles : Particle_list object.
+    max_dist : int
+        The maximum distance between the same particle in subsequent images.
+    memory : int
+        The number of frames to remember particles over.
+    properties : list
+        A list of particle properties to track over the time series.
 
     Returns
     -------
     Pandas DataFrame of tracjectories.
 
     """
-    df = pd.DataFrame(columns=['y','x','area','frame'])
+    df = pd.DataFrame(columns=['y','x']+properties+['frame'])
     for particle in particles.list:
-        df = df.append([{'x':particle.properties['x']['value'],
-                         'y':particle.properties['y']['value'],
-                         'area':particle.properties['area']['value'],
-                         'frame':particle.properties['frame']['value']}])
+        pd_dict = {'x':particle.properties['x']['value'],
+                   'y':particle.properties['y']['value']}
+        for property in properties:
+            pd_dict.update({property:particle.properties[property]['value']})
+        pd_dict.update({'frame':particle.properties['frame']['value']})
+        df = df.append([pd_dict])
+    
+    print(df.head())
+    print(df.tail())
         
-    t = trackpy.link(df,5,memory=3)
+    t = trackpy.link(df,max_dist,memory=memory)
     return(t)
     
 def store_image(particle,image,params):
