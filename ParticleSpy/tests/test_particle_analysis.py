@@ -121,7 +121,7 @@ def test_series():
     params = PAnalysis.parameters()
     params.generate(store_im=True)
     
-    p_list = PAnalysis.ParticleAnalysisSeries(images,params,masks=masks)
+    p_list = PAnalysis.ParticleAnalysisSeries(images,params)
     
     p = p_list.list[0]
     
@@ -145,7 +145,7 @@ def test_time_series():
     params = PAnalysis.parameters()
     params.generate(store_im=True)
     
-    p_list = PAnalysis.ParticleAnalysisSeries(images,params,masks=masks)
+    p_list = PAnalysis.ParticleAnalysisSeries(images,params)
     
     t = PAnalysis.timeseriesanalysis(p_list)
     
