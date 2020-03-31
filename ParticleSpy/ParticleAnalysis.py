@@ -15,6 +15,8 @@ import warnings
 import h5py
 import inspect
 import matplotlib.pyplot as plt
+import pandas as pd
+import trackpy
 import os
 
 def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
@@ -111,8 +113,8 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         p.set_property("intensity_max",((image.data - p.background)*maskp).max(),None)
         p.set_property("intensity_std",((image.data - p.background)*maskp).std()/p.properties['intensity_max']['value'],None)
         
-        '''#Set zoneaxis
-        im_smooth = filters.gaussian(np.uint16(p_im),1)
+        #Set zoneaxis
+        '''im_smooth = filters.gaussian(np.uint16(p_im),1)
         im_zone = np.zeros_like(im_smooth)
         im_zone[im_smooth>0] = im_smooth[im_smooth>0] - im_smooth[im_smooth>0].mean()
         im_zone[im_zone<0] = 0
@@ -123,6 +125,8 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         
         #Set mask
         p.set_mask(maskp)
+        
+        p.set_property('frame',None,None)
         
         if parameters.store["store_im"]==True:
             store_image(p,image,parameters)
@@ -155,6 +159,77 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         particles.append(p)
         
     return(particles)
+    
+def ParticleAnalysisSeries(image_series,parameters,particles=None):
+    """
+    Perform segmentation and analysis of times series of particles.
+    
+    Parameters
+    ----------
+    image_series: Hyperpsy signal object or list of hyperspy signal objects.
+        Hyperpsy signal object containing nanoparticle images or a list of signal
+         objects that contains a time series.
+    parameters: Dictionary of parameters
+        The parameters can be input manually in to a dictionary or can be generated
+        using param_generator().
+    particles: list
+        List of already analysed particles that the output can be appended
+        to.
+
+    Returns
+    -------
+    Particle_list object
+    """
+    
+    particles = Particle_list()
+    if isinstance(image_series,list):
+        for i,image in enumerate(image_series):
+            ParticleAnalysis(image,parameters,particles)
+            for particle in particles.list:
+                if particle.properties['frame']['value'] == None:
+                    particle.set_property('frame',i,None)
+    else:
+        for i,image in enumerate(image_series.inav):
+            ParticleAnalysis(image,parameters,particles)
+            for particle in particles.list:
+                if particle.properties['frame']['value'] == None:
+                    particle.set_property('frame',i,None)
+    
+    return(particles)
+
+def timeseriesanalysis(particles,max_dist=1,memory=3,properties=['area']):
+    """
+    Perform tracking of particles for times series data.
+
+    Parameters
+    ----------
+    particles : Particle_list object.
+    max_dist : int
+        The maximum distance between the same particle in subsequent images.
+    memory : int
+        The number of frames to remember particles over.
+    properties : list
+        A list of particle properties to track over the time series.
+
+    Returns
+    -------
+    Pandas DataFrame of tracjectories.
+
+    """
+    df = pd.DataFrame(columns=['y','x']+properties+['frame'])
+    for particle in particles.list:
+        pd_dict = {'x':particle.properties['x']['value'],
+                   'y':particle.properties['y']['value']}
+        for property in properties:
+            pd_dict.update({property:particle.properties[property]['value']})
+        pd_dict.update({'frame':particle.properties['frame']['value']})
+        df = df.append([pd_dict])
+    
+    print(df.head())
+    print(df.tail())
+        
+    t = trackpy.link(df,max_dist,memory=memory)
+    return(t)
     
 def store_image(particle,image,params):
     ii = np.where(particle.mask)
