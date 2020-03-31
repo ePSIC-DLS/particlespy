@@ -58,6 +58,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         #morphology.remove_small_objects(labeled,30,in_place=True)
     elif mask.sum()==0:
         labeled = process(image,parameters)
+        plt.imshow(labeled)
         #labels = np.unique(labeled).tolist() #some labeled number have been removed by "remove_small_holes" function
     else:
         labeled = label(mask)
@@ -104,10 +105,13 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         p.set_circularity(circularity)
         eccentricity = region.eccentricity
         p.set_eccentricity(eccentricity)
+        p.set_property("solidity",region.solidity,None)
         
         #Set total image intensity
         intensity = ((image.data - p.background)*maskp).sum()
         p.set_intensity(intensity)
+        p.set_property("intensity_max",((image.data - p.background)*maskp).max(),None)
+        p.set_property("intensity_std",((image.data - p.background)*maskp).std()/p.properties['intensity_max']['value'],None)
         
         #Set zoneaxis
         '''im_smooth = filters.gaussian(np.uint16(p_im),1)
@@ -317,6 +321,7 @@ class parameters(object):
         segment.attrs["min_size"] = self.segment['min_size']
         segment.attrs["rb_kernel"] = self.segment['rb_kernel']
         segment.attrs["gaussian"] = self.segment['gaussian']
+        segment.attrs["local_size"] = self.segment['local_size']
         store.attrs['store_im'] = self.store['store_im']
         store.attrs['pad'] = self.store['pad']
         store.attrs['store_maps'] = self.store['store_maps']
@@ -343,6 +348,7 @@ class parameters(object):
         self.segment['min_size'] = segment.attrs["min_size"]
         self.segment['rb_kernel'] = segment.attrs["rb_kernel"]
         self.segment['gaussian'] = segment.attrs["gaussian"]
+        self.segment['local_size'] = segment.attrs["local_size"]
         self.store['store_im'] = store.attrs['store_im']
         self.store['pad'] = store.attrs['pad']
         self.store['store_maps'] = store.attrs['store_maps']
