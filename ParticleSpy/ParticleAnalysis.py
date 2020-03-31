@@ -15,6 +15,9 @@ import warnings
 import h5py
 import inspect
 import matplotlib.pyplot as plt
+import pandas as pd
+import trackpy
+import os
 
 def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
     """
@@ -50,11 +53,12 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         image = acquisition
     
     if mask == 'UI':
-        labeled = label(np.load(inspect.getfile(process).rpartition('\\')[0]+'/Parameters/manual_mask.npy'))
+        labeled = label(np.load(os.path.dirname(inspect.getfile(process))+'/Parameters/manual_mask.npy'))
         plt.imshow(labeled)
         #morphology.remove_small_objects(labeled,30,in_place=True)
     elif mask.sum()==0:
         labeled = process(image,parameters)
+        #plt.imshow(labeled)
         #labels = np.unique(labeled).tolist() #some labeled number have been removed by "remove_small_holes" function
     else:
         labeled = label(mask)
@@ -87,6 +91,10 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         diam_units = image.axes_manager[0].units
         p.set_circdiam(cal_circdiam,diam_units)
         
+        #Set particle x, y coordinates
+        p.set_property("x",region.centroid[0]*image.axes_manager[0].scale,image.axes_manager[0].units)
+        p.set_property("y",region.centroid[1]*image.axes_manager[1].scale,image.axes_manager[1].units)
+        
         cal_axes_lengths = (region.major_axis_length*image.axes_manager[0].scale,region.minor_axis_length*image.axes_manager[0].scale)
         #Note: the above only works for square pixels
         p.set_axes_lengths(cal_axes_lengths,diam_units)
@@ -97,23 +105,28 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         p.set_circularity(circularity)
         eccentricity = region.eccentricity
         p.set_eccentricity(eccentricity)
+        p.set_property("solidity",region.solidity,None)
         
         #Set total image intensity
         intensity = ((image.data - p.background)*maskp).sum()
         p.set_intensity(intensity)
+        p.set_property("intensity_max",((image.data - p.background)*maskp).max(),None)
+        p.set_property("intensity_std",((image.data - p.background)*maskp).std()/p.properties['intensity_max']['value'],None)
         
         #Set zoneaxis
-        im_smooth = filters.gaussian(np.uint16(p_im),1)
+        '''im_smooth = filters.gaussian(np.uint16(p_im),1)
         im_zone = np.zeros_like(im_smooth)
         im_zone[im_smooth>0] = im_smooth[im_smooth>0] - im_smooth[im_smooth>0].mean()
         im_zone[im_zone<0] = 0
         p.set_zone(zone.find_zoneaxis(im_zone))
         if p.zone != None:
             plt.imshow(im_zone)
-            plt.show()
+            plt.show()'''
         
         #Set mask
         p.set_mask(maskp)
+        
+        p.set_property('frame',None,None)
         
         if parameters.store["store_im"]==True:
             store_image(p,image,parameters)
@@ -146,6 +159,77 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         particles.append(p)
         
     return(particles)
+    
+def ParticleAnalysisSeries(image_series,parameters,particles=None):
+    """
+    Perform segmentation and analysis of times series of particles.
+    
+    Parameters
+    ----------
+    image_series: Hyperpsy signal object or list of hyperspy signal objects.
+        Hyperpsy signal object containing nanoparticle images or a list of signal
+         objects that contains a time series.
+    parameters: Dictionary of parameters
+        The parameters can be input manually in to a dictionary or can be generated
+        using param_generator().
+    particles: list
+        List of already analysed particles that the output can be appended
+        to.
+
+    Returns
+    -------
+    Particle_list object
+    """
+    
+    particles = Particle_list()
+    if isinstance(image_series,list):
+        for i,image in enumerate(image_series):
+            ParticleAnalysis(image,parameters,particles)
+            for particle in particles.list:
+                if particle.properties['frame']['value'] == None:
+                    particle.set_property('frame',i,None)
+    else:
+        for i,image in enumerate(image_series.inav):
+            ParticleAnalysis(image,parameters,particles)
+            for particle in particles.list:
+                if particle.properties['frame']['value'] == None:
+                    particle.set_property('frame',i,None)
+    
+    return(particles)
+
+def timeseriesanalysis(particles,max_dist=1,memory=3,properties=['area']):
+    """
+    Perform tracking of particles for times series data.
+
+    Parameters
+    ----------
+    particles : Particle_list object.
+    max_dist : int
+        The maximum distance between the same particle in subsequent images.
+    memory : int
+        The number of frames to remember particles over.
+    properties : list
+        A list of particle properties to track over the time series.
+
+    Returns
+    -------
+    Pandas DataFrame of tracjectories.
+
+    """
+    df = pd.DataFrame(columns=['y','x']+properties+['frame'])
+    for particle in particles.list:
+        pd_dict = {'x':particle.properties['x']['value'],
+                   'y':particle.properties['y']['value']}
+        for property in properties:
+            pd_dict.update({property:particle.properties[property]['value']})
+        pd_dict.update({'frame':particle.properties['frame']['value']})
+        df = df.append([pd_dict])
+    
+    print(df.head())
+    print(df.tail())
+        
+    t = trackpy.link(df,max_dist,memory=memory)
+    return(t)
     
 def store_image(particle,image,params):
     ii = np.where(particle.mask)
@@ -224,7 +308,7 @@ class parameters(object):
         
         self.store['store_maps'] = store_maps
     
-    def save(self,filename=inspect.getfile(process).rpartition('\\')[0]+'/Parameters/parameters_current.hdf5'):
+    def save(self,filename=os.path.dirname(inspect.getfile(process))+'/Parameters/parameters_current.hdf5'):
         f = h5py.File(filename,'w')
         
         segment = f.create_group("segment")
@@ -237,6 +321,7 @@ class parameters(object):
         segment.attrs["min_size"] = self.segment['min_size']
         segment.attrs["rb_kernel"] = self.segment['rb_kernel']
         segment.attrs["gaussian"] = self.segment['gaussian']
+        segment.attrs["local_size"] = self.segment['local_size']
         store.attrs['store_im'] = self.store['store_im']
         store.attrs['pad'] = self.store['pad']
         store.attrs['store_maps'] = self.store['store_maps']
@@ -246,7 +331,7 @@ class parameters(object):
         
         f.close()
         
-    def load(self,filename=inspect.getfile(process).rpartition('\\')[0]+'/Parameters/parameters_current.hdf5'):
+    def load(self,filename=os.path.dirname(inspect.getfile(process))+'/Parameters/parameters_current.hdf5'):
         f = h5py.File(filename,'r')
         
         segment = f["segment"]
@@ -263,6 +348,7 @@ class parameters(object):
         self.segment['min_size'] = segment.attrs["min_size"]
         self.segment['rb_kernel'] = segment.attrs["rb_kernel"]
         self.segment['gaussian'] = segment.attrs["gaussian"]
+        self.segment['local_size'] = segment.attrs["local_size"]
         self.store['store_im'] = store.attrs['store_im']
         self.store['pad'] = store.attrs['pad']
         self.store['store_maps'] = store.attrs['store_maps']

@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.ndimage import interpolation
 from ParticleSpy.particle_save import save_plist
-from sklearn import feature_extraction, cluster
+from sklearn import feature_extraction, cluster, preprocessing
 import itertools as it
 
 class Particle(object):
@@ -254,7 +254,7 @@ class Particle_list(object):
             particle.image.axes_manager[0].size = particle.image.data.shape[0]
             particle.image.axes_manager[1].size = particle.image.data.shape[1]
             
-    def cluster_particles(self,algorithm='Kmeans',properties=None,n_clusters=2):
+    def cluster_particles(self,algorithm='Kmeans',properties=None,n_clusters=2,eps=0.2,min_samples=5):
         """
         Cluster particles in to different populations based on specified properties.
         
@@ -262,21 +262,45 @@ class Particle_list(object):
         ----------
         algorithm: str
             The algorithm to use for clustering.
+            Options are 'Kmeans','DBSCAN','OPTICS','AffinityPropagation'.
         properties: list
             A list of the properties upon which to base the clustering.
         n_clusters: int
             The number of clusters to split the data into.
+            Used for Kmeans.
+        eps: float
+            The distance between samples.
+            Used for DBSCAN.
+        min_samples: int
+            The minimum number of samples within the eps distance to be classed as a cluster.
+            Used for DBSCAN and OPTICS.
+        
+        Returns
+        -------
+        List of Particle_list() objects.
         """
         vec,feature_array = _extract_features(self,properties)
         
+        feature_array = preprocessing.scale(feature_array)
+        
         if algorithm=='Kmeans':
             cluster_out = cluster.KMeans(n_clusters=n_clusters).fit_predict(feature_array)
-            
+            start = 0
+        elif algorithm=='DBSCAN':
+            cluster_out = cluster.DBSCAN(eps=eps,min_samples=min_samples).fit_predict(feature_array)
+            start = -1
+        elif algorithm=='OPTICS':
+            cluster_out = cluster.OPTICS(min_samples=min_samples).fit_predict(feature_array)
+            start = -1
+        elif algorithm=='AffinityPropagation':
+            cluster_out = cluster.AffinityPropagation().fit_predict(feature_array)
+            start = 0
+        
         for i,p in enumerate(self.list):
             p.cluster_number = cluster_out[i]
         
         plist_clusters = []
-        for n in range(n_clusters):
+        for n in range(start,cluster_out.max()+1):
             p_list_new = Particle_list()
             p_list_new.list = list(it.compress(self.list,[c==n for c in cluster_out]))
             plist_clusters.append(p_list_new)
@@ -292,6 +316,6 @@ def _extract_features(particles,properties=None):
         properties_list.append({p:particle.properties[p]['value'] for p in properties})
         
     vec = feature_extraction.DictVectorizer()
-    vectorized = vec.fit_transform(properties_list)
+    vectorized = vec.fit_transform(properties_list).toarray()
         
     return(vec,vectorized)
