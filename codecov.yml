@@ -27,3 +27,4 @@ comment:
 
 ignore:
   - "**/SegUI.py"
+  - "**/find_zoneaxis.py"
