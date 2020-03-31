@@ -58,7 +58,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         #morphology.remove_small_objects(labeled,30,in_place=True)
     elif mask.sum()==0:
         labeled = process(image,parameters)
-        plt.imshow(labeled)
+        #plt.imshow(labeled)
         #labels = np.unique(labeled).tolist() #some labeled number have been removed by "remove_small_holes" function
     else:
         labeled = label(mask)
