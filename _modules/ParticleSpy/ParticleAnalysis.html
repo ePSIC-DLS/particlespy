@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ParticleSpy.ParticleAnalysis &mdash; ParticleSpy 0.2.0 documentation</title>
+  <title>ParticleSpy.ParticleAnalysis &mdash; ParticleSpy 0.4.0 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                0.2.0
+                0.4.0
               </div>
             
           
@@ -88,6 +88,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../segmentation.html">Segmentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../particle_analysis.html">Particle Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../plotting_saving.html">Plotting and Saving</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../time_series.html">Time Series</a></li>
 </ul>
 
             
@@ -168,6 +169,9 @@
 <span class="kn">import</span> <span class="nn">h5py</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">trackpy</span>
+<span class="kn">import</span> <span class="nn">os</span>
 
 <div class="viewcode-block" id="ParticleAnalysis"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.ParticleAnalysis">[docs]</a><span class="k">def</span> <span class="nf">ParticleAnalysis</span><span class="p">(</span><span class="n">acquisition</span><span class="p">,</span><span class="n">parameters</span><span class="p">,</span><span class="n">particles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">mask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">))):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -203,11 +207,12 @@
         <span class="n">image</span> <span class="o">=</span> <span class="n">acquisition</span>
     
     <span class="k">if</span> <span class="n">mask</span> <span class="o">==</span> <span class="s1">&#39;UI&#39;</span><span class="p">:</span>
-        <span class="n">labeled</span> <span class="o">=</span> <span class="n">label</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">process</span><span class="p">)</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;/Parameters/manual_mask.npy&#39;</span><span class="p">))</span>
+        <span class="n">labeled</span> <span class="o">=</span> <span class="n">label</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">process</span><span class="p">))</span><span class="o">+</span><span class="s1">&#39;/Parameters/manual_mask.npy&#39;</span><span class="p">))</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">labeled</span><span class="p">)</span>
         <span class="c1">#morphology.remove_small_objects(labeled,30,in_place=True)</span>
     <span class="k">elif</span> <span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
         <span class="n">labeled</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="n">image</span><span class="p">,</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="c1">#plt.imshow(labeled)</span>
         <span class="c1">#labels = np.unique(labeled).tolist() #some labeled number have been removed by &quot;remove_small_holes&quot; function</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">labeled</span> <span class="o">=</span> <span class="n">label</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
@@ -240,6 +245,10 @@
         <span class="n">diam_units</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">units</span>
         <span class="n">p</span><span class="o">.</span><span class="n">set_circdiam</span><span class="p">(</span><span class="n">cal_circdiam</span><span class="p">,</span><span class="n">diam_units</span><span class="p">)</span>
         
+        <span class="c1">#Set particle x, y coordinates</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span><span class="n">region</span><span class="o">.</span><span class="n">centroid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span><span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span><span class="n">region</span><span class="o">.</span><span class="n">centroid</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span><span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+        
         <span class="n">cal_axes_lengths</span> <span class="o">=</span> <span class="p">(</span><span class="n">region</span><span class="o">.</span><span class="n">major_axis_length</span><span class="o">*</span><span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span><span class="n">region</span><span class="o">.</span><span class="n">minor_axis_length</span><span class="o">*</span><span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span>
         <span class="c1">#Note: the above only works for square pixels</span>
         <span class="n">p</span><span class="o">.</span><span class="n">set_axes_lengths</span><span class="p">(</span><span class="n">cal_axes_lengths</span><span class="p">,</span><span class="n">diam_units</span><span class="p">)</span>
@@ -250,23 +259,28 @@
         <span class="n">p</span><span class="o">.</span><span class="n">set_circularity</span><span class="p">(</span><span class="n">circularity</span><span class="p">)</span>
         <span class="n">eccentricity</span> <span class="o">=</span> <span class="n">region</span><span class="o">.</span><span class="n">eccentricity</span>
         <span class="n">p</span><span class="o">.</span><span class="n">set_eccentricity</span><span class="p">(</span><span class="n">eccentricity</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s2">&quot;solidity&quot;</span><span class="p">,</span><span class="n">region</span><span class="o">.</span><span class="n">solidity</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
         
         <span class="c1">#Set total image intensity</span>
         <span class="n">intensity</span> <span class="o">=</span> <span class="p">((</span><span class="n">image</span><span class="o">.</span><span class="n">data</span> <span class="o">-</span> <span class="n">p</span><span class="o">.</span><span class="n">background</span><span class="p">)</span><span class="o">*</span><span class="n">maskp</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
         <span class="n">p</span><span class="o">.</span><span class="n">set_intensity</span><span class="p">(</span><span class="n">intensity</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s2">&quot;intensity_max&quot;</span><span class="p">,((</span><span class="n">image</span><span class="o">.</span><span class="n">data</span> <span class="o">-</span> <span class="n">p</span><span class="o">.</span><span class="n">background</span><span class="p">)</span><span class="o">*</span><span class="n">maskp</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s2">&quot;intensity_std&quot;</span><span class="p">,((</span><span class="n">image</span><span class="o">.</span><span class="n">data</span> <span class="o">-</span> <span class="n">p</span><span class="o">.</span><span class="n">background</span><span class="p">)</span><span class="o">*</span><span class="n">maskp</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">/</span><span class="n">p</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;intensity_max&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">],</span><span class="kc">None</span><span class="p">)</span>
         
         <span class="c1">#Set zoneaxis</span>
-        <span class="n">im_smooth</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">gaussian</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint16</span><span class="p">(</span><span class="n">p_im</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">im_zone</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">im_smooth</span><span class="p">)</span>
-        <span class="n">im_zone</span><span class="p">[</span><span class="n">im_smooth</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">im_smooth</span><span class="p">[</span><span class="n">im_smooth</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">im_smooth</span><span class="p">[</span><span class="n">im_smooth</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-        <span class="n">im_zone</span><span class="p">[</span><span class="n">im_zone</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">set_zone</span><span class="p">(</span><span class="n">zone</span><span class="o">.</span><span class="n">find_zoneaxis</span><span class="p">(</span><span class="n">im_zone</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">zone</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">im_zone</span><span class="p">)</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="sd">&#39;&#39;&#39;im_smooth = filters.gaussian(np.uint16(p_im),1)</span>
+<span class="sd">        im_zone = np.zeros_like(im_smooth)</span>
+<span class="sd">        im_zone[im_smooth&gt;0] = im_smooth[im_smooth&gt;0] - im_smooth[im_smooth&gt;0].mean()</span>
+<span class="sd">        im_zone[im_zone&lt;0] = 0</span>
+<span class="sd">        p.set_zone(zone.find_zoneaxis(im_zone))</span>
+<span class="sd">        if p.zone != None:</span>
+<span class="sd">            plt.imshow(im_zone)</span>
+<span class="sd">            plt.show()&#39;&#39;&#39;</span>
         
         <span class="c1">#Set mask</span>
         <span class="n">p</span><span class="o">.</span><span class="n">set_mask</span><span class="p">(</span><span class="n">maskp</span><span class="p">)</span>
+        
+        <span class="n">p</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="n">parameters</span><span class="o">.</span><span class="n">store</span><span class="p">[</span><span class="s2">&quot;store_im&quot;</span><span class="p">]</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
             <span class="n">store_image</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">image</span><span class="p">,</span><span class="n">parameters</span><span class="p">)</span>
@@ -299,6 +313,77 @@
         <span class="n">particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
         
     <span class="k">return</span><span class="p">(</span><span class="n">particles</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="ParticleAnalysisSeries"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.ParticleAnalysisSeries">[docs]</a><span class="k">def</span> <span class="nf">ParticleAnalysisSeries</span><span class="p">(</span><span class="n">image_series</span><span class="p">,</span><span class="n">parameters</span><span class="p">,</span><span class="n">particles</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform segmentation and analysis of times series of particles.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    image_series: Hyperpsy signal object or list of hyperspy signal objects.</span>
+<span class="sd">        Hyperpsy signal object containing nanoparticle images or a list of signal</span>
+<span class="sd">         objects that contains a time series.</span>
+<span class="sd">    parameters: Dictionary of parameters</span>
+<span class="sd">        The parameters can be input manually in to a dictionary or can be generated</span>
+<span class="sd">        using param_generator().</span>
+<span class="sd">    particles: list</span>
+<span class="sd">        List of already analysed particles that the output can be appended</span>
+<span class="sd">        to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Particle_list object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">particles</span> <span class="o">=</span> <span class="n">Particle_list</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">image_series</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">image</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">image_series</span><span class="p">):</span>
+            <span class="n">ParticleAnalysis</span><span class="p">(</span><span class="n">image</span><span class="p">,</span><span class="n">parameters</span><span class="p">,</span><span class="n">particles</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">particles</span><span class="o">.</span><span class="n">list</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">particle</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;frame&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">particle</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">image</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">image_series</span><span class="o">.</span><span class="n">inav</span><span class="p">):</span>
+            <span class="n">ParticleAnalysis</span><span class="p">(</span><span class="n">image</span><span class="p">,</span><span class="n">parameters</span><span class="p">,</span><span class="n">particles</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">particles</span><span class="o">.</span><span class="n">list</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">particle</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;frame&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">particle</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
+    
+    <span class="k">return</span><span class="p">(</span><span class="n">particles</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="timeseriesanalysis"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.timeseriesanalysis">[docs]</a><span class="k">def</span> <span class="nf">timeseriesanalysis</span><span class="p">(</span><span class="n">particles</span><span class="p">,</span><span class="n">max_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">memory</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">properties</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;area&#39;</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform tracking of particles for times series data.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    particles : Particle_list object.</span>
+<span class="sd">    max_dist : int</span>
+<span class="sd">        The maximum distance between the same particle in subsequent images.</span>
+<span class="sd">    memory : int</span>
+<span class="sd">        The number of frames to remember particles over.</span>
+<span class="sd">    properties : list</span>
+<span class="sd">        A list of particle properties to track over the time series.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Pandas DataFrame of tracjectories.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">properties</span><span class="o">+</span><span class="p">[</span><span class="s1">&#39;frame&#39;</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">particles</span><span class="o">.</span><span class="n">list</span><span class="p">:</span>
+        <span class="n">pd_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span><span class="n">particle</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">],</span>
+                   <span class="s1">&#39;y&#39;</span><span class="p">:</span><span class="n">particle</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]}</span>
+        <span class="k">for</span> <span class="nb">property</span> <span class="ow">in</span> <span class="n">properties</span><span class="p">:</span>
+            <span class="n">pd_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="nb">property</span><span class="p">:</span><span class="n">particle</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="nb">property</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]})</span>
+        <span class="n">pd_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;frame&#39;</span><span class="p">:</span><span class="n">particle</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;frame&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]})</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">pd_dict</span><span class="p">])</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">())</span>
+        
+    <span class="n">t</span> <span class="o">=</span> <span class="n">trackpy</span><span class="o">.</span><span class="n">link</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">max_dist</span><span class="p">,</span><span class="n">memory</span><span class="o">=</span><span class="n">memory</span><span class="p">)</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">t</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="store_image"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.store_image">[docs]</a><span class="k">def</span> <span class="nf">store_image</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span><span class="n">image</span><span class="p">,</span><span class="n">params</span><span class="p">):</span>
     <span class="n">ii</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
@@ -377,7 +462,7 @@
         
         <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="p">[</span><span class="s1">&#39;store_maps&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">store_maps</span></div>
     
-<div class="viewcode-block" id="parameters.save"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.parameters.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">process</span><span class="p">)</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;/Parameters/parameters_current.hdf5&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="parameters.save"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.parameters.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">process</span><span class="p">))</span><span class="o">+</span><span class="s1">&#39;/Parameters/parameters_current.hdf5&#39;</span><span class="p">):</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
         
         <span class="n">segment</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;segment&quot;</span><span class="p">)</span>
@@ -390,6 +475,7 @@
         <span class="n">segment</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;min_size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;min_size&#39;</span><span class="p">]</span>
         <span class="n">segment</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;rb_kernel&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;rb_kernel&#39;</span><span class="p">]</span>
         <span class="n">segment</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;gaussian&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;gaussian&#39;</span><span class="p">]</span>
+        <span class="n">segment</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;local_size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;local_size&#39;</span><span class="p">]</span>
         <span class="n">store</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;store_im&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="p">[</span><span class="s1">&#39;store_im&#39;</span><span class="p">]</span>
         <span class="n">store</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;pad&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="p">[</span><span class="s1">&#39;pad&#39;</span><span class="p">]</span>
         <span class="n">store</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;store_maps&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="p">[</span><span class="s1">&#39;store_maps&#39;</span><span class="p">]</span>
@@ -399,7 +485,7 @@
         
         <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
         
-<div class="viewcode-block" id="parameters.load"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.parameters.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">process</span><span class="p">)</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;/Parameters/parameters_current.hdf5&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="parameters.load"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.parameters.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">process</span><span class="p">))</span><span class="o">+</span><span class="s1">&#39;/Parameters/parameters_current.hdf5&#39;</span><span class="p">):</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
         
         <span class="n">segment</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;segment&quot;</span><span class="p">]</span>
@@ -416,6 +502,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;min_size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">segment</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;min_size&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;rb_kernel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">segment</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;rb_kernel&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;gaussian&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">segment</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;gaussian&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;local_size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">segment</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;local_size&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="p">[</span><span class="s1">&#39;store_im&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;store_im&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="p">[</span><span class="s1">&#39;pad&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;pad&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="p">[</span><span class="s1">&#39;store_maps&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;store_maps&#39;</span><span class="p">]</span>
@@ -436,7 +523,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, ePSIC
+        &copy; Copyright 2020, ePSIC
 
     </p>
   </div>

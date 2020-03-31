@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Particle Analysis &mdash; ParticleSpy 0.2.0 documentation</title>
+  <title>Particle Analysis &mdash; ParticleSpy 0.4.0 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                0.2.0
+                0.4.0
               </div>
             
           
@@ -97,6 +97,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="plotting_saving.html">Plotting and Saving</a></li>
+<li class="toctree-l1"><a class="reference internal" href="time_series.html">Time Series</a></li>
 </ul>
 
             
@@ -179,7 +180,10 @@
 <li><p>Major and minor axes lengths</p></li>
 <li><p>Circularity</p></li>
 <li><p>Eccentricity</p></li>
+<li><p>Solidity</p></li>
 <li><p>Total particle intensity</p></li>
+<li><p>Maximum particle intensity</p></li>
+<li><p>X and Y coordinates</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1">#Syntax for accessing particle properties.</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span><span class="o">.</span><span class="n">list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;area&#39;</span><span class="p">]</span>
@@ -228,8 +232,9 @@ In order to use a pre-generated mask it is possible to pass a mask argument to <
 </div>
 <div class="section" id="cluster-particles-based-on-properties">
 <h2>Cluster Particles Based on Properties<a class="headerlink" href="#cluster-particles-based-on-properties" title="Permalink to this headline">¶</a></h2>
-<p>It is possible to do a simple k-nearest neighbours clustering of particles based on their properties.
+<p>It is possible to do clustering of particles based on their properties.
 This can be done using the <a class="reference internal" href="source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle_list.cluster_particles" title="ParticleSpy.ptcl_class.Particle_list.cluster_particles"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cluster_particles()</span></code></a> function.
+Clustering uses the scikit-learn package, with the ability to use Kmeans, DBSCAN and OPTICS methods.
 For example, if you wanted to separate the particles in to two clusters based on their area and ADF intensity, you could do:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">clustered_particles</span> <span class="o">=</span> <span class="n">particles</span><span class="o">.</span><span class="n">cluster_particles</span><span class="p">(</span><span class="n">properties</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;area&#39;</span><span class="p">,</span><span class="s1">&#39;intensity&#39;</span><span class="p">],</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ps</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">clustered_particles</span><span class="p">,</span><span class="n">properties</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;area&#39;</span><span class="p">,</span><span class="s1">&#39;intensity&#39;</span><span class="p">])</span>
@@ -269,7 +274,7 @@ The function will set all image dimensions to the largest x and y values in the 
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, ePSIC
+        &copy; Copyright 2020, ePSIC
 
     </p>
   </div>

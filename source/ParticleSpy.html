@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ParticleSpy package &mdash; ParticleSpy 0.2.0 documentation</title>
+  <title>ParticleSpy package &mdash; ParticleSpy 0.4.0 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                0.2.0
+                0.4.0
               </div>
             
           
@@ -88,6 +88,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../segmentation.html">Segmentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../particle_analysis.html">Particle Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plotting_saving.html">Plotting and Saving</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../time_series.html">Time Series</a></li>
 </ul>
 
             
@@ -185,6 +186,26 @@ particles.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="ParticleSpy.ParticleAnalysis.ParticleAnalysisSeries">
+<code class="sig-prename descclassname">ParticleSpy.ParticleAnalysis.</code><code class="sig-name descname">ParticleAnalysisSeries</code><span class="sig-paren">(</span><em class="sig-param">image_series</em>, <em class="sig-param">parameters</em>, <em class="sig-param">particles=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#ParticleAnalysisSeries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.ParticleAnalysisSeries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform segmentation and analysis of times series of particles.</p>
+<dl class="simple">
+<dt>image_series: Hyperpsy signal object or list of hyperspy signal objects.</dt><dd><dl class="simple">
+<dt>Hyperpsy signal object containing nanoparticle images or a list of signal</dt><dd><p>objects that contains a time series.</p>
+</dd>
+</dl>
+</dd>
+<dt>parameters: Dictionary of parameters</dt><dd><p>The parameters can be input manually in to a dictionary or can be generated
+using param_generator().</p>
+</dd>
+<dt>particles: list</dt><dd><p>List of already analysed particles that the output can be appended
+to.</p>
+</dd>
+</dl>
+<p>Particle_list object</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="ParticleSpy.ParticleAnalysis.get_composition">
 <code class="sig-prename descclassname">ParticleSpy.ParticleAnalysis.</code><code class="sig-name descname">get_composition</code><span class="sig-paren">(</span><em class="sig-param">particle</em>, <em class="sig-param">params</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#get_composition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.get_composition" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -206,12 +227,12 @@ particles.</p>
 
 <dl class="method">
 <dt id="ParticleSpy.ParticleAnalysis.parameters.load">
-<code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param">filename='/Parameters/parameters_current.hdf5'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#parameters.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.parameters.load" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param">filename='/home/travis/build/ePSIC-DLS/ParticleSpy/ParticleSpy/Parameters/parameters_current.hdf5'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#parameters.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.parameters.load" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="ParticleSpy.ParticleAnalysis.parameters.save">
-<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">filename='/Parameters/parameters_current.hdf5'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#parameters.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.parameters.save" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">filename='/home/travis/build/ePSIC-DLS/ParticleSpy/ParticleSpy/Parameters/parameters_current.hdf5'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#parameters.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.parameters.save" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -230,6 +251,24 @@ particles.</p>
 <dt id="ParticleSpy.ParticleAnalysis.store_spectrum">
 <code class="sig-prename descclassname">ParticleSpy.ParticleAnalysis.</code><code class="sig-name descname">store_spectrum</code><span class="sig-paren">(</span><em class="sig-param">particle</em>, <em class="sig-param">ac</em>, <em class="sig-param">stype</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#store_spectrum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.store_spectrum" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="function">
+<dt id="ParticleSpy.ParticleAnalysis.timeseriesanalysis">
+<code class="sig-prename descclassname">ParticleSpy.ParticleAnalysis.</code><code class="sig-name descname">timeseriesanalysis</code><span class="sig-paren">(</span><em class="sig-param">particles, max_dist=1, memory=3, properties=['area']</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#timeseriesanalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.timeseriesanalysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform tracking of particles for times series data.</p>
+<p>particles : Particle_list object.
+max_dist : int</p>
+<blockquote>
+<div><p>The maximum distance between the same particle in subsequent images.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>memory<span class="classifier">int</span></dt><dd><p>The number of frames to remember particles over.</p>
+</dd>
+<dt>properties<span class="classifier">list</span></dt><dd><p>A list of particle properties to track over the time series.</p>
+</dd>
+</dl>
+<p>Pandas DataFrame of tracjectories.</p>
+</dd></dl>
 
 </div>
 <div class="section" id="module-ParticleSpy.SegUI">
@@ -571,16 +610,25 @@ update(self, int, int, int, int)</p>
 
 <dl class="method">
 <dt id="ParticleSpy.ptcl_class.Particle_list.cluster_particles">
-<code class="sig-name descname">cluster_particles</code><span class="sig-paren">(</span><em class="sig-param">algorithm='Kmeans'</em>, <em class="sig-param">properties=None</em>, <em class="sig-param">n_clusters=2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle_list.cluster_particles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle_list.cluster_particles" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">cluster_particles</code><span class="sig-paren">(</span><em class="sig-param">algorithm='Kmeans'</em>, <em class="sig-param">properties=None</em>, <em class="sig-param">n_clusters=2</em>, <em class="sig-param">eps=0.2</em>, <em class="sig-param">min_samples=5</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle_list.cluster_particles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle_list.cluster_particles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cluster particles in to different populations based on specified properties.</p>
 <dl class="simple">
-<dt>algorithm: str</dt><dd><p>The algorithm to use for clustering.</p>
+<dt>algorithm: str</dt><dd><p>The algorithm to use for clustering.
+Options are ‘Kmeans’,’DBSCAN’,’OPTICS’,’AffinityPropagation’.</p>
 </dd>
 <dt>properties: list</dt><dd><p>A list of the properties upon which to base the clustering.</p>
 </dd>
-<dt>n_clusters: int</dt><dd><p>The number of clusters to split the data into.</p>
+<dt>n_clusters: int</dt><dd><p>The number of clusters to split the data into.
+Used for Kmeans.</p>
+</dd>
+<dt>eps: float</dt><dd><p>The distance between samples.
+Used for DBSCAN.</p>
+</dd>
+<dt>min_samples: int</dt><dd><p>The minimum number of samples within the eps distance to be classed as a cluster.
+Used for DBSCAN and OPTICS.</p>
 </dd>
 </dl>
+<p>List of Particle_list() objects.</p>
 </dd></dl>
 
 <dl class="method">
@@ -731,7 +779,7 @@ particle.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, ePSIC
+        &copy; Copyright 2020, ePSIC
 
     </p>
   </div>

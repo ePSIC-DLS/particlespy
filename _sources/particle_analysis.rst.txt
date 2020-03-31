@@ -28,7 +28,14 @@ The calculated parameters include:
 
 * Eccentricity
 
+* Solidity
+
 * Total particle intensity
+
+* Maximum particle intensity
+
+* X and Y coordinates
+
 
 .. code-block:: python
 
@@ -89,8 +96,9 @@ If you have used the manual segmentation editor in :py:meth:`~.SegUI` you can si
 
 Cluster Particles Based on Properties
 -------------------------------------
-It is possible to do a simple k-nearest neighbours clustering of particles based on their properties.
+It is possible to do clustering of particles based on their properties.
 This can be done using the :py:meth:`~.Particle_list.cluster_particles` function.
+Clustering uses the scikit-learn package, with the ability to use Kmeans, DBSCAN and OPTICS methods.
 For example, if you wanted to separate the particles in to two clusters based on their area and ADF intensity, you could do:
 
 .. code-block:: python
