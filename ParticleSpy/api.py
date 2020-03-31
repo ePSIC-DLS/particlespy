@@ -7,7 +7,7 @@ Created on Mon Nov  5 09:48:31 2018
 
 import matplotlib.pyplot as plt
 
-from ParticleSpy.ParticleAnalysis import ParticleAnalysis, parameters
+from ParticleSpy.ParticleAnalysis import ParticleAnalysis, parameters, ParticleAnalysisSeries, timeseriesanalysis
 from ParticleSpy.SegUI import SegUI
 from ParticleSpy.ptcl_class import Particle_list, Particle
 

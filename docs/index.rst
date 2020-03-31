@@ -17,6 +17,7 @@ It extends the functionality of the `Hyperspy <http://hyperspy.org/>`_ package i
    segmentation.rst
    particle_analysis.rst
    plotting_saving.rst
+   time_series.rst
 
 
 Indices and tables

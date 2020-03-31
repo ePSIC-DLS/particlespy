@@ -5,7 +5,8 @@ with open("README.md", "r") as fh:
 
 install_requires=["hyperspy",
                   "scikit-image>=0.15",
-                  "scikit-learn>=0.21"]
+                  "scikit-learn>=0.21",
+				  "trackpy"]
 
 try:
     import PyQt5  # noqa
