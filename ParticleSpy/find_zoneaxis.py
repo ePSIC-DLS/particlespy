@@ -24,7 +24,7 @@ def find_zoneaxis(im):
         
     Returns
     -------
-    string: Zone axis of material in image (eg. '011')
+    str : Zone axis of material in image (eg. '011')
     """
     
     #Get FFT of particle image

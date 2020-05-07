@@ -17,18 +17,24 @@ def test_store_image():
     p = Particle()
     p.set_mask(mask)
     
-    PAnalysis.store_image(p,image)
+    params = PAnalysis.parameters()
+    params.generate()
+    
+    PAnalysis.store_image(p,image,params)
     
     nptest.assert_allclose(p.image.data,image.data[16:184,16:184])
     
 def test_store_maps():
     mask = gen_test.generate_test_image(hspy=False)
-    si = gen_test.generate_test_si()
+    si = gen_test.generate_test_eds()
     
     p = Particle()
     p.set_mask(mask)
     
-    PAnalysis.store_maps(p,si)
+    params = PAnalysis.parameters()
+    params.generate()
+    
+    PAnalysis.store_maps(p,si,params)
     
     au_map = si.get_lines_intensity()[0]
     
@@ -36,31 +42,33 @@ def test_store_maps():
     
 def test_store_spectrum():
     mask = gen_test.generate_test_image(hspy=False)
-    si = gen_test.generate_test_si()
+    si = gen_test.generate_test_eds()
     
     p = Particle()
     p.set_mask(mask)
     
-    stype = 'EDS'
+    stype = 'EDS_TEM'
     
+    p.spectrum = {}
     PAnalysis.store_spectrum(p,si,stype)
     
     si_particle = si.transpose()*mask
     si_particle = si_particle.transpose()
     si_particle_spectrum = si_particle.sum()
     
-    nptest.assert_allclose(p.spectrum['EDS'].data,si_particle_spectrum.data)
+    nptest.assert_allclose(p.spectrum['EDS_TEM'].data,si_particle_spectrum.data)
 
 def test_get_composition():
     mask = gen_test.generate_test_image(hspy=False)
-    si = gen_test.generate_test_si()
+    eds = gen_test.generate_test_eds()
     
     p = Particle()
     p.set_mask(mask)
     
-    stype = 'EDS'
+    stype = 'EDS_TEM'
     
-    PAnalysis.store_spectrum(p,si,stype)
+    p.spectrum = {}
+    PAnalysis.store_spectrum(p,eds,stype)
     
     params = PAnalysis.parameters()
     params.generate()
@@ -73,9 +81,11 @@ def test_get_composition():
 def test_particleanalysis():
     image = gen_test.generate_test_image(hspy=True)
     mask = gen_test.generate_test_image(hspy=False)
+    eds = gen_test.generate_test_eds()
     si = gen_test.generate_test_si()
+    eels = gen_test.generate_test_si('EELS')
     
-    ac = [image,si]
+    ac = [image,eds,si,eels]
     
     params = PAnalysis.parameters()
     params.generate(store_im=True)
@@ -85,16 +95,72 @@ def test_particleanalysis():
     
     p = p_list.list[0]
     
-    nptest.assert_almost_equal(p.area,20069.0)
-    assert p.area_units == 'nm^2'
-    nptest.assert_almost_equal(p.circularity,0.9095832157785668)
-    assert p.zone == None
+    nptest.assert_almost_equal(p.properties['area']['value'],20069.0)
+    assert p.properties['area']['units'] == 'nm^2'
+    nptest.assert_almost_equal(p.properties['circularity']['value'],0.9095832157785668)
+    #assert p.zone == None
     nptest.assert_allclose(p.mask,mask)
     nptest.assert_allclose(p.image.data,image.data[16:184,16:184])
-    au_map = si.get_lines_intensity()[0]
+    au_map = eds.get_lines_intensity()[0]
     nptest.assert_allclose(p.maps['Au'].data,au_map.data[16:184,16:184])
-    si_particle = si.transpose()*mask
-    si_particle = si_particle.transpose()
-    si_particle_spectrum = si_particle.sum()
-    nptest.assert_allclose(p.spectrum['EDS'].data,si_particle_spectrum.data)
+    eds_particle = eds.transpose()*mask
+    eds_particle = eds_particle.transpose()
+    eds_particle_spectrum = eds_particle.sum()
+    nptest.assert_allclose(p.spectrum['EDS_TEM'].data,eds_particle_spectrum.data)
     nptest.assert_allclose(p.composition['Au'],46.94530019)
+    nptest.assert_allclose(p.properties['x']['value'], 100.)
+    nptest.assert_allclose(p.properties['y']['value'], 100.)
+    
+def test_series():
+    image = gen_test.generate_test_image(hspy=True)
+    image2 = gen_test.generate_test_image(hspy=True)
+    images = [image,image2]
+    mask = gen_test.generate_test_image(hspy=False)
+    mask2 = gen_test.generate_test_image(hspy=False)
+    masks = [mask,mask2]
+    
+    params = PAnalysis.parameters()
+    params.generate(store_im=True)
+    
+    p_list = PAnalysis.ParticleAnalysisSeries(images,params)
+    
+    p = p_list.list[0]
+    
+    nptest.assert_almost_equal(p.properties['area']['value'],20069.0)
+    assert p.properties['area']['units'] == 'nm^2'
+    nptest.assert_almost_equal(p.properties['circularity']['value'],0.9095832157785668)
+    nptest.assert_allclose(p.mask,mask)
+    nptest.assert_allclose(p.image.data,image.data[16:184,16:184])
+    nptest.assert_allclose(p.properties['x']['value'], 100.)
+    nptest.assert_allclose(p.properties['y']['value'], 100.)
+    assert p.properties['frame']['value'] == 0
+    
+def test_time_series():
+    image = gen_test.generate_test_image(hspy=True)
+    image2 = gen_test.generate_test_image(hspy=True)
+    images = [image,image2]
+    mask = gen_test.generate_test_image(hspy=False)
+    mask2 = gen_test.generate_test_image(hspy=False)
+    masks = [mask,mask2]
+    
+    params = PAnalysis.parameters()
+    params.generate(store_im=True)
+    
+    p_list = PAnalysis.ParticleAnalysisSeries(images,params)
+    
+    t = PAnalysis.timeseriesanalysis(p_list)
+    
+    nptest.assert_almost_equal(t['area'][:1][0],20069.0)
+    
+def test_normalize_boxing():
+    mask = gen_test.generate_test_image2(hspy=False)
+    image = gen_test.generate_test_image2(hspy=True)
+    
+    params = PAnalysis.parameters()
+    params.generate(store_im=True)
+    
+    particles = PAnalysis.ParticleAnalysis(image,params,mask=mask)
+    
+    particles.normalize_boxing()
+    
+    assert particles.list[0].image.data.shape == (68,68)

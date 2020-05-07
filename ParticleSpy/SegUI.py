@@ -6,15 +6,18 @@ Created on Mon Oct 22 15:50:08 2018
 """
 
 from PyQt5.QtWidgets import QCheckBox, QPushButton, QLabel, QMainWindow, QSpinBox
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QComboBox
-from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QComboBox, QTabWidget
+from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtGui import QPixmap, QImage, QColor, QPainter
 from PyQt5.QtCore import Qt
 import sys
+import os
 
 import inspect
 import numpy as np
-from skimage.segmentation import mark_boundaries
+from skimage.segmentation import mark_boundaries, flood_fill
 from skimage.util import invert
+from PIL import Image
 
 from ParticleSpy.segptcls import process
 from ParticleSpy.ParticleAnalysis import parameters
@@ -33,47 +36,55 @@ class Application(QMainWindow):
         self.prev_params.generate()
         
         offset = 50
+        
+        self.layout = QHBoxLayout(self)
+        
+        # Initialize tab screen
+        self.tabs = QTabWidget()
+        self.tab1 = QWidget()
+        self.tab2 = QWidget()
+        
+        # Add tabs
+        self.tabs.addTab(self.tab1,"Auto")
+        self.tabs.addTab(self.tab2,"Manual")
 
         #self.central_widget = QWidget()               
         #self.setCentralWidget(self.central_widget)
-        lay = QVBoxLayout()
+        lay = QHBoxLayout()
+        leftlay = QVBoxLayout()
+        rightlay = QVBoxLayout()
+        self.tab1.setLayout(lay)
 
         self.label = QLabel(self)
         qi = QImage(self.image.data, self.image.shape[1], self.image.shape[0], self.image.shape[1], QImage.Format_Grayscale8)
         pixmap = QPixmap(qi)
-        pixmap2 = pixmap.scaled(512, 512, Qt.KeepAspectRatio)
-        self.label.setPixmap(pixmap2)
-        self.label.setGeometry(10,10,pixmap2.width(),pixmap2.height())
+        self.pixmap2 = pixmap.scaled(512, 512, Qt.KeepAspectRatio)
+        self.label.setPixmap(self.pixmap2)
+        self.label.setGeometry(10,10,self.pixmap2.width(),self.pixmap2.height())
         
-        height = max((pixmap2.height()+50,300 + offset)) #300 +50
+        height = max((self.pixmap2.height()+50,300 + offset)) #300 +50
         
-        self.resize(pixmap2.width()+130, height)
+        self.resize(self.pixmap2.width()+130, height)
         
         self.filt_title = QLabel(self)
         self.filt_title.setText('Pre-filtering options')
-        self.filt_title.move(pixmap2.width()+20, 0)
         
         self.sptxt = QLabel(self)
         self.sptxt.setText('Rolling ball size')
-        self.sptxt.move(pixmap2.width()+20,20)
         
         self.sp = QSpinBox(self)
         self.sp.setMaximum(self.image.shape[0])
         self.sp.valueChanged.connect(self.rollingball)
-        self.sp.move(pixmap2.width()+20, 45)
         
         self.gausstxt = QLabel(self)
         self.gausstxt.setText('Gaussian filter kernel size')
-        self.gausstxt.move(pixmap2.width()+20,70)
         
         self.gauss = QSpinBox(self)
         self.gauss.setMaximum(self.image.shape[0])
         self.gauss.valueChanged.connect(self.gaussian)
-        self.gauss.move(pixmap2.width()+20, 95)
         
         self.thresh_title = QLabel(self)
         self.thresh_title.setText('Thresholding options')
-        self.thresh_title.move(pixmap2.width()+20, 135)
         
         self.comboBox = QComboBox(self)
         self.comboBox.addItem("Otsu")
@@ -85,65 +96,90 @@ class Application(QMainWindow):
         self.comboBox.addItem("Local")
         self.comboBox.addItem("Local Otsu")
         self.comboBox.addItem("Local+Global Otsu")
-        self.comboBox.move(pixmap2.width()+20, 160)
         self.comboBox.activated[str].connect(self.threshold_choice)
         
         self.localtxt = QLabel(self)
         self.localtxt.setText('Local filter kernel')
-        self.localtxt.move(pixmap2.width()+20,195)
         
         self.local_size = QSpinBox(self)
         self.local_size.setMaximum(self.image.shape[0])
         self.local_size.valueChanged.connect(self.local)
-        self.local_size.move(pixmap2.width()+20, 220)
         
         cb = QCheckBox('Watershed', self)
-        cb.move(pixmap2.width()+20, 260)
         cb.stateChanged.connect(self.changeWatershed)
         
         cb2 = QCheckBox('Invert', self)
-        cb2.move(pixmap2.width()+20, 260 + offset /2 )
         cb2.stateChanged.connect(self.changeInvert)
         
         self.minsizetxt = QLabel(self)
         self.minsizetxt.setText('Min particle size (px)')
-        self.minsizetxt.move(pixmap2.width()+20, 280+offset)
         
         self.minsizev = QSpinBox(self)
         self.minsizev.setMaximum(self.image.shape[0]*self.image.shape[1])
         self.minsizev.valueChanged.connect(self.minsize)
-        self.minsizev.move(pixmap2.width()+20, 305+offset)
         
         updateb = QPushButton('Update',self)
-        updateb.move(pixmap2.width()+20,355+offset)
         updateb.clicked.connect(self.update)
         
         paramsb = QPushButton('Get Params',self)
-        paramsb.move(pixmap2.width()+20,385+offset)
         
         paramsb.clicked.connect(self.return_params)
         
         self.imagetxt = QLabel(self)
         self.imagetxt.setText('Display:')
-        self.imagetxt.move(75, pixmap2.height()+15)
         
         self.imBox = QComboBox(self)
         self.imBox.addItem("Image")
         self.imBox.addItem("Labels")
-        self.imBox.move(pixmap2.width()/2-10, pixmap2.height()+15)
         
         self.imBox.activated[str].connect(self.changeIm)
+
+        leftlay.addWidget(self.label)
+        leftlay.addWidget(self.imagetxt)
+        leftlay.addWidget(self.imBox)
+
+        rightlay.addWidget(self.filt_title) 
+        rightlay.addWidget(self.sptxt)
+        rightlay.addWidget(self.sp)
+        rightlay.addWidget(self.gausstxt)
+        rightlay.addWidget(self.gauss)
+        rightlay.addStretch(1)
+        rightlay.addWidget(self.thresh_title)
+        rightlay.addWidget(self.comboBox)
+        rightlay.addStretch(1)
+        rightlay.addWidget(self.localtxt)
+        rightlay.addWidget(self.local_size)
+        rightlay.addStretch(1)
+        rightlay.addWidget(cb)
+        rightlay.addWidget(cb2)
+        rightlay.addStretch(1)
+        rightlay.addWidget(self.minsizetxt)
+        rightlay.addWidget(self.minsizev)
+        rightlay.addStretch(2)
+        rightlay.addWidget(updateb)
+        rightlay.addWidget(paramsb)
         
-        lay.addWidget(self.thresh_title)
-        lay.addWidget(self.filt_title)
-        lay.addWidget(self.label)
-        lay.addWidget(self.comboBox)
-        lay.addWidget(self.sp)
-        lay.addWidget(self.sptxt)
-        lay.addWidget(self.gauss)
-        lay.addWidget(self.gausstxt)
-        lay.addWidget(self.imagetxt)
-        lay.addWidget(self.minsizev)
+        lay.addLayout(leftlay)
+        lay.addLayout(rightlay)
+        
+        self.layout.addWidget(self.tabs)
+        self.setLayout(self.layout)
+        
+        self.setCentralWidget(self.tabs)
+        
+        #Tab 2
+        self.canvas = Canvas(self.pixmap2)
+        #self.canvas = Drawer(self.pixmap2)
+        
+        self.getarrayb = QPushButton('Save Segmentation',self)
+        self.getarrayb.clicked.connect(self.save_array)
+        
+        tab2layout = QVBoxLayout()
+        tab2layout.addWidget(self.canvas)
+        tab2layout.addWidget(self.getarrayb)
+        tab2layout.addStretch(1)
+        self.tab2.setLayout(tab2layout)
+        
         self.show()
         
     def getim(self,im_hs):
@@ -179,8 +215,8 @@ class Application(QMainWindow):
             qi = QImage(self.image.data, self.image.shape[1], self.image.shape[0], self.image.shape[1], QImage.Format_Indexed8)
         
         pixmap = QPixmap(qi)
-        pixmap2 = pixmap.scaled(512, 512, Qt.KeepAspectRatio)
-        self.label.setPixmap(pixmap2)
+        self.pixmap2 = pixmap.scaled(512, 512, Qt.KeepAspectRatio)
+        self.label.setPixmap(self.pixmap2)
             
     def rollingball(self):
         if self.sp.value() == 1:
@@ -212,12 +248,11 @@ class Application(QMainWindow):
         self.label.setPixmap(pixmap2)
         
         self.prev_params.load()
-        self.prev_params.save(filename=inspect.getfile(process).rpartition('\\')[0]+'/Parameters/parameters_previous.hdf5')
-        
+        self.prev_params.save(filename=os.path.dirname(inspect.getfile(process))+'/parameters/parameters_previous.hdf5')
         self.params.save()
         
     def undo(self):
-        self.params.load(filename='Parameters/parameters_previous.hdf5')
+        self.params.load(filename='parameters/parameters_previous.hdf5')
         
         labels = process(self.im_hs,self.params)
         labels = np.uint8(labels*(256/labels.max()))
@@ -254,7 +289,77 @@ class Application(QMainWindow):
             self.params.segment['threshold'] = "local_otsu"
         if str(self.comboBox.currentText()) == "Local+Global Otsu":
             self.params.segment['threshold'] = "lg_otsu"
+            
+    def save_array(self):
+        self.canvas.savearray(self.image)
+
+
+class Canvas(QLabel):
+
+    def __init__(self,pixmap):
+        super().__init__()
+        self.setPixmap(pixmap)
+
+        self.last_x, self.last_y = None, None
+        self.pen_color = QColor(255, 0, 0, 20)        
+
+    def set_pen_color(self, c):
+        self.pen_color = QColor(c)
+        
+    def mousePressEvent(self, e):
+        if e.button() == Qt.RightButton:
+            image = self.pixmap().toImage()
+            b = image.bits()
+            b.setsize(512 * 512 * 4)
+            arr = np.frombuffer(b, np.uint8).reshape((512, 512, 4))
+            
+            arr_test = arr[:,:,0]/arr[:,:,2]
+            
+            painted_arr = np.zeros_like(arr[:,:,0:3])
+            painted_arr[:,:,2][arr_test!=1] = 255
+            
+            painted_arr[:,:,2] = flood_fill(painted_arr[:,:,2],(e.y(),e.x()),255)
+            
+            qi = QImage(painted_arr.data, painted_arr.shape[1], painted_arr.shape[0], 3*painted_arr.shape[1], QImage.Format_RGB888)
+            pixmap = QPixmap(qi)
+            
+            painter = QPainter(self.pixmap())
+            painter.setOpacity(0.1)
+
+            painter.drawPixmap(0, 0, pixmap)
+            painter.end()
+            self.update()
+            
+            self.array = painted_arr[:,:,2]
+
+    def mouseMoveEvent(self, e):
+        if e.buttons() == Qt.LeftButton:
+            if self.last_x is None: # First event.
+                self.last_x = e.x()
+                self.last_y = e.y()
+                return # Ignore the first time.
+            
+            painter = QPainter(self.pixmap())
+            p = painter.pen()
+            p.setWidth(4)
+            p.setColor(self.pen_color)
+            painter.setPen(p)
+            painter.drawLine(self.last_x, self.last_y, e.x(), e.y())
+            painter.end()
+            self.update()
     
+            # Update the origin for next time.
+            self.last_x = e.x()
+            self.last_y = e.y()
+
+    def mouseReleaseEvent(self, e):
+        self.last_x = None
+        self.last_y = None
+        
+    def savearray(self,image):
+        resized = np.array(Image.fromarray(self.array).resize((image.shape[1],image.shape[0])))
+        np.save(os.path.dirname(inspect.getfile(process))+'/parameters/manual_mask',resized)
+
 def main(haadf):
     
     ex = Application(haadf)
@@ -262,6 +367,9 @@ def main(haadf):
     return(ex)
     
 def SegUI(image):
+    """
+    Function to launch the Segmentation User Interface.
+    """
     app = QApplication(sys.argv)
     app.aboutToQuit.connect(app.deleteLater)
     
@@ -277,6 +385,9 @@ if __name__ == '__main__':
     import hyperspy.api as hs
     filename = "Data/JEOL HAADF Image.dm4"
     haadf = hs.load(filename)
+    
+    image_out = np.zeros_like(haadf)
+    
     app = QApplication(sys.argv)
     app.aboutToQuit.connect(app.deleteLater)
     

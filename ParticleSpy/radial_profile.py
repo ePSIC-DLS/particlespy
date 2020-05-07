@@ -7,7 +7,22 @@ Created on Tue May 28 09:58:37 2019
 import numpy as np
 import matplotlib.pyplot as plt
 
-def radial_profile(particle,signals,plot=True, mark_radius=False, radius=1):
+def radial_profile(particle,signals,plot=True, mark_radius=False):
+    """
+    Function to calculate and plot a radial profile of a signal from an individual 
+    particle.
+    
+    Parameters
+    ----------
+    particle : ParticleSpy particle object
+        The particle object.
+    signals : list
+        List of signals to plot, either 'Image' or element name, e.g. 'Ag'.
+    plot : bool
+        True if plotting, False otherwise.
+    mark_radius : bool
+        If true, mark the particle radius on the profile plot.
+    """
     
     dist_count_dic = {}
     for sig in signals:
@@ -20,7 +35,7 @@ def radial_profile(particle,signals,plot=True, mark_radius=False, radius=1):
     units = particle.image.axes_manager[0].units
     
     if plot==True:
-        plot_profile(dist_count_dic,scale,units, mark_radius=mark_radius, radius=radius)
+        plot_profile(dist_count_dic,scale,units, mark_radius=mark_radius, radius=particle.properties['equivalent circular diameter']['value']/2)
     return(dist_count_dic)
     
 '''def sum_profiles(profiles):
@@ -85,14 +100,23 @@ def concentric_scan_AbsoluteDis(element_map):
     
     return distance_unique, count_unique
 
-def plot_profile(dist_count_dic, scale, units, mark_radius=False, radius=1, save=False, dir_save=None):
-    '''
-    DisNorm: check if the distance from particle centre 
-            is normalised by the particle size
-    '''
+def plot_profile(dist_count_dic, scale, units, mark_radius=False, radius=1.0, save=False, dir_save=None):
+    """
+    Function to plot a radial profile of particle signals.
     
-    '''if DisNorm == True:
-        plt.xlim([0,100])'''
+    Parameters
+    ----------
+    dist_count_dic : dict
+        Dictionary containing the distances and counts of the profile.
+    scale : float
+    units : str
+    mark_radius : bool
+        If true, mark the particle radius on the profile plot.
+    radius : float
+    save : bool
+    dir_save : str
+        Default : None
+    """
         
     plt.xlabel('Distance from particle centre ('+units+')')
     plt.ylabel('Normalised intensity (counts)')
