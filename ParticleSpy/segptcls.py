@@ -105,10 +105,14 @@ def threshold(data, process_param):
 def p_watershed(thresh_image,min_size,erosion):
     if min_size == 0:
         min_size = 20 #default value
+        
     if erosion!=0:
         eroded_image=binary_erosion(thresh_image)
         for i in range(erosion-1):
             eroded_image=binary_erosion(eroded_image)
+    else:
+        eroded_image=thresh_image
+    
     distance = ndi.distance_transform_edt(eroded_image)
     local_maxi = peak_local_max(distance, indices=False, footprint=np.ones((min_size, min_size)),
                             labels=thresh_image)
