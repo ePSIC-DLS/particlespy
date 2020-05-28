@@ -167,5 +167,5 @@ def test_normalize_boxing():
 
 def test_params_in_out():
     params = PAnalysis.parameters()
-	params.load()
-	params.save()
+    params.load()
+    params.save()
