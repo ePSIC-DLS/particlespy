@@ -19,9 +19,13 @@ def load_plist(filename):
             p_group = f[p_name]
             particle = Particle()
             
-            particle.set_area(p_group.attrs['Area'],p_group.attrs['Area units'])
-            particle.set_circularity(p_group.attrs["Circularity"])
-            #particle.set_zone(p_group.attrs["Zone"])
+            for attr in p_group.attrs:
+                if "units" not in attr:
+                    if attr+' units' in p_group.attrs:
+                        units = p_group.attrs[attr+' units']
+                    else:
+                        units = None
+                    particle.set_property(attr, p_group.attrs[attr], units)
             
             particle.set_mask(np.array(p_group['Mask'][:]))
             
