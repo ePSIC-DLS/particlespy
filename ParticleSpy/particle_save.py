@@ -13,10 +13,11 @@ def save_plist(p_list,filename):
     for i, particle in enumerate(p_list.list):
         p_group = f.create_group("Particle "+str(i))
         
-        p_group.attrs["Area"] = particle.area
-        p_group.attrs["Area units"] = particle.area_units
-        p_group.attrs["Circularity"] = particle.circularity
-        #p_group.attrs["Zone"] = particle.zone
+        for prop in particle.properties:
+            if particle.properties[prop]['value'] is not None:
+                p_group.attrs[prop] = particle.properties[prop]['value']
+            if particle.properties[prop]['units'] is not None:
+                p_group.attrs[prop+' units'] = particle.properties[prop]['units']
         
         p_group.create_dataset("Mask",data=particle.mask)
         

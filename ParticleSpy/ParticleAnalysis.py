@@ -54,11 +54,11 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
     
     if mask == 'UI':
         labeled = label(np.load(os.path.dirname(inspect.getfile(process))+'/Parameters/manual_mask.npy'))
-        plt.imshow(labeled)
+        #plt.imshow(labeled)
         #morphology.remove_small_objects(labeled,30,in_place=True)
     elif mask.sum()==0:
         labeled = process(image,parameters)
-        #plt.imshow(labeled)
+        #plt.imshow(labeled,cmap=plt.cm.nipy_spectral)
         #labels = np.unique(labeled).tolist() #some labeled number have been removed by "remove_small_holes" function
     else:
         labeled = label(mask)
@@ -284,10 +284,14 @@ def get_composition(particle,params):
 class parameters(object):
     """A parameters object."""
     
-    def generate(self,threshold='otsu',watershed=False,invert=False,min_size=0,store_im=False,pad=5,rb_kernel=0,gaussian=0,local_size=101):
+    def generate(self,threshold='otsu',watershed=False,watershed_size=50,
+                 watershed_erosion=5,invert=False,min_size=0,store_im=False,
+                 pad=5,rb_kernel=0,gaussian=0,local_size=101):
         self.segment = {}
         self.segment['threshold'] = threshold
         self.segment['watershed'] = watershed
+        self.segment['watershed_size'] = watershed_size
+        self.segment['watershed_erosion'] = watershed_erosion
         self.segment['invert'] = invert
         self.segment['min_size'] = min_size
         self.segment['rb_kernel'] = rb_kernel
@@ -300,7 +304,8 @@ class parameters(object):
         
         self.generate_eds()
         
-    def generate_eds(self,eds_method=False,elements=False, factors=False, store_maps=False):
+    def generate_eds(self,eds_method=False,elements=False, factors=False,
+                     store_maps=False):
         self.eds = {}
         self.eds['method'] = eds_method
         self.eds['elements'] = elements
@@ -317,6 +322,8 @@ class parameters(object):
         
         segment.attrs["threshold"] = self.segment['threshold']
         segment.attrs["watershed"] = self.segment['watershed']
+        segment.attrs["watershed_size"] = self.segment['watershed_size']
+        segment.attrs["watershed_erosion"] = self.segment['watershed_erosion']
         segment.attrs["invert"] = self.segment['invert']
         segment.attrs["min_size"] = self.segment['min_size']
         segment.attrs["rb_kernel"] = self.segment['rb_kernel']
@@ -344,6 +351,8 @@ class parameters(object):
         
         self.segment['threshold'] = segment.attrs["threshold"]
         self.segment['watershed'] = segment.attrs["watershed"]
+        self.segment['watershed_size'] = segment.attrs["watershed_size"]
+        self.segment['watershed_erosion'] = segment.attrs["watershed_erosion"]
         self.segment['invert'] = segment.attrs["invert"]
         self.segment['min_size'] = segment.attrs["min_size"]
         self.segment['rb_kernel'] = segment.attrs["rb_kernel"]

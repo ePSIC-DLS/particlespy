@@ -7,7 +7,7 @@ def test_clustering():
     data = hs.load(str(Path(__file__).parent.parent / 'Data/SiO2 HAADF Image.hspy'))
     
     params = ps.parameters()
-    params.generate(threshold='otsu',watershed=True,min_size=5,rb_kernel=100)
+    params.generate(threshold='otsu',watershed=True,watershed_size=5,watershed_erosion=0,min_size=5,rb_kernel=100)
     
     particles = ps.ParticleAnalysis(data,params)
     
