@@ -13,7 +13,7 @@ from skimage.filters import threshold_yen, threshold_isodata, threshold_li
 from skimage.filters import threshold_local, rank
 
 from skimage.measure import label
-from skimage.morphology import remove_small_objects, watershed, square, white_tophat, disk
+from skimage.morphology import remove_small_objects, watershed, square, white_tophat, disk, binary_erosion
 from skimage.segmentation import clear_border
 from skimage.feature import peak_local_max
 from skimage.util import invert
@@ -53,7 +53,7 @@ def process(im, param):
     labels = clear_border(labels)
     
     if param.segment["watershed"]!=False:
-        labels = p_watershed(labels,param.segment["min_size"])
+        labels = p_watershed(labels,param.segment["watershed_size"],param.segment["watershed_erosion"])
         
     if param.segment["min_size"]!=0:
         remove_small_objects(labels,param.segment["min_size"],in_place=True)
@@ -102,10 +102,18 @@ def threshold(data, process_param):
     
     return(labels)
     
-def p_watershed(thresh_image,min_size):
+def p_watershed(thresh_image,min_size,erosion):
     if min_size == 0:
         min_size = 20 #default value
-    distance = ndi.distance_transform_edt(thresh_image)
+        
+    if erosion!=0:
+        eroded_image=binary_erosion(thresh_image)
+        for i in range(erosion-1):
+            eroded_image=binary_erosion(eroded_image)
+    else:
+        eroded_image=thresh_image
+    
+    distance = ndi.distance_transform_edt(eroded_image)
     local_maxi = peak_local_max(distance, indices=False, footprint=np.ones((min_size, min_size)),
                             labels=thresh_image)
     markers = ndi.label(local_maxi)[0]

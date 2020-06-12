@@ -64,6 +64,14 @@ Select the size of the local filter kernel to use if using one of the local thre
     
 Tick to apply a watershed step to the segmented labels. This acts to separate touching objects. The watershed algorithm uses local maxima of the distance transform as seeds, the minimum separation of these local maxima is set by the min particle size option.
 
+(6) Watershed Seed Separation
+
+Select the distance between the local maxima used to seed the watershed algorithm.
+
+(7) Watershed Seed Erosion
+
+Select the number of pixels by which to erode the thresholded image before using a distance transform to seed the watershed algorithm.
+
 (6) Invert
     
 Option to invert the image intensity when using a bright field image.
