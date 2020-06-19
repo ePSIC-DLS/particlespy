@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.com/ePSIC-DLS/ParticleSpy.svg?branch=master)](https://travis-ci.com/ePSIC-DLS/ParticleSpy)
 [![codecov](https://codecov.io/gh/ePSIC-DLS/ParticleSpy/branch/master/graph/badge.svg)](https://codecov.io/gh/ePSIC-DLS/ParticleSpy)
 [![PyPI version](https://badge.fury.io/py/particlespy.svg)](https://badge.fury.io/py/particlespy)
+[![DOI](https://zenodo.org/badge/154111577.svg)](https://zenodo.org/badge/latestdoi/154111577)
 
 # ParticleSpy
 Package for analysing particles in electron microscopy data sets.

@@ -108,6 +108,18 @@ class Application(QMainWindow):
         cb = QCheckBox('Watershed', self)
         cb.stateChanged.connect(self.changeWatershed)
         
+        self.ws_title = QLabel(self)
+        self.ws_title.setText('Watershed Seed Separation')
+        self.watershed_size = QSpinBox(self)
+        self.watershed_size.setMaximum(self.image.shape[0])
+        self.watershed_size.valueChanged.connect(self.watershed)
+        
+        self.wse_title = QLabel(self)
+        self.wse_title.setText('Watershed Seed Erosion')
+        self.watershed_erosion = QSpinBox(self)
+        self.watershed_erosion.setMaximum(self.image.shape[0])
+        self.watershed_erosion.valueChanged.connect(self.watershed_e)
+        
         cb2 = QCheckBox('Invert', self)
         cb2.stateChanged.connect(self.changeInvert)
         
@@ -151,11 +163,16 @@ class Application(QMainWindow):
         rightlay.addWidget(self.local_size)
         rightlay.addStretch(1)
         rightlay.addWidget(cb)
+        rightlay.addWidget(self.ws_title)
+        rightlay.addWidget(self.watershed_size)
+        rightlay.addWidget(self.wse_title)
+        rightlay.addWidget(self.watershed_erosion)
+        rightlay.addStretch(1)
         rightlay.addWidget(cb2)
         rightlay.addStretch(1)
         rightlay.addWidget(self.minsizetxt)
         rightlay.addWidget(self.minsizev)
-        rightlay.addStretch(2)
+        rightlay.addStretch(1)
         rightlay.addWidget(updateb)
         rightlay.addWidget(paramsb)
         
@@ -229,6 +246,12 @@ class Application(QMainWindow):
         
     def local(self):
         self.params.segment['local_size'] = self.local_size.value()
+    
+    def watershed(self):
+        self.params.segment['watershed_size'] = self.watershed_size.value()
+    
+    def watershed_e(self):
+        self.params.segment['watershed_erosion'] = self.watershed_erosion.value()
             
     def minsize(self):
         self.params.segment['min_size'] = self.minsizev.value()
