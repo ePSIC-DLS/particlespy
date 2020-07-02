@@ -209,14 +209,14 @@ class Particle_list(object):
         ax.scatter(property_list_one,property_list_two,alpha=0.5)
         
         if self.list[0].properties[prop_list[0]]['units'] == None:
-            ax.xlabel(prop_list[0].capitalize())
+            ax.set_xlabel(prop_list[0].capitalize())
         else:
-            ax.xlabel(prop_list[0].capitalize()+" ("+self.list[0].properties[prop_list[0]]['units']+")")
+            ax.set_xlabel(prop_list[0].capitalize()+" ("+self.list[0].properties[prop_list[0]]['units']+")")
         
         if self.list[0].properties[prop_list[1]]['units'] == None:
-            ax.ylabel(prop_list[1].capitalize())
+            ax.set_ylabel(prop_list[1].capitalize())
         else:
-            ax.ylabel(prop_list[1].capitalize()+" ("+self.list[0].properties[prop_list[1]]['units']+")")
+            ax.set_ylabel(prop_list[1].capitalize()+" ("+self.list[0].properties[prop_list[1]]['units']+")")
 
     def _plot_three_properties(self, prop_list):
 
