@@ -119,3 +119,4 @@ The function will set all image dimensions to the largest x and y values in the 
 .. code-block:: python
 
     >>> particles.normalize_boxing()
+
