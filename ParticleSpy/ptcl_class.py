@@ -203,18 +203,20 @@ class Particle_list(object):
         for p in self.list:
             property_list_one.append(p.properties[prop_list[0]]['value'])
             property_list_two.append(p.properties[prop_list[1]]['value'])
-            
-        plt.scatter(property_list_one,property_list_two,alpha=0.5)
+        
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        ax.scatter(property_list_one,property_list_two,alpha=0.5)
         
         if self.list[0].properties[prop_list[0]]['units'] == None:
-            plt.xlabel(prop_list[0].capitalize())
+            ax.xlabel(prop_list[0].capitalize())
         else:
-            plt.xlabel(prop_list[0].capitalize()+" ("+self.list[0].properties[prop_list[0]]['units']+")")
+            ax.xlabel(prop_list[0].capitalize()+" ("+self.list[0].properties[prop_list[0]]['units']+")")
         
         if self.list[0].properties[prop_list[1]]['units'] == None:
-            plt.ylabel(prop_list[1].capitalize())
+            ax.ylabel(prop_list[1].capitalize())
         else:
-            plt.ylabel(prop_list[1].capitalize()+" ("+self.list[0].properties[prop_list[1]]['units']+")")
+            ax.ylabel(prop_list[1].capitalize()+" ("+self.list[0].properties[prop_list[1]]['units']+")")
 
     def _plot_three_properties(self, prop_list):
 
@@ -227,8 +229,8 @@ class Particle_list(object):
             property_list_two.append(p.properties[prop_list[1]]['value'])
             property_list_three.append(p.properties[prop_list[2]]['value'])
 
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
+        fig3d = plt.figure()
+        ax = fig3d.add_subplot(111, projection='3d')
         ax.scatter(property_list_one, property_list_two, property_list_three)
 
         if self.list[0].properties[prop_list[0]]['units'] == None:
