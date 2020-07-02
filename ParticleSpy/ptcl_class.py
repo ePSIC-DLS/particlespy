@@ -177,7 +177,7 @@ class Particle_list(object):
             elif len(prop_list) == 3:
                 self._plot_three_properties(prop_list)
             else:
-                print("Can only plot one or two properties, please change the length of the property list.")
+                print("Can only plot a maximum of three properties, please change the length of the property list.")
         
         plt.show()
         
@@ -228,8 +228,8 @@ class Particle_list(object):
             property_list_three.append(p.properties[prop_list[2]]['value'])
 
         fig = plt.figure()
-        ax = fig.axes(projection='3d')
-        ax.scatter3D(property_list_one, property_list_two, property_list_three)
+        ax = fig.add_subplot(111, projection='3d')
+        ax.scatter(property_list_one, property_list_two, property_list_three)
 
         if self.list[0].properties[prop_list[0]]['units'] == None:
             ax.xlabel(prop_list[0].capitalize())
