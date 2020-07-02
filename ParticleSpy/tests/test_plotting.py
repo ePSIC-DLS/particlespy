@@ -8,8 +8,8 @@ def test_plotting():
     
     p_list.plot('area')
     p_list.plot(['area','circularity'])
-    p_list.plot(['area','circularity','intensity'])
+    p_list.plot(['area','circularity','area'])
     
     ps.plot([p_list],'area')
     ps.plot([p_list],['area','circularity'])
-    ps.plot([p_list],['area','circularity','intensity'])
+    ps.plot([p_list],['area','circularity','area'])
