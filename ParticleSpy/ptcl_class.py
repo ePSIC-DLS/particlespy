@@ -11,6 +11,7 @@ from scipy.ndimage import interpolation
 from ParticleSpy.particle_save import save_plist
 from sklearn import feature_extraction, cluster, preprocessing
 import itertools as it
+from mpl_toolkits.mplot3d import Axes3D
 
 class Particle(object):
     """A segmented particle object.
@@ -173,6 +174,8 @@ class Particle_list(object):
                 self._plot_one_property(prop_list[0],bins)
             elif len(prop_list) == 2:
                 self._plot_two_properties(prop_list)
+            elif len(prop_list) == 3:
+                self._plot_three_properties(prop_list)
             else:
                 print("Can only plot one or two properties, please change the length of the property list.")
         
@@ -212,6 +215,36 @@ class Particle_list(object):
             plt.ylabel(prop_list[1].capitalize())
         else:
             plt.ylabel(prop_list[1].capitalize()+" ("+self.list[0].properties[prop_list[1]]['units']+")")
+
+    def _plot_three_properties(self, prop_list):
+
+        property_list_one = []
+        property_list_two = []
+        property_list_three = []
+        
+        for p in self.list:
+            property_list_one.append(p.properties[prop_list[0]]['value'])
+            property_list_two.append(p.properties[prop_list[1]]['value'])
+            property_list_three.append(p.properties[prop_list[2]]['value'])
+
+        fig = plt.figure()
+        ax = fig.axes(projection='3d')
+        ax.scatter3D(property_list_one, property_list_two, property_list_three)
+
+        if self.list[0].properties[prop_list[0]]['units'] == None:
+            ax.xlabel(prop_list[0].capitalize())
+        else:
+            ax.xlabel(prop_list[0].capitalize()+" ("+self.list[0].properties[prop_list[0]]['units']+")")
+
+        if self.list[0].properties[prop_list[1]]['units'] == None:
+            ax.ylabel(prop_list[1].capitalize())
+        else:
+            ax.ylabel(prop_list[1].capitalize()+" ("+self.list[0].properties[prop_list[1]]['units']+")")
+
+        if self.list[0].properties[prop_list[2]]['units'] == None:
+            ax.zlabel(prop_list[2].capitalize())
+        else:
+            ax.zlabel(prop_list[2].capitalize()+" ("+self.list[0].properties[prop_list[2]]['units']+")")
         
     def normalize_boxing(self,even=False):
         """
