@@ -173,9 +173,13 @@ class Particle_list(object):
             if len(prop_list) == 1:
                 self._plot_one_property(prop_list[0],bins)
             elif len(prop_list) == 2:
+                fig = plt.figure()
+                ax = fig.add_subplot(111)
                 self._plot_two_properties(prop_list)
             elif len(prop_list) == 3:
-                self._plot_three_properties(prop_list)
+                fig3d = plt.figure()
+                ax = fig3d.add_subplot(111, projection='3d')
+                self._plot_three_properties(prop_list,ax)
             else:
                 print("Can only plot a maximum of three properties, please change the length of the property list.")
         
@@ -195,7 +199,7 @@ class Particle_list(object):
             plt.xlabel(prop.capitalize()+" ("+self.list[0].properties[prop]['units']+")")
         plt.ylabel("No. of particles")
         
-    def _plot_two_properties(self,prop_list):
+    def _plot_two_properties(self,prop_list,ax):
         
         property_list_one = []
         property_list_two = []
@@ -204,8 +208,6 @@ class Particle_list(object):
             property_list_one.append(p.properties[prop_list[0]]['value'])
             property_list_two.append(p.properties[prop_list[1]]['value'])
         
-        fig = plt.figure()
-        ax = fig.add_subplot(111)
         ax.scatter(property_list_one,property_list_two,alpha=0.5)
         
         if self.list[0].properties[prop_list[0]]['units'] == None:
@@ -218,7 +220,7 @@ class Particle_list(object):
         else:
             ax.set_ylabel(prop_list[1].capitalize()+" ("+self.list[0].properties[prop_list[1]]['units']+")")
 
-    def _plot_three_properties(self, prop_list):
+    def _plot_three_properties(self, prop_list,ax):
 
         property_list_one = []
         property_list_two = []
@@ -229,8 +231,6 @@ class Particle_list(object):
             property_list_two.append(p.properties[prop_list[1]]['value'])
             property_list_three.append(p.properties[prop_list[2]]['value'])
 
-        fig3d = plt.figure()
-        ax = fig3d.add_subplot(111, projection='3d')
         ax.scatter(property_list_one, property_list_two, property_list_three)
 
         if self.list[0].properties[prop_list[0]]['units'] == None:
