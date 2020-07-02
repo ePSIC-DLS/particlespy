@@ -47,9 +47,11 @@ def plot(particle_lists,prop_list=['area'],bins=20):
                 p._plot_one_property(prop_list,bins)
             else:
                 if len(prop_list) == 1:
-                        p._plot_one_property(prop_list[0],bins)
+                    p._plot_one_property(prop_list[0],bins)
                 elif len(prop_list) == 2:
-                        p._plot_two_properties(prop_list)
+                    p._plot_two_properties(prop_list)
+                elif len(prop_list) == 3:
+                    p._plot_three_properties(prop_list)
                 else:
                     print("Can only plot one or two properties, please change the length of the property list.")
                     break
