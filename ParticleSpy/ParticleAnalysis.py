@@ -285,7 +285,7 @@ class parameters(object):
     """A parameters object."""
     
     def generate(self,threshold='otsu',watershed=False,watershed_size=50,
-                 watershed_erosion=5,invert=False,min_size=0,store_im=False,
+                 watershed_erosion=5,invert=False,min_size=0,store_im=True,
                  pad=5,rb_kernel=0,gaussian=0,local_size=101):
         self.segment = {}
         self.segment['threshold'] = threshold
