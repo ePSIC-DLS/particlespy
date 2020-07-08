@@ -255,7 +255,7 @@ class Particle_list(object):
             particle.image.axes_manager[0].size = particle.image.data.shape[0]
             particle.image.axes_manager[1].size = particle.image.data.shape[1]
             
-    def show(self, param='Image'):
+    def show(self, param='Image', output=False):
         """
         display all particle images or other parameters
 
@@ -277,6 +277,8 @@ class Particle_list(object):
             for index in range(num):
                 im_ls.append(self.list[index].image.data)
             self._show_images(im_ls, cols, np.arange(num))
+        if output:
+            return im_ls
             
     def _show_images(self, images, cols=1, titles=None):
         """
@@ -306,7 +308,7 @@ class Particle_list(object):
             plt.imshow(image)
             a.set_title(title, fontsize=30)
         fig.set_size_inches(np.array([1,1]) * n_images)
-        plt.show()        
+        plt.show()  
     
     
     def cluster_particles(self,algorithm='Kmeans',properties=None,n_clusters=2,eps=0.2,min_samples=5):

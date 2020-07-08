@@ -2,3 +2,4 @@ ParticleSpy/__pycache__/
 ParticleSpy/Parameters/
 particlespy.egg-info/
 ParticleSpy/__pycache__/*.pyc
+*.pyc
