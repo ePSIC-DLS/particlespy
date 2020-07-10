@@ -4,3 +4,4 @@ particlespy.egg-info/
 ParticleSpy/__pycache__/*.pyc
 *.pyc
 ParticleSpy/Parameters/parameters_previous.hdf5
+ParticleSpy/__pycache__/ptcl_class.cpython-37.pyc
