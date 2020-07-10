@@ -261,7 +261,7 @@ class Particle_list(object):
 
         Parameters
         ----------
-        params : str, optional
+        params : str or list, optional
             DESCRIPTION. The default is ['Image'].
             'Image'
             'maps'
@@ -270,19 +270,17 @@ class Particle_list(object):
         """
         self.normalize_boxing()
         
-        num = len(self.list)
-        cols = int(np.ceil(np.sqrt(num)))
-        data_ls = []
-        for index in range(num):
-            if params == 'Image':
-                data_ls.append(self.list[index].image.data)
-            elif params == 'mask':
-                data_ls.append(self.mask)
-        self._show_images(data_ls, params, cols, np.arange(num))
+        if params == 'Image':
+            num = len(self.list)
+            cols = int(np.ceil(np.sqrt(num)))
+            im_ls = []
+            for index in range(num):
+                im_ls.append(self.list[index].image.data)
+            self._show_images(im_ls, cols, np.arange(num))
         if output:
-            return data_ls
+            return im_ls
             
-    def _show_images(self, images, main_title, cols=1, titles=None):
+    def _show_images(self, images, cols=1, titles=None):
         """
         Display a list of images in a single figure with matplotlib.
         
@@ -295,9 +293,6 @@ class Particle_list(object):
         
         titles: List of titles corresponding to each image. Must have
                 the same length as titles.
-        
-        main_title: str. Name of the showing properties.
-                    Can be 'Image', 'mask', 'area', etc.
         ---------
         Origin https://gist.github.com/soply/f3eec2e79c165e39c9d540e916142ae1
         """
@@ -313,7 +308,6 @@ class Particle_list(object):
             plt.imshow(image)
             a.set_title(title, fontsize=30)
         fig.set_size_inches(np.array([1,1]) * n_images)
-        plt.title(main_title)
         plt.show()        
     
     
