@@ -255,13 +255,13 @@ class Particle_list(object):
             particle.image.axes_manager[0].size = particle.image.data.shape[0]
             particle.image.axes_manager[1].size = particle.image.data.shape[1]
             
-    def show(self, params='Image', output=False):
+    def show(self, param='Image', output=False):
         """
         display all particle images or other parameters
 
         Parameters
         ----------
-        params : str or list, optional
+        param : str or list, optional
             DESCRIPTION. The default is ['Image'].
             'Image'
             'maps'
@@ -270,7 +270,7 @@ class Particle_list(object):
         """
         self.normalize_boxing()
         
-        if params == 'Image':
+        if param=='Image':
             num = len(self.list)
             cols = int(np.ceil(np.sqrt(num)))
             im_ls = []
