@@ -261,7 +261,7 @@ class Particle_list(object):
 
         Parameters
         ----------
-        param : str or list, optional
+        param : str, optional
             DESCRIPTION. The default is ['Image'].
             'Image'
             'maps'
@@ -270,17 +270,19 @@ class Particle_list(object):
         """
         self.normalize_boxing()
         
-        if param=='Image':
-            num = len(self.list)
-            cols = int(np.ceil(np.sqrt(num)))
-            im_ls = []
-            for index in range(num):
-                im_ls.append(self.list[index].image.data)
-            self._show_images(im_ls, cols, np.arange(num))
+        num = len(self.list)
+        cols = int(np.ceil(np.sqrt(num)))
+        data_ls = []
+        for index in range(num):
+            if param == 'Image':
+                data_ls.append(self.list[index].image.data)
+            elif param == 'mask':
+                data_ls.append(self.list[index].mask)
+        self._show_images(data_ls, param, cols, np.arange(num))
         if output:
-            return im_ls
+            return data_ls
             
-    def _show_images(self, images, cols=1, titles=None):
+    def _show_images(self, images, main_title, cols=1, titles=None):
         """
         Display a list of images in a single figure with matplotlib.
         
@@ -308,6 +310,7 @@ class Particle_list(object):
             plt.imshow(image)
             a.set_title(title, fontsize=30)
         fig.set_size_inches(np.array([1,1]) * n_images)
+        fig.suptitle(main_title, fontsize=30, y=0.95)
         plt.show()        
     
     
