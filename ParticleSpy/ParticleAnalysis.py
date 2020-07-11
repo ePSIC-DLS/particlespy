@@ -240,15 +240,18 @@ def store_image(particle,image,params):
     pad = params.store['pad']
     
     if params.store['bkg_sub']==True:
-        image.data = (image.data - particle.properties['background']['value'])*particle.mask
+        image.data = image.data - particle.properties['background']['value']
     
     if params.store['p_only']==True:
         image.data = image.data*particle.mask
     
-    if box_y_min-pad > 0 and box_x_min-pad > 0 and box_x_max+pad < particle.mask.shape[0] and box_y_max+pad < particle.mask.shape[1]:
-        p_boxed = image.isig[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
+    if pad!=None:
+        if box_y_min-pad > 0 and box_x_min-pad > 0 and box_x_max+pad < particle.mask.shape[0] and box_y_max+pad < particle.mask.shape[1]:
+            p_boxed = image.isig[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
+        else:
+            p_boxed = image.isig[(box_y_min):(box_y_max),(box_x_min):(box_x_max)]
     else:
-        p_boxed = image.isig[(box_y_min):(box_y_max),(box_x_min):(box_x_max)]
+        p_boxed = image.data
     particle.store_im(p_boxed)
     
 def store_maps(particle,ac,params):
