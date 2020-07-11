@@ -251,7 +251,7 @@ def store_image(particle,image,params):
         else:
             p_boxed = image.isig[(box_y_min):(box_y_max),(box_x_min):(box_x_max)]
     else:
-        p_boxed = image.data
+        p_boxed = image
     particle.store_im(p_boxed)
     
 def store_maps(particle,ac,params):
