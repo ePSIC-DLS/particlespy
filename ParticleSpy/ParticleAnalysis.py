@@ -65,12 +65,11 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         
     for region in regionprops(labeled, coordinates='rc'): #'count' start with 1, 0 is background
         p = Particle()
-        
-        p_im = np.zeros_like(image.data)
-        p_im[labeled==region.label] = image.data[labeled==region.label] - np.min(image.data[labeled==region.label])
-        
+              
         maskp = np.zeros_like(image.data)
         maskp[labeled==region.label] = 1
+        
+        p_im = image.data*maskp
         
         #Calculate average background around image
         dilated_mask = morphology.binary_dilation(maskp).astype(int)
@@ -111,7 +110,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         intensity = ((image.data - p.background)*maskp).sum()
         p.set_intensity(intensity)
         p.set_property("intensity_max",((image.data - p.background)*maskp).max(),None)
-        p.set_property("intensity_std",((image.data - p.background)*maskp).std()/p.properties['intensity_max']['value'],None)
+        p.set_property("intensity_std",((image.data - p.background)*maskp).std(),None)
         
         #Set zoneaxis
         '''im_smooth = filters.gaussian(np.uint16(p_im),1)
