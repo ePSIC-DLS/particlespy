@@ -19,7 +19,8 @@ import pandas as pd
 import trackpy
 import os
 
-def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
+def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1)),
+                     bkg_sub=True):
     """
     Perform segmentation and analysis of images of particles.
     
@@ -72,11 +73,13 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         p_im = image.data*maskp
         
         #Calculate average background around image
-        dilated_mask = morphology.binary_dilation(maskp).astype(int)
-        dilated_mask2 = morphology.binary_dilation(dilated_mask).astype(int)
-        boundary_mask = dilated_mask2 - dilated_mask
-        p.background = np.sum(boundary_mask*image.data)/np.count_nonzero(boundary_mask)
-        
+        if bkg_sub==True:
+            dilated_mask = morphology.binary_dilation(maskp).astype(int)
+            dilated_mask2 = morphology.binary_dilation(dilated_mask).astype(int)
+            boundary_mask = dilated_mask2 - dilated_mask
+            p.background = np.sum(boundary_mask*image.data)/np.count_nonzero(boundary_mask)
+        else:
+            p.background = 0.0
         #origin = ac_number
         #p.set_origin(origin)
         
