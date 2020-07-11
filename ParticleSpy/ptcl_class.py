@@ -62,6 +62,9 @@ class Particle(object):
     def set_intensity(self,intensity):
         self.properties['intensity'] = {'value':intensity,'units':None}
         
+    def set_background(self,background):
+        self.properties['background'] = {'value':background,'units':None}
+         
     def set_property(self,propname,value,units):
         """
         Give a Particle() object an arbitrary property.

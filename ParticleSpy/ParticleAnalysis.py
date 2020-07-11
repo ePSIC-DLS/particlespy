@@ -76,9 +76,10 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
             dilated_mask = morphology.binary_dilation(maskp).astype(int)
             dilated_mask2 = morphology.binary_dilation(dilated_mask).astype(int)
             boundary_mask = dilated_mask2 - dilated_mask
-            p.background = np.sum(boundary_mask*image.data)/np.count_nonzero(boundary_mask)
+            background = np.sum(boundary_mask*image.data)/np.count_nonzero(boundary_mask)
+            p.set_background(background)
         else:
-            p.background = 0.0
+            p.set_background(0.0)
         #origin = ac_number
         #p.set_origin(origin)
         
@@ -109,10 +110,10 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         p.set_property("solidity",region.solidity,None)
         
         #Set total image intensity
-        intensity = ((image.data - p.background)*maskp).sum()
+        intensity = ((image.data - p.properties['background']['value'])*maskp).sum()
         p.set_intensity(intensity)
-        p.set_property("intensity_max",((image.data - p.background)*maskp).max(),None)
-        p.set_property("intensity_std",((image.data - p.background)*maskp).std(),None)
+        p.set_property("intensity_max",((image.data - p.properties['background']['value'])*maskp).max(),None)
+        p.set_property("intensity_std",((image.data - p.properties['background']['value'])*maskp).std(),None)
         
         #Set zoneaxis
         '''im_smooth = filters.gaussian(np.uint16(p_im),1)
@@ -239,7 +240,7 @@ def store_image(particle,image,params):
     pad = params.store['pad']
     
     if params.store['bkg_sub']==True:
-        image.data = (image.data - particle.background)*particle.mask
+        image.data = (image.data - particle.properties['background']['value'])*particle.mask
     
     if params.store['p_only']==True:
         image.data = image.data*particle.mask
