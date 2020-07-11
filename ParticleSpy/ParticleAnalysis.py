@@ -19,8 +19,7 @@ import pandas as pd
 import trackpy
 import os
 
-def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1)),
-                     bkg_sub=True):
+def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
     """
     Perform segmentation and analysis of images of particles.
     
@@ -73,7 +72,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1)),
         p_im = image.data*maskp
         
         #Calculate average background around image
-        if bkg_sub==True:
+        if parameters.store['bkg_sub']==True:
             dilated_mask = morphology.binary_dilation(maskp).astype(int)
             dilated_mask2 = morphology.binary_dilation(dilated_mask).astype(int)
             boundary_mask = dilated_mask2 - dilated_mask
@@ -234,13 +233,16 @@ def store_image(particle,image,params):
     ii = np.where(particle.mask)
             
     box_x_min = np.min(ii[0])
-    box_x_max = np.max(ii[0])
-    box_y_max = np.max(ii[1])
+    box_x_max = np.max(ii[0])+1
     box_y_min = np.min(ii[1])
+    box_y_max = np.max(ii[1])+1
     pad = params.store['pad']
     
+    if params.store['bkg_sub']==True:
+        image.data = (image.data - particle.background)*particle.mask
+    
     if params.store['p_only']==True:
-        image = image*particle.mask
+        image.data = image.data*particle.mask
     
     if box_y_min-pad > 0 and box_x_min-pad > 0 and box_x_max+pad < particle.mask.shape[0] and box_y_max+pad < particle.mask.shape[1]:
         p_boxed = image.isig[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
@@ -301,6 +303,7 @@ class parameters(object):
         self.segment['local_size'] = local_size
         
         self.store = {}
+        self.store['bkg_sub'] = True
         self.store['store_im'] = store_im
         self.store['pad'] = pad
         self.store['p_only'] = False
@@ -332,6 +335,7 @@ class parameters(object):
         segment.attrs["rb_kernel"] = self.segment['rb_kernel']
         segment.attrs["gaussian"] = self.segment['gaussian']
         segment.attrs["local_size"] = self.segment['local_size']
+        store.attrs['bkg_sub'] = self.store['bkg_sub']
         store.attrs['store_im'] = self.store['store_im']
         store.attrs['pad'] = self.store['pad']
         store.attrs['store_maps'] = self.store['store_maps']
