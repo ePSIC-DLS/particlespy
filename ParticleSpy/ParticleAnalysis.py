@@ -69,7 +69,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         maskp = np.zeros_like(image.data)
         maskp[labeled==region.label] = 1
         
-        p_im = image.data*maskp
+        p_im = np.ma.masked_array(image.data, mask=1-maskp)
         
         #Calculate average background around image
         if parameters.store['bkg_sub']==True:
@@ -110,10 +110,11 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         p.set_property("solidity",region.solidity,None)
         
         #Set total image intensity
-        intensity = ((image.data - p.properties['background']['value'])*maskp).sum()
-        p.set_intensity(intensity)
-        p.set_property("intensity_max",((image.data - p.properties['background']['value'])*maskp).max(),None)
-        p.set_property("intensity_std",((image.data - p.properties['background']['value'])*maskp).std(),None)
+        p_im_bkgsub = np.ma.masked_array(p_im.data - p.properties['background']['value'], 
+                                         mask=1-maskp)
+        p.set_intensity(p_im_bkgsub.sum())
+        p.set_property("intensity_max",p_im_bkgsub.max(),None)
+        p.set_property("intensity_std",p_im_bkgsub.std(),None)
         
         #Set zoneaxis
         '''im_smooth = filters.gaussian(np.uint16(p_im),1)
@@ -370,6 +371,7 @@ class parameters(object):
         self.segment['rb_kernel'] = segment.attrs["rb_kernel"]
         self.segment['gaussian'] = segment.attrs["gaussian"]
         self.segment['local_size'] = segment.attrs["local_size"]
+        self.store['bkg_sub'] = store.attrs['bkg_sub']
         self.store['store_im'] = store.attrs['store_im']
         self.store['pad'] = store.attrs['pad']
         self.store['store_maps'] = store.attrs['store_maps']
