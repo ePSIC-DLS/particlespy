@@ -43,6 +43,13 @@ def plot(particle_lists,prop_list=['area'],bins=20):
         
         """
         
+        if len(prop_list) == 2:
+            fig = plt.figure()
+            ax = fig.add_subplot(111)
+        elif len(prop_list) == 3:
+            fig3d = plt.figure()
+            ax = fig3d.add_subplot(111, projection='3d')
+        
         for p in particle_lists:
             if isinstance(prop_list,str):
                 p._plot_one_property(prop_list,bins)
@@ -50,12 +57,8 @@ def plot(particle_lists,prop_list=['area'],bins=20):
                 if len(prop_list) == 1:
                     p._plot_one_property(prop_list[0],bins)
                 elif len(prop_list) == 2:
-                    fig = plt.figure()
-                    ax = fig.add_subplot(111)
                     p._plot_two_properties(prop_list,ax)
                 elif len(prop_list) == 3:
-                    fig3d = plt.figure()
-                    ax = fig3d.add_subplot(111, projection='3d')
                     p._plot_three_properties(prop_list,ax)
                 else:
                     print("Can only plot one or two properties, please change the length of the property list.")

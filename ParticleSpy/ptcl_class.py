@@ -175,7 +175,7 @@ class Particle_list(object):
             elif len(prop_list) == 2:
                 fig = plt.figure()
                 ax = fig.add_subplot(111)
-                self._plot_two_properties(prop_list)
+                self._plot_two_properties(prop_list,ax)
             elif len(prop_list) == 3:
                 fig3d = plt.figure()
                 ax = fig3d.add_subplot(111, projection='3d')
