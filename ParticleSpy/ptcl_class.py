@@ -63,6 +63,9 @@ class Particle(object):
     def set_intensity(self,intensity):
         self.properties['intensity'] = {'value':intensity,'units':None}
         
+    def set_background(self,background):
+        self.properties['background'] = {'value':background,'units':None}
+         
     def set_property(self,propname,value,units):
         """
         Give a Particle() object an arbitrary property.
@@ -102,7 +105,8 @@ class Particle(object):
         
     def store_composition(self,composition):
         self.composition = {el.metadata.Sample.elements[0]:el.data for el in composition}
-        
+
+       
 class Particle_list(object):
     """A particle list object."""
     
@@ -114,7 +118,7 @@ class Particle_list(object):
         
     def save(self,filename):
         save_plist(self,filename)
-        
+    
     def plot_area(self,bins=20):
         """
         Displays a plot of particle areas for analysed particles.
@@ -289,6 +293,66 @@ class Particle_list(object):
             particle.image.axes_manager[0].size = particle.image.data.shape[0]
             particle.image.axes_manager[1].size = particle.image.data.shape[1]
             
+    def show(self, param='Image', cols=None, output=False):
+        """
+        display all particle images or other parameters
+
+        Parameters
+        ----------
+        param : str, optional
+            DESCRIPTION. The default is ['Image'].
+            'Image'
+            'maps'
+            'area'
+            'circularity'
+        """
+        self.normalize_boxing()
+        
+        num = len(self.list)
+        if cols==None:
+            cols = int(np.ceil(np.sqrt(num)))
+        data_ls = []
+        for index in range(num):
+            if param == 'Image':
+                data_ls.append(self.list[index].image.data)
+            elif param == 'mask':
+                data_ls.append(self.list[index].mask)
+        self._show_images(data_ls, param, cols, np.arange(num))
+        if output:
+            return data_ls
+            
+    def _show_images(self, images, main_title, cols=1, titles=None):
+        """
+        Display a list of images in a single figure with matplotlib.
+        
+        Parameters
+        ---------
+        images: List of np.arrays compatible with plt.imshow.
+        
+        cols (Default = 1): Number of columns in figure (number of rows is 
+                            set to np.ceil(n_images/float(cols))).
+        
+        titles: List of titles corresponding to each image. Must have
+                the same length as titles.
+        ---------
+        Origin https://gist.github.com/soply/f3eec2e79c165e39c9d540e916142ae1
+        """
+        assert((titles is None) or (len(images) == len(titles)))
+        n_images = len(images)
+        if titles is None: titles = ['Image (%d)' % i for i in range(1, n_images+1)]
+        fig = plt.figure()
+        for n, (image, title) in enumerate(zip(images, titles)):
+            a = fig.add_subplot(cols, np.ceil(n_images/float(cols)), n+1)
+            if image.ndim == 2:
+                plt.gray()
+            plt.axis('off')
+            plt.imshow(image)
+            a.set_title(title, fontsize=30)
+        fig.set_size_inches(np.array([1,1]) * n_images)
+        fig.suptitle(main_title, fontsize=30, y=0.95)
+        plt.show()        
+    
+    
     def cluster_particles(self,algorithm='Kmeans',properties=None,n_clusters=2,eps=0.2,min_samples=5):
         """
         Cluster particles in to different populations based on specified properties.

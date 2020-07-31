@@ -65,19 +65,21 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         
     for region in regionprops(labeled, coordinates='rc'): #'count' start with 1, 0 is background
         p = Particle()
-        
-        p_im = np.zeros_like(image.data)
-        p_im[labeled==region.label] = image.data[labeled==region.label] - np.min(image.data[labeled==region.label])
-        
+              
         maskp = np.zeros_like(image.data)
         maskp[labeled==region.label] = 1
         
-        #Calculate average background around image
-        dilated_mask = morphology.binary_dilation(maskp).astype(int)
-        dilated_mask2 = morphology.binary_dilation(dilated_mask).astype(int)
-        boundary_mask = dilated_mask2 - dilated_mask
-        p.background = np.sum(boundary_mask*image.data)/np.count_nonzero(boundary_mask)
+        p_im = np.ma.masked_array(image.data, mask=1-maskp)
         
+        #Calculate average background around image
+        if parameters.store['bkg_sub']==True:
+            dilated_mask = morphology.binary_dilation(maskp).astype(int)
+            dilated_mask2 = morphology.binary_dilation(dilated_mask).astype(int)
+            boundary_mask = dilated_mask2 - dilated_mask
+            background = np.sum(boundary_mask*image.data)/np.count_nonzero(boundary_mask)
+            p.set_background(background)
+        else:
+            p.set_background(0.0)
         #origin = ac_number
         #p.set_origin(origin)
         
@@ -108,10 +110,11 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         p.set_property("solidity",region.solidity,None)
         
         #Set total image intensity
-        intensity = ((image.data - p.background)*maskp).sum()
-        p.set_intensity(intensity)
-        p.set_property("intensity_max",((image.data - p.background)*maskp).max(),None)
-        p.set_property("intensity_std",((image.data - p.background)*maskp).std()/p.properties['intensity_max']['value'],None)
+        p_im_bkgsub = np.ma.masked_array(p_im.data - p.properties['background']['value'], 
+                                         mask=1-maskp)
+        p.set_intensity(p_im_bkgsub.sum())
+        p.set_property("intensity_max",p_im_bkgsub.max(),None)
+        p.set_property("intensity_std",p_im_bkgsub.std(),None)
         
         #Set zoneaxis
         '''im_smooth = filters.gaussian(np.uint16(p_im),1)
@@ -232,18 +235,24 @@ def store_image(particle,image,params):
     ii = np.where(particle.mask)
             
     box_x_min = np.min(ii[0])
-    box_x_max = np.max(ii[0])
-    box_y_max = np.max(ii[1])
+    box_x_max = np.max(ii[0])+1
     box_y_min = np.min(ii[1])
+    box_y_max = np.max(ii[1])+1
     pad = params.store['pad']
     
-    if params.store['p_only']==True:
-        image = image*particle.mask
+    if params.store['bkg_sub']==True:
+        image.data = image.data - particle.properties['background']['value']
     
-    if box_y_min-pad > 0 and box_x_min-pad > 0 and box_x_max+pad < particle.mask.shape[0] and box_y_max+pad < particle.mask.shape[1]:
-        p_boxed = image.isig[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
+    if params.store['p_only']==True:
+        image.data = image.data*particle.mask
+    
+    if pad!=None:
+        if box_y_min-pad > 0 and box_x_min-pad > 0 and box_x_max+pad < particle.mask.shape[0] and box_y_max+pad < particle.mask.shape[1]:
+            p_boxed = image.isig[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
+        else:
+            p_boxed = image.isig[(box_y_min):(box_y_max),(box_x_min):(box_x_max)]
     else:
-        p_boxed = image.isig[(box_y_min):(box_y_max),(box_x_min):(box_x_max)]
+        p_boxed = image
     particle.store_im(p_boxed)
     
 def store_maps(particle,ac,params):
@@ -299,6 +308,7 @@ class parameters(object):
         self.segment['local_size'] = local_size
         
         self.store = {}
+        self.store['bkg_sub'] = True
         self.store['store_im'] = store_im
         self.store['pad'] = pad
         self.store['p_only'] = False
@@ -330,6 +340,7 @@ class parameters(object):
         segment.attrs["rb_kernel"] = self.segment['rb_kernel']
         segment.attrs["gaussian"] = self.segment['gaussian']
         segment.attrs["local_size"] = self.segment['local_size']
+        store.attrs['bkg_sub'] = self.store['bkg_sub']
         store.attrs['store_im'] = self.store['store_im']
         store.attrs['pad'] = self.store['pad']
         store.attrs['store_maps'] = self.store['store_maps']
@@ -360,6 +371,7 @@ class parameters(object):
         self.segment['rb_kernel'] = segment.attrs["rb_kernel"]
         self.segment['gaussian'] = segment.attrs["gaussian"]
         self.segment['local_size'] = segment.attrs["local_size"]
+        self.store['bkg_sub'] = store.attrs['bkg_sub']
         self.store['store_im'] = store.attrs['store_im']
         self.store['pad'] = store.attrs['pad']
         self.store['store_maps'] = store.attrs['store_maps']
