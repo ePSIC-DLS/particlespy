@@ -11,11 +11,7 @@ from scipy import optimize
 #   2D image boundary analysis
 
 def eight_neighbour_loop(center, start,boundary_matrix): 
-    """
-    center is [x,y], start is [x,y] format
-    
-    ref: P796-798, Digital Image Processing (2008) Gonzalez & Woods
-    """
+    """center is [x,y], start is [x,y] format"""
     x = center[0]
     y = center[1]
     neighbour_dic = {0: [x-1,y],
@@ -49,7 +45,6 @@ def eight_neighbour_loop(center, start,boundary_matrix):
 def boundary_follow(img, center=None):
     """
     Find boundaries and clock-wise follow boundary as a sequence list.
-    ref: P796-798, Digital Image Processing (2008) Gonzalez & Woods
     
     Parameters
     ----------
