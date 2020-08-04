@@ -62,6 +62,9 @@ def boundary_follow(img, center=None):
     -------
     boundary_list: list
         A list of boundary pixel coordinates in clock-wise sequence.
+    angle_list： list
+        Boundary pixel associated angles in clock-wise sequence 
+        from 0 to 360 degree. 0 degree is 12 o'clokc direction.
         
     Example
     -------
@@ -263,7 +266,7 @@ def boundary_curvature(im_binary, center=None, segment=5):
 def least_squares_circle(coords):
     '''
     Give a list of points, least square fit a circle 
-    ref: https://pypi.org/project/circle-fit/
+    ref: https://scipy-cookbook.readthedocs.io/items/Least_Squares_Circle.html
 
     Parameters
     ----------
@@ -320,7 +323,7 @@ def least_squares_circle(coords):
 def calc_R(x,y, xc, yc):
     """
     calculate the distance of each 2D points from the center (xc, yc)
-    ref: https://pypi.org/project/circle-fit/
+    ref: https://scipy-cookbook.readthedocs.io/items/Least_Squares_Circle.html
     """
     return np.sqrt((x-xc)**2 + (y-yc)**2)
 
@@ -328,7 +331,7 @@ def f(c, x, y):
     """
     calculate the algebraic distance between the data points
     and the mean circle centered at c=(xc, yc)
-    ref: https://pypi.org/project/circle-fit/
+    ref: https://scipy-cookbook.readthedocs.io/items/Least_Squares_Circle.html
     """
     Ri = calc_R(x, y, *c)
     return Ri - Ri.mean()
