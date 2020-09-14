@@ -83,7 +83,11 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         
         #Set area
         cal_area = region.area*image.axes_manager[0].scale*image.axes_manager[1].scale
-        area_units = image.axes_manager[0].units+"^2"
+        try:
+            area_units = image.axes_manager[0].unit + "^2"
+        except:
+            area_units = "unknown units^2"
+
         p.set_area(cal_area,area_units)
         
         #Set diam measures
