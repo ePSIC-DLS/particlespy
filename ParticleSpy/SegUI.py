@@ -96,6 +96,8 @@ class Application(QMainWindow):
         self.comboBox.addItem("Local")
         self.comboBox.addItem("Local Otsu")
         self.comboBox.addItem("Local+Global Otsu")
+        self.comboBox.addItem("Niblack")
+        self.comboBox.addItem("Sauvola")
         self.comboBox.activated[str].connect(self.threshold_choice)
         
         self.localtxt = QLabel(self)
@@ -312,7 +314,11 @@ class Application(QMainWindow):
             self.params.segment['threshold'] = "local_otsu"
         if str(self.comboBox.currentText()) == "Local+Global Otsu":
             self.params.segment['threshold'] = "lg_otsu"
-            
+        if str(self.comboBox.currentText()) == "Niblack":
+            self.params.segment['threshold'] = "niblack"
+        if str(self.comboBox.currentText()) == "Sauvola":
+            self.params.segment['threshold'] = "sauvola"
+
     def save_array(self):
         self.canvas.savearray(self.image)
 
