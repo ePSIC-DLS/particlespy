@@ -11,6 +11,7 @@ import scipy.ndimage as ndi
 from skimage.filters import threshold_otsu, threshold_mean, threshold_minimum
 from skimage.filters import threshold_yen, threshold_isodata, threshold_li
 from skimage.filters import threshold_local, rank
+from skimage.filters import threshold_niblack, threshold_sauvola
 
 from skimage.measure import label
 from skimage.morphology import remove_small_objects, watershed, square, white_tophat, disk, binary_erosion
@@ -74,7 +75,8 @@ def threshold(data, process_param):
     if process_param["threshold"] == "li":
         thresh = threshold_li(data)
     if process_param["threshold"] == "local":
-        thresh = threshold_local(data,process_param["local_size"])
+        w_size = 2*process_param["local_size"]+1
+        thresh = threshold_local(data,w_size)
     if process_param["threshold"] == "local_otsu":
         selem = disk(process_param["local_size"])
         data = data.astype(np.float64)
@@ -88,7 +90,14 @@ def threshold(data, process_param):
         data = np.uint8(255*data/np.max(data))
         threshl = rank.otsu(data,selem)
         threshg = threshold_otsu(data)
-    
+    if process_param["threshold"] == "niblack":
+        w_size = 2*process_param["local_size"]+1
+        thresh = threshold_niblack(data,w_size)
+        mask = data > thresh
+    if process_param["threshold"] == "sauvola":
+        w_size = 2*process_param["local_size"]+1
+        thresh = threshold_sauvola(data,w_size)
+        mask = data > thresh
     if process_param["threshold"] == "lg_otsu":
         mask1 = data>=threshl
         mask2 = data>threshg
