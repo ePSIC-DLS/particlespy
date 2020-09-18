@@ -38,7 +38,7 @@ Plotting of more than one Particle_list can be done using the top level :py:meth
     >>> ps.plot([particles1,particles2],['area','circularity'])
 
 
-Plotting Radial Profiles
+Ploting Radial Profiles
 -----------------------
 
 ParticleSpy provides the ability to plot a radial profile (that is an intensity profile from particle centre to edge) of image intensity or EDS signal intensity.
