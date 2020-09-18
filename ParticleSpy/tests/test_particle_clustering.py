@@ -27,12 +27,10 @@ def test_clustering_all():
         t_p = test_params.split(',')
         test_results = test_results.split(',')
         params = ps.parameters()
-        print(t_p[0])
         params.generate(threshold=t_p[0], watershed=bool(int(t_p[1])), watershed_size=int(t_p[2]), watershed_erosion=int(t_p[3]), invert= bool(int(t_p[4])), min_size=int(t_p[5]), rb_kernel=int(t_p[6]), gaussian=int(t_p[7]), local_size=int(t_p[8]))
+        
         particles = ps.ParticleAnalysis(data,params)
-    
         new_plists = particles.cluster_particles(properties=['area','circularity'])
-
 
         verif = False
         for value in test_results:
@@ -42,5 +40,3 @@ def test_clustering_all():
         assert verif == True
     
     param_list.close()
-
-test_clustering_all()
