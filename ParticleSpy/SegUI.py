@@ -264,10 +264,7 @@ class Application(QMainWindow):
         if self.imflag=="Image":
             #b=image
             b = np.uint8(mark_boundaries(self.image, labels, color=(1,1,1))[:,:,0]*255)
-            if self.params.segment['invert'] == True:
-                qi = QImage(invert(b).data, b.shape[1], b.shape[0], b.shape[1], QImage.Format_Indexed8)
-            else:
-                qi = QImage(b.data, b.shape[1], b.shape[0], b.shape[1], QImage.Format_Indexed8)
+            qi = QImage(b.data, b.shape[1], b.shape[0], b.shape[1], QImage.Format_Indexed8)
         if self.imflag=="Labels":
             qi = QImage(labels.data, labels.shape[1], labels.shape[0], labels.shape[1], QImage.Format_Indexed8)
         #qi = QImage(imchoice.data, imchoice.shape[1], imchoice.shape[0], imchoice.shape[1], QImage.Format_Indexed8)
