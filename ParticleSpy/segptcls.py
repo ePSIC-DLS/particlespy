@@ -75,8 +75,7 @@ def threshold(data, process_param):
     if process_param["threshold"] == "li":
         thresh = threshold_li(data)
     if process_param["threshold"] == "local":
-        w_size = 2*process_param["local_size"]+1
-        thresh = threshold_local(data,w_size)
+        thresh = threshold_local(data,process_param["local_size"])
     if process_param["threshold"] == "local_otsu":
         selem = disk(process_param["local_size"])
         data = data.astype(np.float64)
@@ -91,12 +90,10 @@ def threshold(data, process_param):
         threshl = rank.otsu(data,selem)
         threshg = threshold_otsu(data)
     if process_param["threshold"] == "niblack":
-        w_size = 2*process_param["local_size"]+1
-        thresh = threshold_niblack(data,w_size)
+        thresh = threshold_niblack(data,process_param["local_size"])
         mask = data > thresh
     if process_param["threshold"] == "sauvola":
-        w_size = 2*process_param["local_size"]+1
-        thresh = threshold_sauvola(data,w_size)
+        thresh = threshold_sauvola(data,process_param["local_size"])
         mask = data > thresh
     if process_param["threshold"] == "lg_otsu":
         mask1 = data>=threshl
