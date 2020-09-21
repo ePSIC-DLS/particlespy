@@ -32,6 +32,7 @@ def test_clustering_all():
 
         verif = False
         for value in test_results:
+            print(t_p[0],value,len(new_plists[0].list))
             if len(new_plists[0].list) == int(value):
                 verif = True
                 break

@@ -99,13 +99,14 @@ class Application(QMainWindow):
         self.comboBox.addItem("Niblack")
         self.comboBox.addItem("Sauvola")
         self.comboBox.activated[str].connect(self.threshold_choice)
+        self.comboBox.activated.connect(self.updateLocalSize)
         
         self.localtxt = QLabel(self)
         self.localtxt.setText('Local filter kernel')
         
         self.local_size = QSpinBox(self)
-        self.local_size.setMaximum(self.image.shape[0])
         self.local_size.valueChanged.connect(self.local)
+        self.local_size.setEnabled(False)
         
         cb = QCheckBox('Watershed', self)
         cb.stateChanged.connect(self.changeWatershed)
@@ -201,6 +202,18 @@ class Application(QMainWindow):
         
         self.show()
         
+    def updateLocalSize(self):
+        if self.comboBox.currentText() == 'Niblack' or self.comboBox.currentText() == 'Sauvola' or self.comboBox.currentText() == 'Local':
+            self.local_size.setEnabled(True)
+            self.local_size.setMinimum(1)
+            self.local_size.setSingleStep(2)
+            self.local_size.setMaximum(self.image.shape[0])
+        elif self.comboBox.currentText() == "Local Otsu" or self.comboBox.currentText() == "Local+Global Otsu":
+            self.local_size.setEnabled(True)
+            self.local_size.setMaximum(self.image.shape[0])
+        else:
+            self.local_size.setEnabled(False)
+    
     def getim(self,im_hs):
         self.im_hs = im_hs
         im = im_hs.data.astype(np.float64)
