@@ -34,7 +34,7 @@ def test_clustering_all():
         for value in test_results:
             if len(new_plists[0].list) == int(value):
                 verif = True
-    
+                break
         assert verif == True
     
     param_list.close()
