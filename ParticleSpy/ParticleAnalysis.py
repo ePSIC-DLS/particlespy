@@ -63,7 +63,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
     else:
         labeled = label(mask)
         
-    for region in regionprops(labeled, coordinates='rc'): #'count' start with 1, 0 is background
+    for region in regionprops(labeled): #'count' start with 1, 0 is background
         p = Particle()
         
         p_im = np.zeros_like(image.data)
