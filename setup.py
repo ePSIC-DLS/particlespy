@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 install_requires=["hyperspy",
                   "scikit-image>=0.17.2",
-                  "scikit-learn>=0.21",
+                  "scikit-learn>=0.23.2",
 				  "trackpy"]
 
 try:
