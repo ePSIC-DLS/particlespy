@@ -4,8 +4,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 install_requires=["hyperspy",
-                  "scikit-image>=0.17.2",
-                  "scikit-learn>=0.23.2",
+                  "scikit-image>=0.17.1",
+                  "scikit-learn>=0.21",
 				  "trackpy"]
 
 try:
