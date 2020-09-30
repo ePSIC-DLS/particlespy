@@ -10,6 +10,8 @@ import numpy as np
 from ParticleSpy.ptcl_class import Particle, Particle_list
 from skimage import filters, morphology
 from skimage.measure import label, regionprops, perimeter
+from sklearn import preprocessing
+from sklearn.cluster import DBSCAN, KMeans
 import ParticleSpy.find_zoneaxis as zone
 import warnings
 import h5py
@@ -170,7 +172,7 @@ def ParticleAnalysisSeries(image_series,parameters,particles=None):
     
     Parameters
     ----------
-    image_series: Hyperpsy signal object or list of hyperspy signal objects.
+    image_series: Hyperspy signal object or list of hyperspy signal objects.
         Hyperpsy signal object containing nanoparticle images or a list of signal
          objects that contains a time series.
     parameters: Dictionary of parameters
@@ -231,7 +233,127 @@ def timeseriesanalysis(particles,max_dist=1,memory=3,properties=['area']):
         
     t = trackpy.link(df,max_dist,memory=memory)
     return(t)
+
+def ClusterLearn(image, method='KMeans', parameters=[{'kernel': 'gaussian'}, 
+                                                    {'kernel': 'sobel'},
+                                                    {'kernel': 'hessian'},
+                                                    {'kernel': 'rank mean', 'disk size': 20},
+                                                    {'kernel': 'median'},
+                                                    {'kernel': 'minimum', 'disk size': 20},
+                                                    {'kernel': 'maximum', 'disk size': 20},
+                                                    {'kernel': 'bilateral', 'disk size': 20},
+                                                    {'kernel': 'entropy', 'disk size': 20},
+                                                    {'kernel': 'gabor', 'frequency': 100},
+                                                    {'kernel': 'gaussian diff', 'low sigma': 1}]):
+    """
+    Creates masks of given images using scikit learn clustering methods.
     
+    Parameters
+    ----------
+    image: Hyperspy signal object or list of hyperspy signal objects.
+        Hyperpsy signal object containing nanoparticle images
+    method: Clustering algorithm used to generate mask.
+    disk_size: Size of the local pixel neighbourhood considered by select 
+        segmentation methods.
+    parameters: List of dictionaries of Parameters for segmentation methods used in clustering
+        The parameters can be inputted manually or use the default .
+
+    Returns
+    -------
+    generated mask
+    """
+
+    image = image.data
+    shape = [image.shape[0], image.shape[1], 1]
+
+    image_stack = np.zeros(shape)
+    image_stack = np.reshape(image, shape)
+
+    for i in range(len(parameters)):
+        if parameters[i]['kernel'] == 'gaussian':
+            new_layer = np.reshape(filters.gaussian(image), shape)
+        elif parameters[i]['kernel'] == 'gaussian diff':
+            new_layer = np.reshape(filters.difference_of_gaussians(image, low_sigma = 1), shape)
+        elif parameters[i]['kernel'] == 'sobel':
+            new_layer = np.reshape(filters.sobel(image), shape)
+        elif parameters[i]['kernel'] == 'hessian':
+            new_layer = np.reshape(filters.hessian(image, mode='constant'), shape)
+        elif parameters[i]['kernel'] == 'rank mean':
+            selem = parameters[i]['disk size']
+            new_layer = np.reshape(filters.rank.mean(image,selem), shape)
+        elif parameters[i]['kernel'] == 'median':
+             new_layer = np.reshape(filters.median(image), shape)
+        elif parameters[i]['kernel'] == 'min':
+            selem = parameters[i]['disk size']
+            new_layer = np.reshape(filters.rank.minimum(image,selem), shape)
+        elif parameters[i]['kernel'] == 'max':
+            selem = parameters[i]['disk size']
+            new_layer = np.reshape(filters.rank.maximum(image, selem), shape)
+        elif parameters[i]['kernel'] == 'bilateral':
+            selem = parameters[i]['disk size']
+            new_layer = np.reshape(filters.rank.mean_bilateral(image,selem), shape)
+        elif parameters[i]['kernel'] == 'entropy':
+            selem = parameters[i]['disk size']
+            new_layer = np.reshape(filters.rank.entropy(image, selem), shape)
+        elif parameters[i]['kernel'] == 'gabor':
+            freq = parameters[i]['frequency']
+            new_layer, _ = filters.gabor(image,freq)
+            new_layer = np.reshape(new_layer, shape)
+        np.append(image_stack, new_layer, axis=2)
+
+    pixel_stacks = np.zeros([shape[0]*shape[1],image_stack.shape[2]])
+    for i in range(shape[1]):
+        pixel_stacks[i*shape[0]:(i+1)*shape[0],:] = image_stack[:,i,:]
+        
+    pixel_stacks = preprocessing.scale(pixel_stacks)
+
+    if method == 'KMeans':
+        labels = KMeans(n_clusters=2,init='random',n_init=10).fit_predict(pixel_stacks)
+    elif method == 'DBscan':
+        labels = DBSCAN().fit_predict(pixel_stacks)
+        
+    mask = np.zeros_like(image)
+    for i in range(shape[1]):
+        mask[:,i] = labels[i*shape[0]:(i+1)*shape[0]]
+    
+    return mask
+
+def ClusterLearnSeries(image_set, method='KMeans', parameters=[{'kernel': 'gaussian'}, 
+                                                    {'kernel': 'sobel'},
+                                                    {'kernel': 'hessian'},
+                                                    {'kernel': 'rank mean', 'disk size': 20},
+                                                    {'kernel': 'median'},
+                                                    {'kernel': 'minimum', 'disk size': 20},
+                                                    {'kernel': 'maximum', 'disk size': 20},
+                                                    {'kernel': 'bilateral', 'disk size': 20},
+                                                    {'kernel': 'entropy', 'disk size': 20},
+                                                    {'kernel': 'gabor', 'frequency': 100},
+                                                    {'kernel': 'gaussian diff', 'low sigma': 1}]):
+    """
+    Creates masks of sets of images using scikit learn clustering methods.
+    
+    Parameters
+    ----------
+    image_set: list of hyperspy signal objects.
+        List of Hyperpsy signal object containing nanoparticle images
+    method: Clustering algorithm used to generate mask.
+    disk_size: Size of the local pixel neighbourhood considered by select 
+        segmentation methods.
+    parameters: List of dictionaries of Parameters for segmentation methods used in clustering
+        The parameters can be input manually in to a dictionary or can be generated
+        using param_generator().
+
+    Returns
+    -------
+    list of generated mask per image
+    """
+
+    mask_set = []
+    for image in image_set:
+        mask_set.append(ClusterLearn(image,method,parameters))
+    
+    return mask_set
+
 def store_image(particle,image,params):
     ii = np.where(particle.mask)
             
