@@ -234,17 +234,17 @@ def timeseriesanalysis(particles,max_dist=1,memory=3,properties=['area']):
     t = trackpy.link(df,max_dist,memory=memory)
     return(t)
 
-def ClusterLearn(image, method='KMeans', parameters=[{'kernel': 'gaussian'}, 
+def ClusterLearn(image, method='KMeans', parameters=[{'kernel': 'gaussian', 'sigma': 1}, 
                                                     {'kernel': 'sobel'},
-                                                    {'kernel': 'hessian'},
+                                                    {'kernel': 'hessian', 'black ridges': False},
                                                     {'kernel': 'rank mean', 'disk size': 20},
-                                                    {'kernel': 'median'},
+                                                    {'kernel': 'median', 'disk size': 20},
                                                     {'kernel': 'minimum', 'disk size': 20},
                                                     {'kernel': 'maximum', 'disk size': 20},
                                                     {'kernel': 'bilateral', 'disk size': 20},
                                                     {'kernel': 'entropy', 'disk size': 20},
                                                     {'kernel': 'gabor', 'frequency': 100},
-                                                    {'kernel': 'gaussian diff', 'low sigma': 1}]):
+                                                    {'kernel': 'gaussian diff', 'low sigma': 1, 'high sigma': 5}]):
     """
     Creates masks of given images using scikit learn clustering methods.
     
@@ -271,18 +271,23 @@ def ClusterLearn(image, method='KMeans', parameters=[{'kernel': 'gaussian'},
 
     for i in range(len(parameters)):
         if parameters[i]['kernel'] == 'gaussian':
-            new_layer = np.reshape(filters.gaussian(image), shape)
+            sigma = parameters[i]['sigma']
+            new_layer = np.reshape(filters.gaussian(image, sigma), shape)
         elif parameters[i]['kernel'] == 'gaussian diff':
-            new_layer = np.reshape(filters.difference_of_gaussians(image, low_sigma = 1), shape)
+            low_sigma = parameters[i]['low sigma']
+            high_sigma = parameters[i]['high sigma']
+            new_layer = np.reshape(filters.difference_of_gaussians(image, low_sigma, high_sigma), shape)
         elif parameters[i]['kernel'] == 'sobel':
             new_layer = np.reshape(filters.sobel(image), shape)
         elif parameters[i]['kernel'] == 'hessian':
-            new_layer = np.reshape(filters.hessian(image, mode='constant'), shape)
+            black_ridges = parameters[i]['black ridges']
+            new_layer = np.reshape(filters.hessian(image, black_ridges, mode='constant',), shape)
         elif parameters[i]['kernel'] == 'rank mean':
             selem = morphology.disk(parameters[i]['disk size'])
             new_layer = np.reshape(filters.rank.mean(image,selem), shape)
         elif parameters[i]['kernel'] == 'median':
-             new_layer = np.reshape(filters.median(image), shape)
+            selem = morphology.disk(parameters[i]['disk size'])
+            new_layer = np.reshape(filters.median(image,selem), shape)
         elif parameters[i]['kernel'] == 'min':
             selem = morphology.disk(parameters[i]['disk size'])
             new_layer = np.reshape(filters.rank.minimum(image,selem), shape)
@@ -291,7 +296,7 @@ def ClusterLearn(image, method='KMeans', parameters=[{'kernel': 'gaussian'},
             new_layer = np.reshape(filters.rank.maximum(image, selem), shape)
         elif parameters[i]['kernel'] == 'bilateral':
             selem = morphology.disk(parameters[i]['disk size'])
-            new_layer = np.reshape(filters.rank.mean_bilateral(image,selem), shape)
+            new_layer = np.reshape(filters.rank.mean_bilateral(image, selem), shape)
         elif parameters[i]['kernel'] == 'entropy':
             selem = morphology.disk(parameters[i]['disk size'])
             new_layer = np.reshape(filters.rank.entropy(image, selem), shape)
@@ -318,17 +323,17 @@ def ClusterLearn(image, method='KMeans', parameters=[{'kernel': 'gaussian'},
     
     return mask
 
-def ClusterLearnSeries(image_set, method='KMeans', parameters=[{'kernel': 'gaussian'}, 
+def ClusterLearnSeries(image_set, method='KMeans', parameters=[{'kernel': 'gaussian', 'sigma': 1}, 
                                                     {'kernel': 'sobel'},
-                                                    {'kernel': 'hessian'},
+                                                    {'kernel': 'hessian', 'black ridges': False},
                                                     {'kernel': 'rank mean', 'disk size': 20},
-                                                    {'kernel': 'median'},
+                                                    {'kernel': 'median', 'disk size': 20},
                                                     {'kernel': 'minimum', 'disk size': 20},
                                                     {'kernel': 'maximum', 'disk size': 20},
                                                     {'kernel': 'bilateral', 'disk size': 20},
                                                     {'kernel': 'entropy', 'disk size': 20},
                                                     {'kernel': 'gabor', 'frequency': 100},
-                                                    {'kernel': 'gaussian diff', 'low sigma': 1}]):
+                                                    {'kernel': 'gaussian diff', 'low sigma': 1, 'high sigma': None}]):
     """
     Creates masks of sets of images using scikit learn clustering methods.
     
