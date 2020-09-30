@@ -279,21 +279,21 @@ def ClusterLearn(image, method='KMeans', parameters=[{'kernel': 'gaussian'},
         elif parameters[i]['kernel'] == 'hessian':
             new_layer = np.reshape(filters.hessian(image, mode='constant'), shape)
         elif parameters[i]['kernel'] == 'rank mean':
-            selem = parameters[i]['disk size']
+            selem = morphology.disk(parameters[i]['disk size'])
             new_layer = np.reshape(filters.rank.mean(image,selem), shape)
         elif parameters[i]['kernel'] == 'median':
              new_layer = np.reshape(filters.median(image), shape)
         elif parameters[i]['kernel'] == 'min':
-            selem = parameters[i]['disk size']
+            selem = morphology.disk(parameters[i]['disk size'])
             new_layer = np.reshape(filters.rank.minimum(image,selem), shape)
         elif parameters[i]['kernel'] == 'max':
-            selem = parameters[i]['disk size']
+            selem = morphology.disk(parameters[i]['disk size'])
             new_layer = np.reshape(filters.rank.maximum(image, selem), shape)
         elif parameters[i]['kernel'] == 'bilateral':
-            selem = parameters[i]['disk size']
+            selem = morphology.disk(parameters[i]['disk size'])
             new_layer = np.reshape(filters.rank.mean_bilateral(image,selem), shape)
         elif parameters[i]['kernel'] == 'entropy':
-            selem = parameters[i]['disk size']
+            selem = morphology.disk(parameters[i]['disk size'])
             new_layer = np.reshape(filters.rank.entropy(image, selem), shape)
         elif parameters[i]['kernel'] == 'gabor':
             freq = parameters[i]['frequency']
