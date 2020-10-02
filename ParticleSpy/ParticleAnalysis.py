@@ -304,7 +304,7 @@ def ClusterLearn(image, method='KMeans', parameters=[{'kernel': 'gaussian', 'sig
             freq = parameters[i]['frequency']
             new_layer, _ = filters.gabor(image,freq)
             new_layer = np.reshape(new_layer, shape)
-        np.append(image_stack, new_layer, axis=2)
+        image_stack = np.append(image_stack, new_layer, axis=2)
 
     pixel_stacks = np.zeros([shape[0]*shape[1],image_stack.shape[2]])
     for i in range(shape[1]):
