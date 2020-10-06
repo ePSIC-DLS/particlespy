@@ -43,10 +43,12 @@ class Application(QMainWindow):
         self.tabs = QTabWidget()
         self.tab1 = QWidget()
         self.tab2 = QWidget()
+        self.tab3 = QWidget()
         
         # Add tabs
         self.tabs.addTab(self.tab1,"Auto")
         self.tabs.addTab(self.tab2,"Manual")
+        self.tabs.addTab(self.tab3,"WIP Training")
 
         #self.central_widget = QWidget()               
         #self.setCentralWidget(self.central_widget)
@@ -201,6 +203,34 @@ class Application(QMainWindow):
         tab2layout.addWidget(self.getarrayb)
         tab2layout.addStretch(1)
         self.tab2.setLayout(tab2layout)
+
+        #Tab 3
+
+        lay3 = QHBoxLayout()
+        im_lay = QVBoxLayout()
+        button_lay = QVBoxLayout()
+
+        lay3.addLayout(button_lay)
+        lay3.addLayout(im_lay)
+
+        self.canvas2 = Canvas(self.pixmap2)
+        
+        self.getarrayc = QPushButton('Save and Close', self)
+        self.getarrayc.clicked.connect(self.save_and_close)
+
+        self.polygonT = QPushButton('Polygon tool', self)
+        #lines
+        #circles
+        
+
+        im_lay.addWidget(self.canvas2)
+
+        button_lay.addWidget(self.polygonT)
+        button_lay.addWidget(self.getarrayc)
+        #tab3layout.addStretch(1)
+        self.tab3.setLayout(lay3)
+
+        
         
         self.show()
         
@@ -343,6 +373,10 @@ class Application(QMainWindow):
 
     def save_array(self):
         self.canvas.savearray(self.image)
+
+    def save_and_close(self):
+        self.canvas.savearray(self.image)
+        self.closeEvent
 
 
 class Canvas(QLabel):
