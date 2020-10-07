@@ -213,17 +213,23 @@ class Application(QMainWindow):
 
         self.canvas2 = Canvas(self.pixmap2)
         
-        self.getarrayc = QPushButton('Save and Close', self)
-        self.getarrayc.clicked.connect(self.save_and_close)
+        for tool in brush_tools:
+            b = ToolButton(tool)
+            b.clicked.connect(lambda tool=tool: self.change_pen(tool))
+            b.setText(tool)
+            button_lay.addWidget(b)
 
-        self.polygonT = QPushButton('Polygon tool', self)
         #lines
         #circles
         
 
         im_lay.addWidget(self.canvas2)
 
-        button_lay.addWidget(self.polygonT)
+        self.getarrayc = QPushButton('Save and Close',self)
+        self.getarrayc.clicked.connect(self.save_and_close)
+        
+        #button_lay.addWidget(self.freeT)
+        #button_lay.addWidget(self.polyT)
         button_lay.addWidget(self.getarrayc)
         #tab3layout.addStretch(1)
         self.tab3.setLayout(lay3)
@@ -231,7 +237,7 @@ class Application(QMainWindow):
         
         
         self.show()
-        
+    
     def updateLocalSize(self):
         if self.comboBox.currentText() == 'Niblack' or self.comboBox.currentText() == 'Sauvola' or self.comboBox.currentText() == 'Local':
             self.local_size.setEnabled(True)
@@ -365,12 +371,25 @@ class Application(QMainWindow):
         if str(self.comboBox.currentText()) == "Sauvola":
             self.params.segment['threshold'] = "sauvola"
 
+    def change_pen(self, pen):
+        self.canvas.changePen(pen)
+
+    
     def save_array(self):
         self.canvas.savearray(self.image)
 
     def save_and_close(self):
         self.canvas.savearray(self.image)
         self.closeEvent
+
+brush_tools = ['Freehand', 'Polygon']
+
+class ToolButton(QPushButton):
+
+    def __init__(self, tool):
+        super().__init__()
+        self.setAutoExclusive(True)
+        self.setCheckable(True)
 
 
 class Canvas(QLabel):
@@ -380,12 +399,17 @@ class Canvas(QLabel):
         self.setPixmap(pixmap)
 
         self.last_x, self.last_y = None, None
-        self.pen_color = QColor(255, 0, 0, 20)        
+        self.pen_color = QColor(255, 0, 0, 20)
+        self.penType = 'Freehand'
 
     def set_pen_color(self, c):
         self.pen_color = QColor(c)
+
+    def changePen(self, brush):
+        self.penType = brush
         
     def mousePressEvent(self, e):
+        #this bit is probably broken
         if e.button() == Qt.RightButton:
             image = self.pixmap().toImage()
             b = image.bits()
@@ -413,23 +437,26 @@ class Canvas(QLabel):
 
     def mouseMoveEvent(self, e):
         if e.buttons() == Qt.LeftButton:
-            if self.last_x is None: # First event.
+            if self.penType == 'Freehand':
+                if self.last_x is None: # First event.
+                    self.last_x = e.x()
+                    self.last_y = e.y()
+                    return # Ignore the first time.
+                
+                painter = QPainter(self.pixmap())
+                p = painter.pen()
+                p.setWidth(2)
+                p.setColor(self.pen_color)
+                painter.setPen(p)
+                painter.drawLine(self.last_x, self.last_y, e.x(), e.y())
+                painter.end()
+                self.update()
+        
+                # Update the origin for next time.
                 self.last_x = e.x()
                 self.last_y = e.y()
-                return # Ignore the first time.
-            
-            painter = QPainter(self.pixmap())
-            p = painter.pen()
-            p.setWidth(4)
-            p.setColor(self.pen_color)
-            painter.setPen(p)
-            painter.drawLine(self.last_x, self.last_y, e.x(), e.y())
-            painter.end()
-            self.update()
-    
-            # Update the origin for next time.
-            self.last_x = e.x()
-            self.last_y = e.y()
+            #elif self.penType == 'Polygon':
+
 
     def mouseReleaseEvent(self, e):
         self.last_x = None
