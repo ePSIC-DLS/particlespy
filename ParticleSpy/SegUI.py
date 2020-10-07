@@ -57,6 +57,7 @@ class Application(QMainWindow):
         rightlay = QVBoxLayout()
         self.tab1.setLayout(lay)
 
+        #tab 1
         self.label = QLabel(self)
         qi = QImage(self.image.data, self.image.shape[1], self.image.shape[0], self.image.shape[1], QImage.Format_Grayscale8)
         pixmap = QPixmap(qi)
@@ -382,7 +383,7 @@ class Application(QMainWindow):
         self.canvas.savearray(self.image)
         self.closeEvent
 
-brush_tools = ['Freehand', 'Polygon']
+brush_tools = ['Freehand', 'Line', 'Polygon']
 
 class ToolButton(QPushButton):
 
@@ -399,8 +400,10 @@ class Canvas(QLabel):
         self.setPixmap(pixmap)
 
         self.last_x, self.last_y = None, None
+        self.last_x_clicked , self.last_y_clicked = None, None
         self.pen_color = QColor(255, 0, 0, 20)
-        self.penType = 'Freehand'
+        self.penType = brush_tools[1]
+        self.lineCount = 0
 
     def set_pen_color(self, c):
         self.pen_color = QColor(c)
@@ -434,6 +437,25 @@ class Canvas(QLabel):
             self.update()
             
             self.array = painted_arr[:,:,2]
+        
+        if e.button() ==Qt.LeftButton:
+            print("click")
+            if self.penType == 'Line':
+                if self.lineCount == 0:
+                    self.last_x_clicked, self.last_y_clicked = e.x(), e.y()
+                    self.lineCount = 1
+                else:
+                    painter = QPainter(self.pixmap())
+                    p = painter.pen()
+                    p.setWidth(2)
+                    p.setColor(self.pen_color)
+                    painter.setPen(p)
+                    painter.drawLine(self.last_x_clicked, self.last_y_clicked, e.x(), e.y())
+                    self.lineCount = 0
+                    painter.end()
+                self.update()
+
+
 
     def mouseMoveEvent(self, e):
         if e.buttons() == Qt.LeftButton:
@@ -455,7 +477,12 @@ class Canvas(QLabel):
                 # Update the origin for next time.
                 self.last_x = e.x()
                 self.last_y = e.y()
-            #elif self.penType == 'Polygon':
+            """if pen is line or poly
+                    delete previous line
+                    draw on new temp line
+            """
+                
+
 
 
     def mouseReleaseEvent(self, e):
