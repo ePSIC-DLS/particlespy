@@ -398,7 +398,12 @@ class Canvas(QLabel):
     def __init__(self,pixmap):
         super().__init__()
         self.setPixmap(pixmap)
-
+        """"
+        self.tool_pixmap = QLabel()
+        tool_layer = QPixmap(self.size())
+        self.tool_pixmap.setPixmap(tool_layer)
+        self.setMouseTracking(True)
+"""
         self.last_x, self.last_y = None, None
         self.last_x_clicked , self.last_y_clicked = None, None
         self.pen_color = QColor(255, 0, 0, 20)
@@ -447,10 +452,11 @@ class Canvas(QLabel):
                 else:
                     painter = QPainter(self.pixmap())
                     p = painter.pen()
-                    p.setWidth(2)
+                    p.setWidth(5)
                     p.setColor(self.pen_color)
                     painter.setPen(p)
                     painter.drawLine(self.last_x_clicked, self.last_y_clicked, e.x(), e.y())
+                    self.last_x_clicked, self.last_y_clicked = e.x(), e.y()
                     self.lineCount = 0
                     painter.end()
                 self.update()
@@ -458,16 +464,16 @@ class Canvas(QLabel):
 
 
     def mouseMoveEvent(self, e):
+        if self.last_x is None: # First event.
+            self.last_x = e.x()
+            self.last_y = e.y()
+            return # Ignore the first time.
+
         if e.buttons() == Qt.LeftButton:
             if self.penType == 'Freehand':
-                if self.last_x is None: # First event.
-                    self.last_x = e.x()
-                    self.last_y = e.y()
-                    return # Ignore the first time.
-                
                 painter = QPainter(self.pixmap())
                 p = painter.pen()
-                p.setWidth(2)
+                p.setWidth(5)
                 p.setColor(self.pen_color)
                 painter.setPen(p)
                 painter.drawLine(self.last_x, self.last_y, e.x(), e.y())
@@ -477,17 +483,34 @@ class Canvas(QLabel):
                 # Update the origin for next time.
                 self.last_x = e.x()
                 self.last_y = e.y()
-            """if pen is line or poly
-                    delete previous line
-                    draw on new temp line
-            """
+        """
+        if e.buttons() != Qt.LeftButton and (self.penType == 'Line' or self.penType == 'Polygon'):
+            if self.lineCount == 1:
+                painter = QPainter(self.tool_pixmap)
                 
+
+                #this just paints over the line behind with black ideally should isolate to new canvas
+
+                #draw new temp line
+                p = painter.pen()
+                p.setWidth(2)
+                p.pen_color = QColor(255, 255, 255, 255)
+                painter.setPen(p)
+
+                painter.drawLine(self.last_x_clicked, self.last_y_clicked, e.x(), e.y())
+                painter.end()
+                self.update()
+
+                self.last_x = e.x()
+                self.last_y = e.y()
+                """
 
 
 
     def mouseReleaseEvent(self, e):
-        self.last_x = None
-        self.last_y = None
+        if self.penType == 'Freehand':
+            self.last_x = None
+            self.last_y = None
         
     def savearray(self,image):
         resized = np.array(Image.fromarray(self.array).resize((image.shape[1],image.shape[0])))
