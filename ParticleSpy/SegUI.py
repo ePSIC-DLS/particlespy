@@ -119,12 +119,14 @@ class Application(QMainWindow):
         self.watershed_size = QSpinBox(self)
         self.watershed_size.setMaximum(self.image.shape[0])
         self.watershed_size.valueChanged.connect(self.watershed)
+        self.watershed_size.setEnabled(False)
         
         self.wse_title = QLabel(self)
         self.wse_title.setText('Watershed Seed Erosion')
         self.watershed_erosion = QSpinBox(self)
         self.watershed_erosion.setMaximum(self.image.shape[0])
         self.watershed_erosion.valueChanged.connect(self.watershed_e)
+        self.watershed_erosion.setEnabled(False)
         
         cb2 = QCheckBox('Invert', self)
         cb2.stateChanged.connect(self.changeInvert)
@@ -266,8 +268,12 @@ class Application(QMainWindow):
     def changeWatershed(self, state):
         if state == Qt.Checked:
             self.params.segment['watershed'] = True
+            self.watershed_erosion.setEnabled(True)
+            self.watershed_size.setEnabled(True)
         else:
             self.params.segment['watershed'] = False
+            self.watershed_erosion.setEnabled(False)
+            self.watershed_size.setEnabled(False)
             
     def changeInvert(self, state):
         if state == Qt.Checked:
