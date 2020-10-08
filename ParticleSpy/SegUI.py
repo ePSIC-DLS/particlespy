@@ -219,7 +219,7 @@ class Application(QMainWindow):
         
         for tool in brush_tools:
             b = ToolButton(tool)
-            b.clicked.connect(lambda tool=tool: self.change_pen(tool))
+            b.pressed.connect(lambda tool=tool: self.canvas2.changePen(tool))
             b.setText(tool)
             button_lay.addWidget(b)
 
@@ -415,6 +415,8 @@ class Canvas(QLabel):
         self.pen_color = QColor(c)
 
     def changePen(self, brush):
+        print(brush)
+        #brush is bool here
         self.penType = brush
         
     def mousePressEvent(self, e):
@@ -460,17 +462,18 @@ class Canvas(QLabel):
                     self.last_x_clicked, self.last_y_clicked = e.x(), e.y()
                     self.lineCount = 0
                     painter.end()
-                self.update()
+                    self.update()
 
 
 
     def mouseMoveEvent(self, e):
-        if self.last_x is None: # First event.
-            self.last_x = e.x()
-            self.last_y = e.y()
-            return # Ignore the first time.
         
         if e.buttons() == Qt.LeftButton:
+            if self.last_x is None: # First event.
+                self.last_x = e.x()
+                self.last_y = e.y()
+                return # Ignore the first time.
+            
             if self.penType == 'Freehand':
                 painter = QPainter(self.pixmap())
                 p = painter.pen()
@@ -509,6 +512,7 @@ class Canvas(QLabel):
 
 
     def mouseReleaseEvent(self, e):
+        print("release")
         if self.penType == 'Freehand':
             self.last_x = None
             self.last_y = None
