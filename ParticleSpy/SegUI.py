@@ -215,6 +215,7 @@ class Application(QMainWindow):
         lay3.addLayout(im_lay)
 
         self.canvas2 = Canvas(self.pixmap2)
+        self.canvas2.setAlignment(Qt.AlignTop)
         
         for tool in brush_tools:
             b = ToolButton(tool)
@@ -222,19 +223,13 @@ class Application(QMainWindow):
             b.setText(tool)
             button_lay.addWidget(b)
 
-        #lines
-        #circles
-        
 
         im_lay.addWidget(self.canvas2)
 
         self.getarrayc = QPushButton('Save and Close',self)
         self.getarrayc.clicked.connect(self.save_and_close)
         
-        #button_lay.addWidget(self.freeT)
-        #button_lay.addWidget(self.polyT)
         button_lay.addWidget(self.getarrayc)
-        #tab3layout.addStretch(1)
         self.tab3.setLayout(lay3)
 
         
@@ -407,13 +402,13 @@ class Canvas(QLabel):
         """"
         self.tool_pixmap = QLabel()
         tool_layer = QPixmap(self.size())
-        self.tool_pixmap.setPixmap(tool_layer)
+        self.tool_pixmap.setPixmap(tool_layer)"""
+        
         self.setMouseTracking(True)
-"""
         self.last_x, self.last_y = None, None
         self.last_x_clicked , self.last_y_clicked = None, None
         self.pen_color = QColor(255, 0, 0, 20)
-        self.penType = brush_tools[1]
+        self.penType = brush_tools[0]
         self.lineCount = 0
 
     def set_pen_color(self, c):
@@ -474,7 +469,7 @@ class Canvas(QLabel):
             self.last_x = e.x()
             self.last_y = e.y()
             return # Ignore the first time.
-
+        
         if e.buttons() == Qt.LeftButton:
             if self.penType == 'Freehand':
                 painter = QPainter(self.pixmap())
