@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QCheckBox, QPushButton, QLabel, QMainWindow, QSpinBo
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QComboBox, QTabWidget
 from PyQt5.QtWidgets import QVBoxLayout
 from PyQt5.QtGui import QPixmap, QImage, QColor, QPainter
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QPoint
 import sys
 import os
 
@@ -406,9 +406,8 @@ class Canvas(QLabel):
         self.tool_pixmap.setPixmap(tool_layer)"""
         
         self.setMouseTracking(True)
-        self.last_x, self.last_y = None, None
-        self.firstclicked_x, self.firstclicked_y = None, None
-        self.last_x_clicked , self.last_y_clicked = None, None
+        self.first_click = None
+        self.last_click  = None
         self.pen_color = QColor(255, 0, 0, 20)
         self.penType = brush_tools[0]
         self.lineCount = 0
@@ -449,9 +448,10 @@ class Canvas(QLabel):
         
         if e.button() ==Qt.LeftButton:
             print("click")
+
             if self.penType == 'Line':
                 if self.lineCount == 0:
-                    self.last_x_clicked, self.last_y_clicked = e.x(), e.y()
+                    self.last_click = QPoint(e.x(),e.y())
                     self.lineCount = 1
                 else:
                     painter = QPainter(self.pixmap())
@@ -459,16 +459,16 @@ class Canvas(QLabel):
                     p.setWidth(5)
                     p.setColor(self.pen_color)
                     painter.setPen(p)
-                    painter.drawLine(self.last_x_clicked, self.last_y_clicked, e.x(), e.y())
-                    self.last_x_clicked, self.last_y_clicked = e.x(), e.y()
+                    painter.drawLine(self.last_click, e.pos())
+                    self.last_click = QPoint(e.x(),e.y())
                     self.lineCount = 0
                     painter.end()
                     self.update()
             if self.penType == 'Polygon':
                 
                 if self.lineCount == 0:
-                    self.firstclicked_x, self.firstclicked_y = e.x(), e.y()
-                    self.last_x_clicked, self.last_y_clicked = e.x(), e.y()
+                    self.first_click = QPoint(e.x(),e.y())
+                    self.last_click =  QPoint(e.x(),e.y())
                     self.lineCount = 1
 
                 elif self.lineCount == 1:
@@ -477,14 +477,14 @@ class Canvas(QLabel):
                     p.setWidth(5)
                     p.setColor(self.pen_color)
                     painter.setPen(p)
-                    painter.drawLine(self.last_x_clicked, self.last_y_clicked, e.x(), e.y())
-                    self.last_x_clicked, self.last_y_clicked = e.x(), e.y()
+                    painter.drawLine(self.last_click, e.pos())
+                    self.last_click = QPoint(e.x(),e.y())
                     self.lineCount += 1
                     painter.end()
                     self.update()
 
                 elif self.lineCount > 1:
-                    d_x, d_y = float(self.firstclicked_x-e.x()), float(self.firstclicked_y - e.y())
+                    d_x, d_y = float(self.first_click.x()-e.x()), float(self.first_click.y() - e.y())
                     d_from_origin = m.sqrt((d_x)**2 + (d_y)**2)
                     print(d_from_origin)
                     painter = QPainter(self.pixmap())
@@ -495,32 +495,26 @@ class Canvas(QLabel):
 
                     if d_from_origin < 10:
                         
-                        painter.drawLine(self.last_x_clicked, self.last_y_clicked, self.firstclicked_x, self.firstclicked_y)
+                        painter.drawLine(self.last_click, self.first_click)
 
-                        self.last_x_clicked, self.last_y_clicked = None, None
-                        self.firstclicked_x, self.firstclicked_y = None, None
+                        self.last_click = None
+                        self.first_click = None
 
                         self.lineCount = 0
                         print("finished poly")
                     else:
-                        painter.drawLine(self.last_x_clicked, self.last_y_clicked, e.x(), e.y())
-                        self.last_x_clicked, self.last_y_clicked = e.x(), e.y()
+                        painter.drawLine(self.last_click, e.pos())
+                        self.last_click = QPoint(e.x(),e.y())
                         self.lineCount += 1
                     painter.end()
                     self.update()
 
 
-
-
-
-
-
     def mouseMoveEvent(self, e):
         
         if e.buttons() == Qt.LeftButton:
-            if self.last_x is None: # First event.
-                self.last_x = e.x()
-                self.last_y = e.y()
+            if self.last_click is None: # First event.
+                self.last_click = QPoint(e.x(),e.y())
                 return # Ignore the first time.
             
             if self.penType == 'Freehand':
@@ -529,13 +523,13 @@ class Canvas(QLabel):
                 p.setWidth(5)
                 p.setColor(self.pen_color)
                 painter.setPen(p)
-                painter.drawLine(self.last_x, self.last_y, e.x(), e.y())
+                painter.drawLine(self.last_click, e.pos())
                 painter.end()
                 self.update()
         
                 # Update the origin for next time.
-                self.last_x = e.x()
-                self.last_y = e.y()
+                self.last_click = QPoint(e.x(),e.y())
+
         #if e.x() is near startx and e.y() is near styarty:
         #    snap mouse to start x and start y
         """
@@ -565,8 +559,7 @@ class Canvas(QLabel):
     def mouseReleaseEvent(self, e):
         print("release")
         if self.penType == 'Freehand':
-            self.last_x = None
-            self.last_y = None
+            self.last_click = None
         
     def savearray(self,image):
         resized = np.array(Image.fromarray(self.array).resize((image.shape[1],image.shape[0])))
