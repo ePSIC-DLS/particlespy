@@ -461,47 +461,51 @@ class Canvas(QLabel):
                 self.lineDraw(self.last_click, e.pos())
                 self.last_click = QPoint(e.x(),e.y())
                 self.lineCount += 1
+    
+    def flood(self, e):
+        image = self.pixmap().toImage()
+        b = image.bits()
+        b.setsize(512 * 512 * 4)
+        arr = np.frombuffer(b, np.uint8).reshape((512, 512, 4))
+        arr = np.flip(arr, axis=2)
+
+        arr_test = arr[:,:,3]-arr[:,:,1]
+        #arr test is not greyscale
+        
+        painted_arr = np.zeros_like(arr)
+        painted_arr[:,:,1][arr_test!=0] = 255
+        #this makes the drawn images red
+
+        #sets blue from flood fill
+        #NOTE if any other colour channel is set as the output of the flood fill then it just doesn't display in Pixmap
+        #flood_fill outputs the function fine but Qimage or something just breaks it
+        painted_arr[:,:,3] = flood_fill(painted_arr[:,:,1],(e.y(),e.x()),255)
+        #sets alpha from blue channel
+        painted_arr[:,:,0] = painted_arr[:,:,3]
+
+        import matplotlib.pyplot as plt
+        image = painted_arr
+        image = np.append(image[:,:,1:],np.reshape(image[:,:,0],[image.shape[0],image.shape[1],1]),axis=2)
+        plt.imshow(image)
+        plt.show()
+        
+        qi = QImage(painted_arr.data, painted_arr.shape[1], painted_arr.shape[0], 4*painted_arr.shape[1], QImage.Format_ARGB32_Premultiplied)
+        pixmap = QPixmap(qi)
+        
+        painter = QPainter(self.pixmap())
+        painter.setOpacity(0.5)
+
+        painter.drawPixmap(0,0,pixmap)
+        painter.end()
+        self.update()
+        
+        self.array = painted_arr[:,:,3]
 
     def mousePressEvent(self, e):
 
         if e.button() == Qt.RightButton:
-            image = self.pixmap().toImage()
-            b = image.bits()
-            b.setsize(512 * 512 * 4)
-            arr = np.frombuffer(b, np.uint8).reshape((512, 512, 4))
-            arr = np.flip(arr, axis=2)
-
-            arr_test = arr[:,:,3]-arr[:,:,1]
-            #arr test is not greyscale
+            self.flood(e)
             
-            painted_arr = np.zeros_like(arr)
-            painted_arr[:,:,1][arr_test!=0] = 255
-            #this makes the drawn images red
-  
-            #sets blue from flood fill
-            #NOTE if any other colour channel is set as the output of the flood fill then it just doesn't display in Pixmap
-            #flood_fill outputs the function fine but Qimage or something just breaks it
-            painted_arr[:,:,3] = flood_fill(painted_arr[:,:,1],(e.y(),e.x()),255)
-            #sets alpha from blue channel
-            painted_arr[:,:,0] = painted_arr[:,:,3]
-
-            import matplotlib.pyplot as plt
-            image = painted_arr
-            image = np.append(image[:,:,1:],np.reshape(image[:,:,0],[image.shape[0],image.shape[1],1]),axis=2)
-            plt.imshow(image)
-            plt.show()
-            
-            qi = QImage(painted_arr.data, painted_arr.shape[1], painted_arr.shape[0], 4*painted_arr.shape[1], QImage.Format_ARGB32_Premultiplied)
-            pixmap = QPixmap(qi)
-            
-            painter = QPainter(self.pixmap())
-            painter.setOpacity(0.5)
-
-            painter.drawPixmap(0, 0, pixmap)
-            painter.end()
-            self.update()
-            
-            self.array = painted_arr[:,:,1]
         
         if e.button() ==Qt.LeftButton:
             print("click")
