@@ -471,15 +471,20 @@ class Canvas(QLabel):
             b = image.bits()
             b.setsize(512 * 512 * 4)
             arr = np.frombuffer(b, np.uint8).reshape((512, 512, 4))
-            
+            #arr is BGRA I think
             arr_test = arr[:,:,0]/arr[:,:,2]
+            #arr test is basically the red pixels
             
-            painted_arr = np.zeros_like(arr[:,:,0:3])
+            painted_arr = np.zeros_like(arr)
             painted_arr[:,:,2][arr_test!=1] = 255
+            #this makes the drawn images blue
             
-            painted_arr[:,:,2] = flood_fill(painted_arr[:,:,2],(e.y(),e.x()),255)
+            #sets argB from flood fill
+            painted_arr[:,:,3] = flood_fill(painted_arr[:,:,2],(e.y(),e.x()),255)
+            #sets Argb from blue channel
+            painted_arr[:,:,0] = painted_arr[:,:,3]
             
-            qi = QImage(painted_arr.data, painted_arr.shape[1], painted_arr.shape[0], 3*painted_arr.shape[1], QImage.Format_RGB888)
+            qi = QImage(painted_arr.data, painted_arr.shape[1], painted_arr.shape[0], 4*painted_arr.shape[1], QImage.Format_ARGB32_Premultiplied)
             pixmap = QPixmap(qi)
             
             painter = QPainter(self.pixmap())
