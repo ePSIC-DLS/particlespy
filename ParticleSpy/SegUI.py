@@ -16,7 +16,7 @@ import os
 import inspect
 import numpy as np
 import math as m
-from skimage.segmentation import mark_boundaries, flood_fill
+from skimage.segmentation import mark_boundaries, flood_fill, flood
 from skimage.util import invert
 from PIL import Image
 
@@ -487,27 +487,23 @@ class Canvas(QLabel):
         b = image.bits()
         b.setsize(512 * 512 * 4)
         arr = np.frombuffer(b, np.uint8).reshape((512, 512, 4))
+        arr = arr.astype(np.int32)
         arr = np.flip(arr, axis=2)
 
-        arr_test = arr[:,:,3]-arr[:,:,1]
+        i = self.color_index + 1
+        arr_test = arr[:,:,i]-((arr[:,:,1]+ arr[:,:,2]+ arr[:,:,3])/3)
         #arr test is not greyscale
         
+        i = 2 - self.color_index
         #painted_arr is BGRA
-        painted_arr = np.zeros_like(arr)
-        painted_arr[:,:,2][arr_test!=0] = 255
-        #this makes the drawn images red
+        painted_arr = np.zeros_like(arr,dtype=np.uint8)
+        painted_arr[:,:,i][arr_test!=0] = 255
+        #this makes the drawn images the same as pen color
 
+        painted_arr[:,:,i] = flood(painted_arr[:,:,i],(e.y(),e.x()),255)
+        #sets alpha from ith channel
+        painted_arr[:,:,3] = painted_arr[:,:,i]
 
-        painted_arr[:,:,2] = flood_fill(painted_arr[:,:,2],(e.y(),e.x()),255)
-        #sets alpha from red channel
-        painted_arr[:,:,3] = painted_arr[:,:,2]
-
-        import matplotlib.pyplot as plt
-        image = painted_arr
-        image = np.append(image[:,:,1:],np.reshape(image[:,:,0],[image.shape[0],image.shape[1],1]),axis=2)
-        plt.imshow(image)
-        plt.show()
-        
         #BGRA
         qi = QImage(painted_arr.data, painted_arr.shape[1], painted_arr.shape[0], 4*painted_arr.shape[1], QImage.Format_ARGB32_Premultiplied)
         pixmap = QPixmap(qi)
