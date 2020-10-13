@@ -500,7 +500,7 @@ class Canvas(QLabel):
         painted_arr[:,:,i][arr_test!=0] = 255
         #this makes the drawn images the same as pen color
 
-        painted_arr[:,:,i] = flood(painted_arr[:,:,i],(e.y(),e.x()),255)
+        painted_arr[:,:,i] = 255*flood(painted_arr[:,:,i],(e.y(),e.x()))
         #sets alpha from ith channel
         painted_arr[:,:,3] = painted_arr[:,:,i]
 
