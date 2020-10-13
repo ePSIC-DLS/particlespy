@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QCheckBox, QPushButton, QLabel, QMainWindow, QSpinBo
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QComboBox, QTabWidget
 from PyQt5.QtWidgets import QVBoxLayout
 from PyQt5.QtGui import QPixmap, QImage, QColor, QPainter
-from PyQt5.QtCore import Qt, QPoint
+from PyQt5.QtCore import Qt, QPoint, QSize
 import sys
 import os
 
@@ -225,6 +225,12 @@ class Application(QMainWindow):
             button_lay.addWidget(b)
 
 
+        for i in range(len(self.canvas2.colors)):
+            c = self.canvas2.colors[i]
+            b = QPaletteButton(c)
+            b.pressed.connect(lambda i=i: self.canvas2.set_pen_color(i))
+            button_lay.addWidget(b)
+
         im_lay.addWidget(self.canvas2)
 
         self.getarrayc = QPushButton('Save and Close',self)
@@ -390,6 +396,13 @@ class ToolButton(QPushButton):
         self.setAutoExclusive(True)
         self.setCheckable(True)
 
+class QPaletteButton(QPushButton):
+
+    def __init__(self, color):
+        super().__init__()
+        self.setFixedSize(QSize(24,24))
+        self.color = color
+        self.setStyleSheet("background-color: %s;" % color)
 
 class Canvas(QLabel):
 
@@ -404,12 +417,19 @@ class Canvas(QLabel):
         self.setMouseTracking(True)
         self.first_click = None
         self.last_click  = None
-        self.pen_color = QColor(255, 0, 0, 128)
-        self.penType = brush_tools[0]
+
+        self.brush_tools = ['Freehand', 'Line', 'Polygon']
+        self.colors = ['#80FF0000', '#8000FF00', '#800000FF']
+        self.color_index = 0
+        #self.colors = ['#80FF0000', '#8000FF00', '#800000FF','#80E53D00','#806BD425','#8021A0A0']
+
+        self.pen_color = QColor(self.colors[0])
+        self.penType = self.brush_tools[0]
         self.lineCount = 0
 
     def set_pen_color(self, c):
-        self.pen_color = QColor(c)
+        self.color_index = c
+        self.pen_color = QColor(self.colors[self.color_index])
 
     def changePen(self, brush):
         self.lineCount = 0
@@ -472,16 +492,15 @@ class Canvas(QLabel):
         arr_test = arr[:,:,3]-arr[:,:,1]
         #arr test is not greyscale
         
+        #painted_arr is BGRA
         painted_arr = np.zeros_like(arr)
-        painted_arr[:,:,1][arr_test!=0] = 255
+        painted_arr[:,:,2][arr_test!=0] = 255
         #this makes the drawn images red
 
-        #sets blue from flood fill
-        #NOTE if any other colour channel is set as the output of the flood fill then it just doesn't display in Pixmap
-        #flood_fill outputs the function fine but Qimage or something just breaks it
-        painted_arr[:,:,3] = flood_fill(painted_arr[:,:,1],(e.y(),e.x()),255)
-        #sets alpha from blue channel
-        painted_arr[:,:,0] = painted_arr[:,:,3]
+
+        painted_arr[:,:,2] = flood_fill(painted_arr[:,:,2],(e.y(),e.x()),255)
+        #sets alpha from red channel
+        painted_arr[:,:,3] = painted_arr[:,:,2]
 
         import matplotlib.pyplot as plt
         image = painted_arr
@@ -489,6 +508,7 @@ class Canvas(QLabel):
         plt.imshow(image)
         plt.show()
         
+        #BGRA
         qi = QImage(painted_arr.data, painted_arr.shape[1], painted_arr.shape[0], 4*painted_arr.shape[1], QImage.Format_ARGB32_Premultiplied)
         pixmap = QPixmap(qi)
         
