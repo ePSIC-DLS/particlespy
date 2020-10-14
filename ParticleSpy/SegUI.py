@@ -222,6 +222,8 @@ class Application(QMainWindow):
             b = ToolButton(tool)
             b.pressed.connect(lambda tool=tool: self.canvas2.changePen(tool))
             b.setText(tool)
+            if tool == 'Freehand':
+                b.setChecked(True)
             button_lay.addWidget(b)
 
 
@@ -232,6 +234,11 @@ class Application(QMainWindow):
             button_lay.addWidget(b)
 
         im_lay.addWidget(self.canvas2)
+
+        self.clear = QPushButton('Clear', self)
+        self.clear.clicked.connect(self.canvas2.clear)
+
+        button_lay.addWidget(self.clear)
 
         self.getarrayc = QPushButton('Save and Close',self)
         self.getarrayc.clicked.connect(self.save_and_close)
@@ -409,6 +416,8 @@ class Canvas(QLabel):
     def __init__(self,pixmap):
         super().__init__()
         self.setPixmap(pixmap)
+        self.OGpixmap = pixmap
+        self.lastpixmap = pixmap
         """
         self.tool_pixmap = QLabel()
         tool_layer = QPixmap(self.size())
@@ -434,6 +443,13 @@ class Canvas(QLabel):
     def changePen(self, brush):
         self.lineCount = 0
         self.penType = brush
+
+    def clear(self):
+        painter = QPainter(self.pixmap())
+        painter.eraseRect(0,0,512,512)
+        painter.drawPixmap(0,0,self.OGpixmap)
+        painter.end()
+        self.update()
         
     def lineDraw(self,pos1,pos2):
         painter = QPainter(self.pixmap())
@@ -515,7 +531,7 @@ class Canvas(QLabel):
         painter.end()
         self.update()
         
-        self.array = painted_arr[:,:,3]
+        self.array = painted_arr[:,:,1:]
 
     def mousePressEvent(self, e):
 
