@@ -113,3 +113,18 @@ This will save the generated segmentation as an internal npy file that can be re
 .. warning::
    Do NOT right-click on any part of the image that is not fully enclosed by a red circle.
    Doing so will ruin the segmentation and you will have to reload SegUI.
+
+Filter-Based Clustering and Segmentation
+----------------------------------------
+
+ParticleSpy can also segment images by clustering over different filter kernels.
+This is done by calling:
+
+.. code-block:: python
+
+    >>> ClusterLearn(image, methods = name of clustering algorithm, parameters = list of dictionaries each containing a filter kernel and its parameters
+
+This returns a segmentation mask of the image.
+This can be carried out for a sequence of images using ``ClusterLearnSeries``.
+
+In future versions this will most likely be updated to be selected via a GUI or with a list of presets.
