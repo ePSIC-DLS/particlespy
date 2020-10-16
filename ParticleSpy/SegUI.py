@@ -430,11 +430,12 @@ class Canvas(QLabel):
         self.brush_tools = ['Freehand', 'Line', 'Polygon']
         self.colors = ['#80FF0000', '#8000FF00', '#800000FF']
         self.color_index = 0
-        #self.colors = ['#80FF0000', '#8000FF00', '#800000FF','#80E53D00','#806BD425','#8021A0A0']
 
         self.pen_color = QColor(self.colors[0])
         self.penType = self.brush_tools[0]
         self.lineCount = 0
+
+        self.array = np.zeros((512,512,3),dtype=np.uint8)
 
     def set_pen_color(self, c):
         self.color_index = c
@@ -445,6 +446,12 @@ class Canvas(QLabel):
         self.penType = brush
 
     def clear(self):
+
+        self.last_click = None
+        self.first_click = None
+        self.lineCount = 0
+        self.array = np.zeros((512,512,3), dtype=np.unint8)
+
         painter = QPainter(self.pixmap())
         painter.eraseRect(0,0,512,512)
         painter.drawPixmap(0,0,self.OGpixmap)
@@ -469,6 +476,8 @@ class Canvas(QLabel):
             self.lineDraw(self.last_click,e.pos())
             self.last_click = QPoint(e.x(),e.y())
             self.lineCount = 0
+            midline = (self.last_click + e.pos())/2
+            self.flood(midline)
 
     def PolyTool(self,e):
         if self.lineCount == 0:
@@ -531,7 +540,8 @@ class Canvas(QLabel):
         painter.end()
         self.update()
         
-        self.array = painted_arr[:,:,1:]
+        #self.array takes the first 
+        self.array += np.flip(painted_arr[:,:,:3], axis=2)
 
     def mousePressEvent(self, e):
 
