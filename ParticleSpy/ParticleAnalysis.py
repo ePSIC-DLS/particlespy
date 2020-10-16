@@ -264,6 +264,7 @@ def ClusterLearn(image, method='KMeans', parameters=[{'kernel': 'gaussian', 'sig
     """
 
     image = image.data
+    image = preprocessing.maxabs_scale(image)
     shape = [image.shape[0], image.shape[1], 1]
 
     image_stack = np.zeros(shape)
