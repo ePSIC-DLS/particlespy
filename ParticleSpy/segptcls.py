@@ -14,8 +14,8 @@ from skimage.filters import threshold_local, rank
 from skimage.filters import threshold_niblack, threshold_sauvola
 
 from skimage.measure import label
-from skimage.morphology import remove_small_objects, watershed, square, white_tophat, disk, binary_erosion
-from skimage.segmentation import clear_border
+from skimage.morphology import remove_small_objects, square, white_tophat, disk, binary_erosion
+from skimage.segmentation import clear_border, watershed
 from skimage.feature import peak_local_max
 from skimage.util import invert
 
@@ -50,12 +50,12 @@ def process(im, param):
         
     if param.segment["threshold"]!=False:
         labels = threshold(data, param.segment)
-        
-    labels = clear_border(labels)
     
     if param.segment["watershed"]!=False:
         labels = p_watershed(labels,param.segment["watershed_size"],param.segment["watershed_erosion"])
         
+    labels = clear_border(labels)
+
     if param.segment["min_size"]!=0:
         remove_small_objects(labels,param.segment["min_size"],in_place=True)
         
