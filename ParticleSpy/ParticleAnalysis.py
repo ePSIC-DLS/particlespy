@@ -234,19 +234,20 @@ def timeseriesanalysis(particles,max_dist=1,memory=3,properties=['area']):
     t = trackpy.link(df,max_dist,memory=memory)
     return(t)
 
-def ClusterLearn(image, method='KMeans', parameters=[{'kernel': 'gaussian', 'sigma': 1}, 
-                                                    {'kernel': 'sobel'},
-                                                    {'kernel': 'hessian', 'black ridges': False},
-                                                    {'kernel': 'rank mean', 'disk size': 20},
-                                                    {'kernel': 'median', 'disk size': 20},
-                                                    {'kernel': 'minimum', 'disk size': 20},
-                                                    {'kernel': 'maximum', 'disk size': 20},
-                                                    {'kernel': 'bilateral', 'disk size': 20},
-                                                    {'kernel': 'entropy', 'disk size': 20},
-                                                    {'kernel': 'gabor', 'frequency': 100},
-                                                    {'kernel': 'gaussian diff', 'low sigma': 1, 'high sigma': 5}]):
+def ClusterLearn(image, method='KMeans',
+                parameters=[{'kernel': 'gaussian', 'sigma': 1}, 
+                            {'kernel': 'sobel'},
+                            {'kernel': 'hessian', 'black ridges': False},
+                            {'kernel': 'rank mean', 'disk size': 20},
+                            {'kernel': 'median', 'disk size': 20},
+                            {'kernel': 'minimum', 'disk size': 20},
+                            {'kernel': 'maximum', 'disk size': 20},
+                            {'kernel': 'bilateral', 'disk size': 20},
+                            {'kernel': 'entropy', 'disk size': 20},
+                            {'kernel': 'gabor', 'frequency': 100},
+                            {'kernel': 'gaussian diff', 'low sigma': 1, 'high sigma': 5}]):
     """
-    Creates masks of given images using scikit learn clustering methods.
+    Creates masks of given images using scikit learn clustering methods, or by using provided training data.
     
     Parameters
     ----------
@@ -359,6 +360,34 @@ def ClusterLearnSeries(image_set, method='KMeans', parameters=[{'kernel': 'gauss
         mask_set.append(ClusterLearn(image,method,parameters))
     
     return mask_set
+
+def ClusterTrained(image, training_mask, method = 'KMeans'):
+
+    training_mask = training_mask.astype(np.float64)
+    image = np.reshape(image.data, [image.data.shape[0], image.data.shape[1], 1])
+    shape = image.shape
+
+    thin_mask = np.zeros([shape[0],shape[1],1])
+
+    for colour in range(1,3):
+        thin_mask[:,:,0] = thin_mask[:,:,0] + colour*(training_mask[:,:,(colour-1)]/255)
+
+    image_and_mask = np.append(image.data, thin_mask, axis=2)
+    pixel_stacks = np.zeros([shape[0]*shape[1],2])
+
+    for i in range(shape[1]):
+        pixel_stacks[i*shape[0]:(i+1)*shape[0],:] = image_and_mask[:,i,:]
+
+    if method == 'KMeans':
+        label_stacks = KMeans(n_clusters=2,init='random',n_init=10).fit(pixel_stacks)
+        
+    label_stacks = label_stacks.labels_
+
+    mask = np.zeros([shape[0], shape[1]])
+    for i in range(shape[1]):
+        mask[:,i] = label_stacks[i*shape[0]:(i+1)*shape[0]]
+
+    return mask
 
 def store_image(particle,image,params):
     ii = np.where(particle.mask)

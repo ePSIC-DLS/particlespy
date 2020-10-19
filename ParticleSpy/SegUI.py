@@ -391,8 +391,11 @@ class Application(QMainWindow):
         self.canvas.savearray(self.image)
 
     def save_and_close(self):
-        self.canvas.savearray(self.image)
-        self.closeEvent
+        array = self.canvas2.array
+        self.mask = np.array(Image.fromarray(array).resize((self.image.shape[1],self.image.shape[0])))
+        self.canvas2.savearray(self.image)
+        self.close()
+
 
 brush_tools = ['Freehand', 'Line', 'Polygon']
 
@@ -450,7 +453,7 @@ class Canvas(QLabel):
         self.last_click = None
         self.first_click = None
         self.lineCount = 0
-        self.array = np.zeros((512,512,3), dtype=np.unint8)
+        self.array = np.zeros((512,512,3), dtype=np.uint8)
 
         painter = QPainter(self.pixmap())
         painter.eraseRect(0,0,512,512)
@@ -540,7 +543,7 @@ class Canvas(QLabel):
         painter.end()
         self.update()
         
-        #self.array takes the first 
+        #self.array saves RGB values
         self.array += np.flip(painted_arr[:,:,:3], axis=2)
 
     def mousePressEvent(self, e):
