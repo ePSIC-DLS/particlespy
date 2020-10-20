@@ -10,6 +10,7 @@ import numpy as np
 from ParticleSpy.ptcl_class import Particle, Particle_list
 from skimage import filters, morphology
 from skimage.measure import label, regionprops, perimeter
+from sklearn.ensemble import RandomForestClassifier
 from sklearn import preprocessing
 from sklearn.cluster import DBSCAN, KMeans
 import ParticleSpy.find_zoneaxis as zone
@@ -234,7 +235,38 @@ def timeseriesanalysis(particles,max_dist=1,memory=3,properties=['area']):
     t = trackpy.link(df,max_dist,memory=memory)
     return(t)
 
-def ClusterLearn(image, method='KMeans',
+def CreateFeatures(image, intensity = True, edges = True, texture = True, sigma = 20, disk_size = 20):
+
+    shape = [image.shape[0], image.shape[1], 1]
+
+    selem = morphology.disk(disk_size)
+
+    image_stack = np.zeros(shape)
+
+    if intensity:
+        new_layer = np.reshape(filters.gaussian(image, sigma), shape)
+        image_stack = np.append(image_stack, new_layer, axis=2)
+
+        new_layer = np.reshape(filters.median(image,selem), shape)
+        image_stack = np.append(image_stack, new_layer, axis=2)
+
+        new_layer = np.reshape(filters.rank.minimum(image,selem), shape)
+        image_stack = np.append(image_stack, new_layer, axis=2)
+
+        new_layer = np.reshape(filters.rank.maximum(image, selem), shape)
+        image_stack = np.append(image_stack, new_layer, axis=2)
+
+    if edges:
+        new_layer = np.reshape(filters.sobel(image), shape)
+        image_stack = np.append(image_stack, new_layer, axis=2)
+
+    if texture:
+        new_layer = np.reshape(filters.hessian(image, mode='constant',), shape)
+        image_stack = np.append(image_stack, new_layer, axis=2)
+
+    return image_stack
+
+def ClusterLearnOld(image, method='KMeans',
                 parameters=[{'kernel': 'gaussian', 'sigma': 1}, 
                             {'kernel': 'sobel'},
                             {'kernel': 'hessian', 'black ridges': False},
@@ -269,7 +301,6 @@ def ClusterLearn(image, method='KMeans',
     shape = [image.shape[0], image.shape[1], 1]
 
     image_stack = np.zeros(shape)
-    image_stack = np.reshape(image, shape)
 
     for i in range(len(parameters)):
         if parameters[i]['kernel'] == 'gaussian':
@@ -325,6 +356,49 @@ def ClusterLearn(image, method='KMeans',
     
     return mask
 
+def ClusterLearn(image, method='KMeans'):
+    """
+    Creates masks of given images using scikit learn clustering methods.
+    
+    Parameters
+    ----------
+    image: Hyperspy signal object or list of hyperspy signal objects.
+        Hyperpsy signal object containing nanoparticle images
+    method: Clustering algorithm used to generate mask.
+    disk_size: Size of the local pixel neighbourhood considered by select 
+        segmentation methods.
+    parameters: List of dictionaries of Parameters for segmentation methods used in clustering
+        The parameters can be inputted manually or use the default .
+
+    Returns
+    -------
+    generated mask
+    """
+
+    image = image.data
+    image = preprocessing.maxabs_scale(image)
+    shape = [image.shape[0], image.shape[1], 1]
+
+    image_stack = CreateFeatures(image)
+
+    pixel_stacks = np.zeros([shape[0]*shape[1],image_stack.shape[2]])
+    for i in range(shape[1]):
+        pixel_stacks[i*shape[0]:(i+1)*shape[0],:] = image_stack[:,i,:]
+        
+    pixel_stacks = preprocessing.scale(pixel_stacks)
+
+    if method == 'KMeans':
+        labels = KMeans(n_clusters=2,init='random',n_init=10).fit_predict(pixel_stacks)
+    elif method == 'DBscan':
+        labels = DBSCAN().fit_predict(pixel_stacks)
+        
+    mask = np.zeros_like(image)
+    for i in range(shape[1]):
+        mask[:,i] = labels[i*shape[0]:(i+1)*shape[0]]
+    
+    return mask
+
+
 def ClusterLearnSeries(image_set, method='KMeans', parameters=[{'kernel': 'gaussian', 'sigma': 1}, 
                                                     {'kernel': 'sobel'},
                                                     {'kernel': 'hessian', 'black ridges': False},
@@ -357,37 +431,37 @@ def ClusterLearnSeries(image_set, method='KMeans', parameters=[{'kernel': 'gauss
 
     mask_set = []
     for image in image_set:
-        mask_set.append(ClusterLearn(image,method,parameters))
+        mask_set.append(ClusterLearn(image,method))
     
     return mask_set
 
 def ClusterTrained(image, training_mask, method = 'KMeans'):
 
     training_mask = training_mask.astype(np.float64)
-    image = np.reshape(image.data, [image.data.shape[0], image.data.shape[1], 1])
-    shape = image.shape
+    shape = image.data.shape
+    image = image.data
+
+    features = CreateFeatures(image)
+    features = np.rot90(features, axes=(0,2))
+
 
     thin_mask = np.zeros([shape[0],shape[1],1])
 
-    for colour in range(1,3):
+    for colour in range(1,4):
         thin_mask[:,:,0] = thin_mask[:,:,0] + colour*(training_mask[:,:,(colour-1)]/255)
 
-    image_and_mask = np.append(image.data, thin_mask, axis=2)
-    pixel_stacks = np.zeros([shape[0]*shape[1],2])
+    training_data = features[:, thin_mask > 0].T
+    training_labels = thin_mask[thin_mask > 0].ravel()
 
-    for i in range(shape[1]):
-        pixel_stacks[i*shape[0]:(i+1)*shape[0],:] = image_and_mask[:,i,:]
+    clf = RandomForestClassifier()
+    clf.fit(training_data, training_labels)
+    data = thin_mask[:, thin_mask == 0].T
+    pred_labels = clf.predict(data)
 
-    if method == 'KMeans':
-        label_stacks = KMeans(n_clusters=2,init='random',n_init=10).fit(pixel_stacks)
-        
-    label_stacks = label_stacks.labels_
+    output = np.copy(thin_mask)
+    output[thin_mask == 0] = pred_labels
 
-    mask = np.zeros([shape[0], shape[1]])
-    for i in range(shape[1]):
-        mask[:,i] = label_stacks[i*shape[0]:(i+1)*shape[0]]
-
-    return mask
+    return output
 
 def store_image(particle,image,params):
     ii = np.where(particle.mask)
