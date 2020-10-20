@@ -503,7 +503,6 @@ class Canvas(QLabel):
         elif self.lineCount > 1:
             d_x, d_y = float(self.first_click.x()-e.x()), float(self.first_click.y() - e.y())
             d_from_origin = m.sqrt((d_x)**2 + (d_y)**2)
-            print(d_from_origin)
 
             if d_from_origin < 10:
                 
@@ -511,7 +510,6 @@ class Canvas(QLabel):
                 self.last_click = None
                 self.first_click = None
                 self.lineCount = 0
-                print("finished poly")
             else:
                 self.lineDraw(self.last_click, e.pos())
                 self.last_click = QPoint(e.x(),e.y())
@@ -560,7 +558,6 @@ class Canvas(QLabel):
             
         
         if e.button() ==Qt.LeftButton:
-            print("click")
 
             if self.penType == 'Line':
                 self.LineTool(e)
@@ -606,7 +603,6 @@ class Canvas(QLabel):
 
 
     def mouseReleaseEvent(self, e):
-        print("release")
         if self.penType == 'Freehand':
             self.last_click = None
         

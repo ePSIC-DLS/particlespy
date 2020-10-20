@@ -11,13 +11,13 @@ from ParticleSpy.ptcl_class import Particle, Particle_list
 from skimage import filters, morphology
 from skimage.measure import label, regionprops, perimeter
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn import preprocessing
 from sklearn.cluster import DBSCAN, KMeans
 import ParticleSpy.find_zoneaxis as zone
 import warnings
 import h5py
 import inspect
-import matplotlib.pyplot as plt
 import pandas as pd
 import trackpy
 import os
@@ -435,13 +435,13 @@ def ClusterLearnSeries(image_set, method='KMeans', parameters=[{'kernel': 'gauss
     
     return mask_set
 
-def ClusterTrained(image, training_mask, method = 'KMeans'):
+def ClusterTrained(image, training_mask):
 
     training_mask = training_mask.astype(np.float64)
     shape = image.data.shape
     image = image.data
 
-    features = CreateFeatures(image)
+    features = CreateFeatures(image, texture=False)
     features = np.rot90(features, axes=(0,2))
 
 
@@ -454,7 +454,7 @@ def ClusterTrained(image, training_mask, method = 'KMeans'):
     training_labels = thin_mask[thin_mask > 0].ravel()
     training_labels = training_labels.astype('int')
 
-    clf = RandomForestClassifier()
+    clf = KNeighborsClassifier()
     clf.fit(training_data, training_labels)
     data = features[:, thin_mask == 0].T
     pred_labels = clf.predict(data)
