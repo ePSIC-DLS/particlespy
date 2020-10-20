@@ -445,17 +445,18 @@ def ClusterTrained(image, training_mask, method = 'KMeans'):
     features = np.rot90(features, axes=(0,2))
 
 
-    thin_mask = np.zeros([shape[0],shape[1],1])
+    thin_mask = np.zeros([shape[0],shape[1]])
 
     for colour in range(1,4):
-        thin_mask[:,:,0] = thin_mask[:,:,0] + colour*(training_mask[:,:,(colour-1)]/255)
+        thin_mask[:,:] = thin_mask[:,:] + colour*np.squeeze((training_mask[:,:,(colour-1)]/255))
 
     training_data = features[:, thin_mask > 0].T
     training_labels = thin_mask[thin_mask > 0].ravel()
+    training_labels = training_labels.astype('int')
 
     clf = RandomForestClassifier()
     clf.fit(training_data, training_labels)
-    data = thin_mask[:, thin_mask == 0].T
+    data = features[:, thin_mask == 0].T
     pred_labels = clf.predict(data)
 
     output = np.copy(thin_mask)
