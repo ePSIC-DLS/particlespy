@@ -9,14 +9,14 @@ from PyQt5.QtWidgets import QCheckBox, QPushButton, QLabel, QMainWindow, QSpinBo
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QComboBox, QTabWidget
 from PyQt5.QtWidgets import QVBoxLayout
 from PyQt5.QtGui import QPixmap, QImage, QColor, QPainter
-from PyQt5.QtCore import Qt, QPoint
+from PyQt5.QtCore import Qt, QPoint, QSize
 import sys
 import os
 
 import inspect
 import numpy as np
 import math as m
-from skimage.segmentation import mark_boundaries, flood_fill
+from skimage.segmentation import mark_boundaries, flood_fill, flood
 from skimage.util import invert
 from PIL import Image
 
@@ -222,10 +222,23 @@ class Application(QMainWindow):
             b = ToolButton(tool)
             b.pressed.connect(lambda tool=tool: self.canvas2.changePen(tool))
             b.setText(tool)
+            if tool == 'Freehand':
+                b.setChecked(True)
             button_lay.addWidget(b)
 
 
+        for i in range(len(self.canvas2.colors)):
+            c = self.canvas2.colors[i]
+            b = QPaletteButton(c)
+            b.pressed.connect(lambda i=i: self.canvas2.set_pen_color(i))
+            button_lay.addWidget(b)
+
         im_lay.addWidget(self.canvas2)
+
+        self.clear = QPushButton('Clear', self)
+        self.clear.clicked.connect(self.canvas2.clear)
+
+        button_lay.addWidget(self.clear)
 
         self.getarrayc = QPushButton('Save and Close',self)
         self.getarrayc.clicked.connect(self.save_and_close)
@@ -378,8 +391,11 @@ class Application(QMainWindow):
         self.canvas.savearray(self.image)
 
     def save_and_close(self):
-        self.canvas.savearray(self.image)
-        self.closeEvent
+        array = self.canvas2.array
+        self.mask = np.array(Image.fromarray(array).resize((self.image.shape[1],self.image.shape[0])))
+        self.canvas2.savearray(self.image)
+        self.close()
+
 
 brush_tools = ['Freehand', 'Line', 'Polygon']
 
@@ -390,12 +406,21 @@ class ToolButton(QPushButton):
         self.setAutoExclusive(True)
         self.setCheckable(True)
 
+class QPaletteButton(QPushButton):
+
+    def __init__(self, color):
+        super().__init__()
+        self.setFixedSize(QSize(24,24))
+        self.color = color
+        self.setStyleSheet("background-color: %s;" % color)
 
 class Canvas(QLabel):
 
     def __init__(self,pixmap):
         super().__init__()
         self.setPixmap(pixmap)
+        self.OGpixmap = pixmap
+        self.lastpixmap = pixmap
         """
         self.tool_pixmap = QLabel()
         tool_layer = QPixmap(self.size())
@@ -404,16 +429,37 @@ class Canvas(QLabel):
         self.setMouseTracking(True)
         self.first_click = None
         self.last_click  = None
-        self.pen_color = QColor(255, 0, 0, 128)
-        self.penType = brush_tools[0]
+
+        self.brush_tools = ['Freehand', 'Line', 'Polygon']
+        self.colors = ['#80FF0000', '#8000FF00', '#800000FF']
+        self.color_index = 0
+
+        self.pen_color = QColor(self.colors[0])
+        self.penType = self.brush_tools[0]
         self.lineCount = 0
 
+        self.array = np.zeros((512,512,3),dtype=np.uint8)
+
     def set_pen_color(self, c):
-        self.pen_color = QColor(c)
+        self.color_index = c
+        self.pen_color = QColor(self.colors[self.color_index])
 
     def changePen(self, brush):
         self.lineCount = 0
         self.penType = brush
+
+    def clear(self):
+
+        self.last_click = None
+        self.first_click = None
+        self.lineCount = 0
+        self.array = np.zeros((512,512,3), dtype=np.uint8)
+
+        painter = QPainter(self.pixmap())
+        painter.eraseRect(0,0,512,512)
+        painter.drawPixmap(0,0,self.OGpixmap)
+        painter.end()
+        self.update()
         
     def lineDraw(self,pos1,pos2):
         painter = QPainter(self.pixmap())
@@ -433,6 +479,8 @@ class Canvas(QLabel):
             self.lineDraw(self.last_click,e.pos())
             self.last_click = QPoint(e.x(),e.y())
             self.lineCount = 0
+            midline = (self.last_click + e.pos())/2
+            self.flood(midline)
 
     def PolyTool(self,e):
         if self.lineCount == 0:
@@ -467,28 +515,24 @@ class Canvas(QLabel):
         b = image.bits()
         b.setsize(512 * 512 * 4)
         arr = np.frombuffer(b, np.uint8).reshape((512, 512, 4))
+        arr = arr.astype(np.int32)
         arr = np.flip(arr, axis=2)
 
-        arr_test = arr[:,:,3]-arr[:,:,1]
+        i = self.color_index + 1
+        arr_test = arr[:,:,i]-((arr[:,:,1]+ arr[:,:,2]+ arr[:,:,3])/3)
         #arr test is not greyscale
         
-        painted_arr = np.zeros_like(arr)
-        painted_arr[:,:,1][arr_test!=0] = 255
-        #this makes the drawn images red
+        i = 2 - self.color_index
+        #painted_arr is BGRA
+        painted_arr = np.zeros_like(arr,dtype=np.uint8)
+        painted_arr[:,:,i][arr_test!=0] = 255
+        #this makes the drawn images the same as pen color
 
-        #sets blue from flood fill
-        #NOTE if any other colour channel is set as the output of the flood fill then it just doesn't display in Pixmap
-        #flood_fill outputs the function fine but Qimage or something just breaks it
-        painted_arr[:,:,3] = flood_fill(painted_arr[:,:,1],(e.y(),e.x()),255)
-        #sets alpha from blue channel
-        painted_arr[:,:,0] = painted_arr[:,:,3]
+        painted_arr[:,:,i] = 255*flood(painted_arr[:,:,i],(e.y(),e.x()))
+        #sets alpha from ith channel
+        painted_arr[:,:,3] = painted_arr[:,:,i]
 
-        import matplotlib.pyplot as plt
-        image = painted_arr
-        image = np.append(image[:,:,1:],np.reshape(image[:,:,0],[image.shape[0],image.shape[1],1]),axis=2)
-        plt.imshow(image)
-        plt.show()
-        
+        #BGRA
         qi = QImage(painted_arr.data, painted_arr.shape[1], painted_arr.shape[0], 4*painted_arr.shape[1], QImage.Format_ARGB32_Premultiplied)
         pixmap = QPixmap(qi)
         
@@ -499,7 +543,8 @@ class Canvas(QLabel):
         painter.end()
         self.update()
         
-        self.array = painted_arr[:,:,3]
+        #self.array saves RGB values
+        self.array += np.flip(painted_arr[:,:,:3], axis=2)
 
     def mousePressEvent(self, e):
 

@@ -14,6 +14,7 @@ def test_clustering():
     
     assert len(new_plists[0].list) == 5 or len(new_plists[0].list) == 185 or len(new_plists[0].list) == 57 or len(new_plists[0].list) == 43 or len(new_plists[0].list) == 59 or len(new_plists[0].list) == 99
 
+
 def test_clustering_all():
     
     data = hs.load(str(Path(__file__).parent.parent / 'Data/SiO2 HAADF Image.hspy'))
@@ -39,4 +40,19 @@ def test_clustering_all():
         assert verif == True
     
     param_list.close()
-test_clustering_all()
+
+def test_learn_clustering():
+    
+    data = hs.load(str(Path(__file__).parent.parent / 'Data/SiO2 HAADF Image.hspy'))
+
+    mask = ps.ClusterLearn(data)
+
+    params = ps.parameters()
+    params.generate()
+    particles = ps.ParticleAnalysis(data, params, mask=mask)
+    new_plists = particles.cluster_particles(properties=['area'])
+
+    print(len(new_plists[0].list))
+    assert len(new_plists[0].list) == 1 or len(new_plists[0].list) == 29 or len(new_plists[0].list) == 30 or len(new_plists[0].list) == 47
+
+test_learn_clustering()
