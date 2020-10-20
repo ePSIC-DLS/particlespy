@@ -211,6 +211,8 @@ class Application(QMainWindow):
         lay3 = QHBoxLayout()
         im_lay = QVBoxLayout()
         button_lay = QVBoxLayout()
+        colour_lay = QHBoxLayout()
+
 
         lay3.addLayout(button_lay)
         lay3.addLayout(im_lay)
@@ -231,13 +233,16 @@ class Application(QMainWindow):
             c = self.canvas2.colors[i]
             b = QPaletteButton(c)
             b.pressed.connect(lambda i=i: self.canvas2.set_pen_color(i))
-            button_lay.addWidget(b)
+            if i== 0:
+                b.setChecked(True)
+            colour_lay.addWidget(b)
 
         im_lay.addWidget(self.canvas2)
 
         self.clear = QPushButton('Clear', self)
         self.clear.clicked.connect(self.canvas2.clear)
 
+        button_lay.addLayout(colour_lay)
         button_lay.addWidget(self.clear)
 
         self.getarrayc = QPushButton('Save and Close',self)
@@ -410,6 +415,8 @@ class QPaletteButton(QPushButton):
 
     def __init__(self, color):
         super().__init__()
+        self.setAutoExclusive(True)
+        self.setCheckable(True)
         self.setFixedSize(QSize(24,24))
         self.color = color
         self.setStyleSheet("background-color: %s;" % color)
