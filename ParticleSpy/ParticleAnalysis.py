@@ -242,11 +242,12 @@ def CreateFeatures(image, intensity = True, edges = True, texture = True, sigma 
     selem = morphology.disk(disk_size)
 
     image_stack = np.zeros(shape)
+    im_blur = filters.gaussian(image, sigma)
 
     if intensity:
         new_layer = np.reshape(filters.gaussian(image, sigma), shape)
         image_stack = np.append(image_stack, new_layer, axis=2)
-
+        """
         new_layer = np.reshape(filters.median(image,selem), shape)
         image_stack = np.append(image_stack, new_layer, axis=2)
 
@@ -255,14 +256,15 @@ def CreateFeatures(image, intensity = True, edges = True, texture = True, sigma 
 
         new_layer = np.reshape(filters.rank.maximum(image, selem), shape)
         image_stack = np.append(image_stack, new_layer, axis=2)
-
+        """
     if edges:
-        new_layer = np.reshape(filters.sobel(image), shape)
+        new_layer = np.reshape(filters.sobel(im_blur), shape)
         image_stack = np.append(image_stack, new_layer, axis=2)
 
     if texture:
-        new_layer = np.reshape(filters.hessian(image, mode='constant',), shape)
+        new_layer = np.reshape(filters.hessian(im_blur, mode='constant',), shape)
         image_stack = np.append(image_stack, new_layer, axis=2)
+
 
     return image_stack
 
@@ -398,7 +400,6 @@ def ClusterLearn(image, method='KMeans'):
     
     return mask
 
-
 def ClusterLearnSeries(image_set, method='KMeans', parameters=[{'kernel': 'gaussian', 'sigma': 1}, 
                                                     {'kernel': 'sobel'},
                                                     {'kernel': 'hessian', 'black ridges': False},
@@ -435,29 +436,36 @@ def ClusterLearnSeries(image_set, method='KMeans', parameters=[{'kernel': 'gauss
     
     return mask_set
 
-def ClusterTrained(image, training_mask):
+def ClusterTrained(image, labels):
 
-    training_mask = training_mask.astype(np.float64)
+    labels = labels.astype(np.float64)
     shape = image.data.shape
     image = image.data
 
-    features = CreateFeatures(image, texture=False)
+    features = CreateFeatures(image)
     features = np.rot90(features, axes=(0,2))
+    #features are num/x/y
 
 
     thin_mask = np.zeros([shape[0],shape[1]])
 
     for colour in range(1,4):
-        thin_mask[:,:] = thin_mask[:,:] + colour*np.squeeze((training_mask[:,:,(colour-1)]/255))
+        thin_mask[:,:] = thin_mask[:,:] + colour*np.squeeze((labels[:,:,(colour-1)]/255))
+    #thin mask is x/y
 
     training_data = features[:, thin_mask > 0].T
+    #training data is number of labeled pixels by number of features
     training_labels = thin_mask[thin_mask > 0].ravel()
     training_labels = training_labels.astype('int')
+    #training labels is labelled pixels in 1D array
 
-    clf = KNeighborsClassifier()
+    clf =RandomForestClassifier()
     clf.fit(training_data, training_labels)
+    #train classifier on  labelled data
     data = features[:, thin_mask == 0].T
+    #unlabelled data
     pred_labels = clf.predict(data)
+    #predict labels for rest of image
 
     output = np.copy(thin_mask)
     output[thin_mask == 0] = pred_labels
