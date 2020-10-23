@@ -10,8 +10,6 @@ import numpy as np
 from ParticleSpy.ptcl_class import Particle, Particle_list
 from skimage import filters, morphology
 from skimage.measure import label, regionprops, perimeter
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn import preprocessing
 from sklearn.cluster import DBSCAN, KMeans
 import ParticleSpy.find_zoneaxis as zone
@@ -436,7 +434,7 @@ def ClusterLearnSeries(image_set, method='KMeans', parameters=[{'kernel': 'gauss
     
     return mask_set
 
-def ClusterTrained(image, labels):
+def ClusterTrained(image, labels, classifier):
 
     labels = labels.astype(np.float64)
     shape = image.data.shape
@@ -445,10 +443,6 @@ def ClusterTrained(image, labels):
     features = CreateFeatures(image)
     features = np.rot90(np.rot90(features, axes=(2,0)), axes=(1,2))
     #features are num/x/y
-
-    import matplotlib.pyplot as plt
-    plt.imshow(features[1,:,:])
-    plt.show()
 
     thin_mask = np.zeros([shape[0],shape[1]])
 
@@ -460,25 +454,23 @@ def ClusterTrained(image, labels):
             c += 1
 
     training_data = features[:, thin_mask > 0].T
-    #training_data = preprocessing.scale(training_data, axis=1)
     #training data is number of labeled pixels by number of features
     training_labels = thin_mask[thin_mask > 0].ravel()
     training_labels = training_labels.astype('int')
     #training labels is labelled pixels in 1D array
 
-    clf = RandomForestClassifier()
-    clf.fit(training_data, training_labels)
+    classifier.fit(training_data, training_labels)
     print('finish training')
     #train classifier on  labelled data
     data = features[:, thin_mask == 0].T
     #unlabelled data
-    pred_labels = clf.predict(data)
+    pred_labels = classifier.predict(data)
     #predict labels for rest of image
 
     output = np.copy(thin_mask)
     output[thin_mask == 0] = pred_labels
 
-    return output
+    return output, classifier
 
 def store_image(particle,image,params):
     ii = np.where(particle.mask)
