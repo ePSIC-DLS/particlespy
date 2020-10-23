@@ -235,7 +235,7 @@ def timeseriesanalysis(particles,max_dist=1,memory=3,properties=['area']):
     t = trackpy.link(df,max_dist,memory=memory)
     return(t)
 
-def CreateFeatures(image, intensity = True, edges = True, texture = True, sigma = 20, disk_size = 20):
+def CreateFeatures(image, intensity = True, edges = True, texture = True, sigma = 1, disk_size = 20):
 
     shape = [image.shape[0], image.shape[1], 1]
 
@@ -443,24 +443,32 @@ def ClusterTrained(image, labels):
     image = image.data
 
     features = CreateFeatures(image)
-    features = np.rot90(features, axes=(0,2))
+    features = np.rot90(np.rot90(features, axes=(2,0)), axes=(1,2))
     #features are num/x/y
 
+    import matplotlib.pyplot as plt
+    plt.imshow(features[1,:,:])
+    plt.show()
 
     thin_mask = np.zeros([shape[0],shape[1]])
 
-    for colour in range(1,4):
-        thin_mask[:,:] = thin_mask[:,:] + colour*np.squeeze((labels[:,:,(colour-1)]/255))
-    #thin mask is x/y
+    c = 1
+    for i in range(0,3):
+        non_zero = (labels[:,:,i] != 0)
+        if np.any(non_zero) == True:
+            thin_mask += c*non_zero.astype(int)
+            c += 1
 
     training_data = features[:, thin_mask > 0].T
+    #training_data = preprocessing.scale(training_data, axis=1)
     #training data is number of labeled pixels by number of features
     training_labels = thin_mask[thin_mask > 0].ravel()
     training_labels = training_labels.astype('int')
     #training labels is labelled pixels in 1D array
 
-    clf =RandomForestClassifier()
+    clf = RandomForestClassifier()
     clf.fit(training_data, training_labels)
+    print('finish training')
     #train classifier on  labelled data
     data = features[:, thin_mask == 0].T
     #unlabelled data
