@@ -52,18 +52,18 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
     else:
         image = acquisition
     
-    if mask == 'UI':
+    if str(mask) == 'UI':
         labeled = label(np.load(os.path.dirname(inspect.getfile(process))+'/Parameters/manual_mask.npy'))
-        plt.imshow(labeled)
+        #plt.imshow(labeled)
         #morphology.remove_small_objects(labeled,30,in_place=True)
     elif mask.sum()==0:
         labeled = process(image,parameters)
-        #plt.imshow(labeled)
+        #plt.imshow(labeled,cmap=plt.cm.nipy_spectral)
         #labels = np.unique(labeled).tolist() #some labeled number have been removed by "remove_small_holes" function
     else:
         labeled = label(mask)
         
-    for region in regionprops(labeled, coordinates='rc'): #'count' start with 1, 0 is background
+    for region in regionprops(labeled): #'count' start with 1, 0 is background
         p = Particle()
         
         p_im = np.zeros_like(image.data)
@@ -83,7 +83,11 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         
         #Set area
         cal_area = region.area*image.axes_manager[0].scale*image.axes_manager[1].scale
-        area_units = image.axes_manager[0].units+"^2"
+        try:
+            area_units = image.axes_manager[0].units + "^2"
+        except:
+            area_units = "Unknown Units^2"
+
         p.set_area(cal_area,area_units)
         
         #Set diam measures
@@ -224,9 +228,6 @@ def timeseriesanalysis(particles,max_dist=1,memory=3,properties=['area']):
             pd_dict.update({property:particle.properties[property]['value']})
         pd_dict.update({'frame':particle.properties['frame']['value']})
         df = df.append([pd_dict])
-    
-    print(df.head())
-    print(df.tail())
         
     t = trackpy.link(df,max_dist,memory=memory)
     return(t)
@@ -239,6 +240,9 @@ def store_image(particle,image,params):
     box_y_max = np.max(ii[1])
     box_y_min = np.min(ii[1])
     pad = params.store['pad']
+    
+    if params.store['p_only']==True:
+        image = image*particle.mask
     
     if box_y_min-pad > 0 and box_x_min-pad > 0 and box_x_max+pad < particle.mask.shape[0] and box_y_max+pad < particle.mask.shape[1]:
         p_boxed = image.isig[(box_y_min-pad):(box_y_max+pad),(box_x_min-pad):(box_x_max+pad)]
@@ -284,10 +288,14 @@ def get_composition(particle,params):
 class parameters(object):
     """A parameters object."""
     
-    def generate(self,threshold='otsu',watershed=False,invert=False,min_size=0,store_im=False,pad=5,rb_kernel=0,gaussian=0,local_size=101):
+    def generate(self,threshold='otsu',watershed=False,watershed_size=0,
+                 watershed_erosion=0,invert=False,min_size=0,store_im=False,
+                 pad=5,rb_kernel=0,gaussian=0,local_size=1):
         self.segment = {}
         self.segment['threshold'] = threshold
         self.segment['watershed'] = watershed
+        self.segment['watershed_size'] = watershed_size
+        self.segment['watershed_erosion'] = watershed_erosion
         self.segment['invert'] = invert
         self.segment['min_size'] = min_size
         self.segment['rb_kernel'] = rb_kernel
@@ -297,10 +305,12 @@ class parameters(object):
         self.store = {}
         self.store['store_im'] = store_im
         self.store['pad'] = pad
+        self.store['p_only'] = False
         
         self.generate_eds()
         
-    def generate_eds(self,eds_method=False,elements=False, factors=False, store_maps=False):
+    def generate_eds(self,eds_method=False,elements=False, factors=False,
+                     store_maps=False):
         self.eds = {}
         self.eds['method'] = eds_method
         self.eds['elements'] = elements
@@ -317,6 +327,8 @@ class parameters(object):
         
         segment.attrs["threshold"] = self.segment['threshold']
         segment.attrs["watershed"] = self.segment['watershed']
+        segment.attrs["watershed_size"] = self.segment['watershed_size']
+        segment.attrs["watershed_erosion"] = self.segment['watershed_erosion']
         segment.attrs["invert"] = self.segment['invert']
         segment.attrs["min_size"] = self.segment['min_size']
         segment.attrs["rb_kernel"] = self.segment['rb_kernel']
@@ -325,6 +337,7 @@ class parameters(object):
         store.attrs['store_im'] = self.store['store_im']
         store.attrs['pad'] = self.store['pad']
         store.attrs['store_maps'] = self.store['store_maps']
+        store.attrs['p_only'] = self.store['p_only']
         eds.attrs['method'] = self.eds['method']
         eds.attrs['elements'] = self.eds['elements']
         eds.attrs['factors'] = self.eds['factors']
@@ -344,6 +357,8 @@ class parameters(object):
         
         self.segment['threshold'] = segment.attrs["threshold"]
         self.segment['watershed'] = segment.attrs["watershed"]
+        self.segment['watershed_size'] = segment.attrs["watershed_size"]
+        self.segment['watershed_erosion'] = segment.attrs["watershed_erosion"]
         self.segment['invert'] = segment.attrs["invert"]
         self.segment['min_size'] = segment.attrs["min_size"]
         self.segment['rb_kernel'] = segment.attrs["rb_kernel"]
@@ -352,6 +367,7 @@ class parameters(object):
         self.store['store_im'] = store.attrs['store_im']
         self.store['pad'] = store.attrs['pad']
         self.store['store_maps'] = store.attrs['store_maps']
+        self.store['p_only'] = store.attrs['p_only']
         self.eds['method'] = eds.attrs['method']
         self.eds['elements'] = eds.attrs['elements']
         self.eds['factors'] = eds.attrs['factors']

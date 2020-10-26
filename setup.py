@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 install_requires=["hyperspy",
-                  "scikit-image>=0.15",
+                  "scikit-image>=0.17.1",
                   "scikit-learn>=0.21",
 				  "trackpy"]
 
@@ -19,7 +19,7 @@ except ImportError:
 setuptools.setup(
     name="particlespy",
     package_dir={'particlespy':'particlespy'},
-    version="0.4.1",
+    version="0.5.0",
     author="Thomas Slater",
     author_email="tjaslater@gmail.com",
     description="A package to perform particle segmentation and analysis",

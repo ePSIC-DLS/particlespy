@@ -164,3 +164,8 @@ def test_normalize_boxing():
     particles.normalize_boxing()
     
     assert particles.list[0].image.data.shape == (68,68)
+
+def test_params_in_out():
+    params = PAnalysis.parameters()
+    params.load()
+    params.save()

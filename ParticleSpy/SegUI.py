@@ -96,17 +96,34 @@ class Application(QMainWindow):
         self.comboBox.addItem("Local")
         self.comboBox.addItem("Local Otsu")
         self.comboBox.addItem("Local+Global Otsu")
+        self.comboBox.addItem("Niblack")
+        self.comboBox.addItem("Sauvola")
         self.comboBox.activated[str].connect(self.threshold_choice)
+        self.comboBox.activated.connect(self.updateLocalSize)
         
         self.localtxt = QLabel(self)
         self.localtxt.setText('Local filter kernel')
         
         self.local_size = QSpinBox(self)
-        self.local_size.setMaximum(self.image.shape[0])
         self.local_size.valueChanged.connect(self.local)
+        self.local_size.setEnabled(False)
         
         cb = QCheckBox('Watershed', self)
         cb.stateChanged.connect(self.changeWatershed)
+        
+        self.ws_title = QLabel(self)
+        self.ws_title.setText('Watershed Seed Separation')
+        self.watershed_size = QSpinBox(self)
+        self.watershed_size.setMaximum(self.image.shape[0])
+        self.watershed_size.valueChanged.connect(self.watershed)
+        self.watershed_size.setEnabled(False)
+        
+        self.wse_title = QLabel(self)
+        self.wse_title.setText('Watershed Seed Erosion')
+        self.watershed_erosion = QSpinBox(self)
+        self.watershed_erosion.setMaximum(self.image.shape[0])
+        self.watershed_erosion.valueChanged.connect(self.watershed_e)
+        self.watershed_erosion.setEnabled(False)
         
         cb2 = QCheckBox('Invert', self)
         cb2.stateChanged.connect(self.changeInvert)
@@ -151,11 +168,16 @@ class Application(QMainWindow):
         rightlay.addWidget(self.local_size)
         rightlay.addStretch(1)
         rightlay.addWidget(cb)
+        rightlay.addWidget(self.ws_title)
+        rightlay.addWidget(self.watershed_size)
+        rightlay.addWidget(self.wse_title)
+        rightlay.addWidget(self.watershed_erosion)
+        rightlay.addStretch(1)
         rightlay.addWidget(cb2)
         rightlay.addStretch(1)
         rightlay.addWidget(self.minsizetxt)
         rightlay.addWidget(self.minsizev)
-        rightlay.addStretch(2)
+        rightlay.addStretch(1)
         rightlay.addWidget(updateb)
         rightlay.addWidget(paramsb)
         
@@ -182,6 +204,18 @@ class Application(QMainWindow):
         
         self.show()
         
+    def updateLocalSize(self):
+        if self.comboBox.currentText() == 'Niblack' or self.comboBox.currentText() == 'Sauvola' or self.comboBox.currentText() == 'Local':
+            self.local_size.setEnabled(True)
+            self.local_size.setMinimum(1)
+            self.local_size.setSingleStep(2)
+            self.local_size.setMaximum(self.image.shape[0])
+        elif self.comboBox.currentText() == "Local Otsu" or self.comboBox.currentText() == "Local+Global Otsu":
+            self.local_size.setEnabled(True)
+            self.local_size.setMaximum(self.image.shape[0])
+        else:
+            self.local_size.setEnabled(False)
+    
     def getim(self,im_hs):
         self.im_hs = im_hs
         im = im_hs.data.astype(np.float64)
@@ -202,8 +236,12 @@ class Application(QMainWindow):
     def changeWatershed(self, state):
         if state == Qt.Checked:
             self.params.segment['watershed'] = True
+            self.watershed_erosion.setEnabled(True)
+            self.watershed_size.setEnabled(True)
         else:
             self.params.segment['watershed'] = False
+            self.watershed_erosion.setEnabled(False)
+            self.watershed_size.setEnabled(False)
             
     def changeInvert(self, state):
         if state == Qt.Checked:
@@ -229,6 +267,12 @@ class Application(QMainWindow):
         
     def local(self):
         self.params.segment['local_size'] = self.local_size.value()
+    
+    def watershed(self):
+        self.params.segment['watershed_size'] = self.watershed_size.value()
+    
+    def watershed_e(self):
+        self.params.segment['watershed_erosion'] = self.watershed_erosion.value()
             
     def minsize(self):
         self.params.segment['min_size'] = self.minsizev.value()
@@ -239,7 +283,10 @@ class Application(QMainWindow):
         if self.imflag=="Image":
             #b=image
             b = np.uint8(mark_boundaries(self.image, labels, color=(1,1,1))[:,:,0]*255)
-            qi = QImage(b.data, b.shape[1], b.shape[0], b.shape[1], QImage.Format_Indexed8)
+            if self.params.segment['invert'] == True:
+                qi = QImage(invert(b).data, b.shape[1], b.shape[0], b.shape[1], QImage.Format_Indexed8)
+            else:
+                qi = QImage(b.data, b.shape[1], b.shape[0], b.shape[1], QImage.Format_Indexed8)
         if self.imflag=="Labels":
             qi = QImage(labels.data, labels.shape[1], labels.shape[0], labels.shape[1], QImage.Format_Indexed8)
         #qi = QImage(imchoice.data, imchoice.shape[1], imchoice.shape[0], imchoice.shape[1], QImage.Format_Indexed8)
@@ -289,7 +336,11 @@ class Application(QMainWindow):
             self.params.segment['threshold'] = "local_otsu"
         if str(self.comboBox.currentText()) == "Local+Global Otsu":
             self.params.segment['threshold'] = "lg_otsu"
-            
+        if str(self.comboBox.currentText()) == "Niblack":
+            self.params.segment['threshold'] = "niblack"
+        if str(self.comboBox.currentText()) == "Sauvola":
+            self.params.segment['threshold'] = "sauvola"
+
     def save_array(self):
         self.canvas.savearray(self.image)
 
