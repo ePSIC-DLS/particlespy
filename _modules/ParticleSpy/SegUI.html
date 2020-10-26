@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ParticleSpy.SegUI &mdash; ParticleSpy 0.4.1 documentation</title>
+  <title>ParticleSpy.SegUI &mdash; ParticleSpy 0.5.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -29,10 +34,6 @@
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
@@ -48,7 +49,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home"> ParticleSpy
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> ParticleSpy
           
 
           
@@ -58,7 +59,7 @@
             
             
               <div class="version">
-                0.4.1
+                0.5.0
               </div>
             
           
@@ -75,6 +76,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -94,6 +96,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -132,7 +135,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
@@ -250,17 +253,34 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;Local&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;Local Otsu&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;Local+Global Otsu&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;Niblack&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;Sauvola&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">activated</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">threshold_choice</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">activated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">updateLocalSize</span><span class="p">)</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">localtxt</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">localtxt</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Local filter kernel&#39;</span><span class="p">)</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">local_size</span> <span class="o">=</span> <span class="n">QSpinBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">local_size</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">local_size</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">local</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">local_size</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         
         <span class="n">cb</span> <span class="o">=</span> <span class="n">QCheckBox</span><span class="p">(</span><span class="s1">&#39;Watershed&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="n">cb</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">changeWatershed</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">ws_title</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ws_title</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Watershed Seed Separation&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">watershed_size</span> <span class="o">=</span> <span class="n">QSpinBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">watershed_size</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">watershed_size</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">watershed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">watershed_size</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">wse_title</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wse_title</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Watershed Seed Erosion&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">watershed_erosion</span> <span class="o">=</span> <span class="n">QSpinBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">watershed_erosion</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">watershed_erosion</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">watershed_e</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">watershed_erosion</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         
         <span class="n">cb2</span> <span class="o">=</span> <span class="n">QCheckBox</span><span class="p">(</span><span class="s1">&#39;Invert&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="n">cb2</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">changeInvert</span><span class="p">)</span>
@@ -305,11 +325,16 @@
         <span class="n">rightlay</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">local_size</span><span class="p">)</span>
         <span class="n">rightlay</span><span class="o">.</span><span class="n">addStretch</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">rightlay</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">cb</span><span class="p">)</span>
+        <span class="n">rightlay</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ws_title</span><span class="p">)</span>
+        <span class="n">rightlay</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">watershed_size</span><span class="p">)</span>
+        <span class="n">rightlay</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wse_title</span><span class="p">)</span>
+        <span class="n">rightlay</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">watershed_erosion</span><span class="p">)</span>
+        <span class="n">rightlay</span><span class="o">.</span><span class="n">addStretch</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">rightlay</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">cb2</span><span class="p">)</span>
         <span class="n">rightlay</span><span class="o">.</span><span class="n">addStretch</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">rightlay</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">minsizetxt</span><span class="p">)</span>
         <span class="n">rightlay</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">minsizev</span><span class="p">)</span>
-        <span class="n">rightlay</span><span class="o">.</span><span class="n">addStretch</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">rightlay</span><span class="o">.</span><span class="n">addStretch</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">rightlay</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">updateb</span><span class="p">)</span>
         <span class="n">rightlay</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">paramsb</span><span class="p">)</span>
         
@@ -336,6 +361,18 @@
         
         <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
         
+<div class="viewcode-block" id="Application.updateLocalSize"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.SegUI.Application.updateLocalSize">[docs]</a>    <span class="k">def</span> <span class="nf">updateLocalSize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Niblack&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Sauvola&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Local&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">local_size</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">local_size</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">local_size</span><span class="o">.</span><span class="n">setSingleStep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">local_size</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Local Otsu&quot;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Local+Global Otsu&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">local_size</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">local_size</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">local_size</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
+    
 <div class="viewcode-block" id="Application.getim"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.SegUI.Application.getim">[docs]</a>    <span class="k">def</span> <span class="nf">getim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">im_hs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">im_hs</span> <span class="o">=</span> <span class="n">im_hs</span>
         <span class="n">im</span> <span class="o">=</span> <span class="n">im_hs</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
@@ -356,8 +393,12 @@
 <div class="viewcode-block" id="Application.changeWatershed"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.SegUI.Application.changeWatershed">[docs]</a>    <span class="k">def</span> <span class="nf">changeWatershed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Checked</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;watershed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">watershed_erosion</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">watershed_size</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;watershed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;watershed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">watershed_erosion</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">watershed_size</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
             
 <div class="viewcode-block" id="Application.changeInvert"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.SegUI.Application.changeInvert">[docs]</a>    <span class="k">def</span> <span class="nf">changeInvert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Checked</span><span class="p">:</span>
@@ -383,6 +424,12 @@
         
 <div class="viewcode-block" id="Application.local"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.SegUI.Application.local">[docs]</a>    <span class="k">def</span> <span class="nf">local</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;local_size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_size</span><span class="o">.</span><span class="n">value</span><span class="p">()</span></div>
+    
+<div class="viewcode-block" id="Application.watershed"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.SegUI.Application.watershed">[docs]</a>    <span class="k">def</span> <span class="nf">watershed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;watershed_size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">watershed_size</span><span class="o">.</span><span class="n">value</span><span class="p">()</span></div>
+    
+<div class="viewcode-block" id="Application.watershed_e"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.SegUI.Application.watershed_e">[docs]</a>    <span class="k">def</span> <span class="nf">watershed_e</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;watershed_erosion&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">watershed_erosion</span><span class="o">.</span><span class="n">value</span><span class="p">()</span></div>
             
 <div class="viewcode-block" id="Application.minsize"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.SegUI.Application.minsize">[docs]</a>    <span class="k">def</span> <span class="nf">minsize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;min_size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minsizev</span><span class="o">.</span><span class="n">value</span><span class="p">()</span></div>
@@ -393,7 +440,10 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">imflag</span><span class="o">==</span><span class="s2">&quot;Image&quot;</span><span class="p">:</span>
             <span class="c1">#b=image</span>
             <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">(</span><span class="n">mark_boundaries</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))[:,:,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">255</span><span class="p">)</span>
-            <span class="n">qi</span> <span class="o">=</span> <span class="n">QImage</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">QImage</span><span class="o">.</span><span class="n">Format_Indexed8</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;invert&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">qi</span> <span class="o">=</span> <span class="n">QImage</span><span class="p">(</span><span class="n">invert</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">QImage</span><span class="o">.</span><span class="n">Format_Indexed8</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">qi</span> <span class="o">=</span> <span class="n">QImage</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">QImage</span><span class="o">.</span><span class="n">Format_Indexed8</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">imflag</span><span class="o">==</span><span class="s2">&quot;Labels&quot;</span><span class="p">:</span>
             <span class="n">qi</span> <span class="o">=</span> <span class="n">QImage</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">QImage</span><span class="o">.</span><span class="n">Format_Indexed8</span><span class="p">)</span>
         <span class="c1">#qi = QImage(imchoice.data, imchoice.shape[1], imchoice.shape[0], imchoice.shape[1], QImage.Format_Indexed8)</span>
@@ -442,8 +492,12 @@
         <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span> <span class="o">==</span> <span class="s2">&quot;Local Otsu&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;threshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;local_otsu&quot;</span>
         <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span> <span class="o">==</span> <span class="s2">&quot;Local+Global Otsu&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;threshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;lg_otsu&quot;</span></div>
-            
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;threshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;lg_otsu&quot;</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span> <span class="o">==</span> <span class="s2">&quot;Niblack&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;threshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;niblack&quot;</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span> <span class="o">==</span> <span class="s2">&quot;Sauvola&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;threshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;sauvola&quot;</span></div>
+
 <div class="viewcode-block" id="Application.save_array"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.SegUI.Application.save_array">[docs]</a>    <span class="k">def</span> <span class="nf">save_array</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">savearray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">)</span></div></div>
 
@@ -563,11 +617,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2020, ePSIC
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -578,7 +640,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

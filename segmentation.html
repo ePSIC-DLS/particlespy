@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Segmentation &mdash; ParticleSpy 0.4.1 documentation</title>
+  <title>Segmentation &mdash; ParticleSpy 0.5.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -29,10 +34,6 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Particle Analysis" href="particle_analysis.html" />
@@ -50,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> ParticleSpy
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ParticleSpy
           
 
           
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                0.4.1
+                0.5.0
               </div>
             
           
@@ -77,6 +78,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -104,6 +106,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -142,7 +145,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Segmentation</li>
     
@@ -201,7 +204,7 @@ Once you have chosen your parameters, pressing ‘Update’ will display a segme
 <ol class="arabic simple" start="3">
 <li><p>Thresholding options</p></li>
 </ol>
-<p>Here are a series of algorithms for determining thresholds at which to segment. Most of the options available in scikit-image are included, including the popular Otsu, Isodata and Li methods. From Otsu to Li are all global methods and will set one threshold value for the whole image. Below Li are local methods that will set threshold values that change over the image. Local and local Otsu work slightly differently but will provide a segmentation in which variations in intensity across an image are taken in to account. Local + Global Otsu performs both local and global thresholding.</p>
+<p>Here are a series of algorithms for determining thresholds at which to segment. Most of the options available in scikit-image are included, including the popular Otsu, Isodata and Li methods. From Otsu to Li are all global methods and will set one threshold value for the whole image. Below Li are local methods that will set threshold values that change over the image. Local and local Otsu work slightly differently but will provide a segmentation in which variations in intensity across an image are taken in to account. Local + Global Otsu performs both local and global thresholding. Niblack and Sauvola are also local thresholding methods that account for deviations in the intensity across the image.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Methods using the Local Otsu may take a long time on large images.</p>
@@ -214,6 +217,14 @@ Once you have chosen your parameters, pressing ‘Update’ will display a segme
 <li><p>Watershed</p></li>
 </ol>
 <p>Tick to apply a watershed step to the segmented labels. This acts to separate touching objects. The watershed algorithm uses local maxima of the distance transform as seeds, the minimum separation of these local maxima is set by the min particle size option.</p>
+<ol class="arabic simple" start="6">
+<li><p>Watershed Seed Separation</p></li>
+</ol>
+<p>Select the distance between the local maxima used to seed the watershed algorithm.</p>
+<ol class="arabic simple" start="7">
+<li><p>Watershed Seed Erosion</p></li>
+</ol>
+<p>Select the number of pixels by which to erode the thresholded image before using a distance transform to seed the watershed algorithm.</p>
 <ol class="arabic simple" start="6">
 <li><p>Invert</p></li>
 </ol>
@@ -276,11 +287,19 @@ Doing so will ruin the segmentation and you will have to reload SegUI.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2020, ePSIC
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -291,7 +310,6 @@ Doing so will ruin the segmentation and you will have to reload SegUI.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

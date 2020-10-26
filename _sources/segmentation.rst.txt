@@ -51,7 +51,7 @@ This is an option to apply a Gaussian filter to the image before segmentation, t
 
 (3) Thresholding options
     
-Here are a series of algorithms for determining thresholds at which to segment. Most of the options available in scikit-image are included, including the popular Otsu, Isodata and Li methods. From Otsu to Li are all global methods and will set one threshold value for the whole image. Below Li are local methods that will set threshold values that change over the image. Local and local Otsu work slightly differently but will provide a segmentation in which variations in intensity across an image are taken in to account. Local + Global Otsu performs both local and global thresholding.
+Here are a series of algorithms for determining thresholds at which to segment. Most of the options available in scikit-image are included, including the popular Otsu, Isodata and Li methods. From Otsu to Li are all global methods and will set one threshold value for the whole image. Below Li are local methods that will set threshold values that change over the image. Local and local Otsu work slightly differently but will provide a segmentation in which variations in intensity across an image are taken in to account. Local + Global Otsu performs both local and global thresholding. Niblack and Sauvola are also local thresholding methods that account for deviations in the intensity across the image.
 
 .. warning::
    Methods using the Local Otsu may take a long time on large images.
@@ -63,6 +63,14 @@ Select the size of the local filter kernel to use if using one of the local thre
 (5) Watershed
     
 Tick to apply a watershed step to the segmented labels. This acts to separate touching objects. The watershed algorithm uses local maxima of the distance transform as seeds, the minimum separation of these local maxima is set by the min particle size option.
+
+(6) Watershed Seed Separation
+
+Select the distance between the local maxima used to seed the watershed algorithm.
+
+(7) Watershed Seed Erosion
+
+Select the number of pixels by which to erode the thresholded image before using a distance transform to seed the watershed algorithm.
 
 (6) Invert
     

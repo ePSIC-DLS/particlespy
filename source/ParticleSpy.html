@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ParticleSpy package &mdash; ParticleSpy 0.4.1 documentation</title>
+  <title>ParticleSpy package &mdash; ParticleSpy 0.5.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -29,10 +34,6 @@
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
 </head>
@@ -48,7 +49,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> ParticleSpy
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> ParticleSpy
           
 
           
@@ -58,7 +59,7 @@
             
             
               <div class="version">
-                0.4.1
+                0.5.0
               </div>
             
           
@@ -75,6 +76,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -94,6 +96,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -132,7 +135,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>ParticleSpy package</li>
     
@@ -213,11 +216,11 @@ to.</p>
 <dl class="py class">
 <dt id="ParticleSpy.ParticleAnalysis.parameters">
 <em class="property">class </em><code class="sig-prename descclassname">ParticleSpy.ParticleAnalysis.</code><code class="sig-name descname">parameters</code><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.parameters" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>A parameters object.</p>
 <dl class="py method">
 <dt id="ParticleSpy.ParticleAnalysis.parameters.generate">
-<code class="sig-name descname">generate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">threshold</span><span class="o">=</span><span class="default_value">'otsu'</span></em>, <em class="sig-param"><span class="n">watershed</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">invert</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">min_size</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">store_im</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">pad</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">rb_kernel</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">gaussian</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">local_size</span><span class="o">=</span><span class="default_value">101</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#parameters.generate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.parameters.generate" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">generate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">threshold</span><span class="o">=</span><span class="default_value">'otsu'</span></em>, <em class="sig-param"><span class="n">watershed</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">watershed_size</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">watershed_erosion</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">invert</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">min_size</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">store_im</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">pad</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">rb_kernel</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">gaussian</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">local_size</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#parameters.generate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.parameters.generate" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -352,6 +355,21 @@ update(self, QRegion)
 update(self, int, int, int, int)</p>
 </dd></dl>
 
+<dl class="py method">
+<dt id="ParticleSpy.SegUI.Application.updateLocalSize">
+<code class="sig-name descname">updateLocalSize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Application.updateLocalSize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Application.updateLocalSize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ParticleSpy.SegUI.Application.watershed">
+<code class="sig-name descname">watershed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Application.watershed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Application.watershed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ParticleSpy.SegUI.Application.watershed_e">
+<code class="sig-name descname">watershed_e</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Application.watershed_e"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Application.watershed_e" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -446,20 +464,8 @@ update(self, int, int, int, int)</p>
 <dd></dd></dl>
 
 </div>
-<div class="section" id="module-ParticleSpy.particle_io">
-<span id="particlespy-particle-io-module"></span><h2>ParticleSpy.particle_io module<a class="headerlink" href="#module-ParticleSpy.particle_io" title="Permalink to this headline">¶</a></h2>
-<p>Created on Thu Nov 22 12:23:59 2018</p>
-<p>&#64;author: qzo13262</p>
-<dl class="py function">
-<dt id="ParticleSpy.particle_io.load_plist">
-<code class="sig-prename descclassname">ParticleSpy.particle_io.</code><code class="sig-name descname">load_plist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/particle_io.html#load_plist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.particle_io.load_plist" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="ParticleSpy.particle_io.save_plist">
-<code class="sig-prename descclassname">ParticleSpy.particle_io.</code><code class="sig-name descname">save_plist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p_list</span></em>, <em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/particle_io.html#save_plist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.particle_io.save_plist" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<div class="section" id="particlespy-particle-io-module">
+<h2>ParticleSpy.particle_io module<a class="headerlink" href="#particlespy-particle-io-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-ParticleSpy.particle_load">
 <span id="particlespy-particle-load-module"></span><h2>ParticleSpy.particle_load module<a class="headerlink" href="#module-ParticleSpy.particle_load" title="Permalink to this headline">¶</a></h2>
@@ -488,7 +494,7 @@ update(self, int, int, int, int)</p>
 <dl class="py class">
 <dt id="ParticleSpy.ptcl_class.Particle">
 <em class="property">class </em><code class="sig-prename descclassname">ParticleSpy.ptcl_class.</code><code class="sig-name descname">Particle</code><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>A segmented particle object.</p>
 <dl class="simple">
 <dt>properties<span class="classifier">dict</span></dt><dd><p>Dictionary of particle properties created by the ParticleAnalysis() function.</p>
@@ -601,7 +607,7 @@ update(self, int, int, int, int)</p>
 <dl class="py class">
 <dt id="ParticleSpy.ptcl_class.Particle_list">
 <em class="property">class </em><code class="sig-prename descclassname">ParticleSpy.ptcl_class.</code><code class="sig-name descname">Particle_list</code><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>A particle list object.</p>
 <dl class="py method">
 <dt id="ParticleSpy.ptcl_class.Particle_list.append">
@@ -736,7 +742,7 @@ particle.</p>
 <p>&#64;author: qzo13262</p>
 <dl class="py function">
 <dt id="ParticleSpy.segptcls.p_watershed">
-<code class="sig-prename descclassname">ParticleSpy.segptcls.</code><code class="sig-name descname">p_watershed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">thresh_image</span></em>, <em class="sig-param"><span class="n">min_size</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/segptcls.html#p_watershed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.segptcls.p_watershed" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ParticleSpy.segptcls.</code><code class="sig-name descname">p_watershed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">thresh_image</span></em>, <em class="sig-param"><span class="n">min_size</span></em>, <em class="sig-param"><span class="n">erosion</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/segptcls.html#p_watershed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.segptcls.p_watershed" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
@@ -779,11 +785,19 @@ particle.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2020, ePSIC
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -794,7 +808,6 @@ particle.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

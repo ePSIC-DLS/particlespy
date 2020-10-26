@@ -28,6 +28,8 @@ To plot a scatter plot of two properties you simply need to specify two properti
     
 .. image:: _static/area_circ_scatter.png
     :align: center
+
+It is also possible to plot a 3D scatter plot of three properties by specifying three properties in the argument.
     
 Plotting of more than one Particle_list can be done using the top level :py:meth:`~.api.plot` function:
 
@@ -36,7 +38,7 @@ Plotting of more than one Particle_list can be done using the top level :py:meth
     >>> ps.plot([particles1,particles2],['area','circularity'])
 
 
-Ploting Radial Profiles
+Plotting Radial Profiles
 -----------------------
 
 ParticleSpy provides the ability to plot a radial profile (that is an intensity profile from particle centre to edge) of image intensity or EDS signal intensity.
