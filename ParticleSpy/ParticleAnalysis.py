@@ -233,7 +233,7 @@ def timeseriesanalysis(particles,max_dist=1,memory=3,properties=['area']):
     t = trackpy.link(df,max_dist,memory=memory)
     return(t)
 
-def CreateFeatures(image, intensity = True, edges = True, texture = True, sigma = 1, disk_size = 20):
+def CreateFeatures(image, intensity = True, edges = True, texture = True, sigma = 1, high_sigma = 16, disk_size = 20):
 
     shape = [image.shape[0], image.shape[1], 1]
 
@@ -244,6 +244,9 @@ def CreateFeatures(image, intensity = True, edges = True, texture = True, sigma 
 
     if intensity:
         new_layer = np.reshape(filters.gaussian(image, sigma), shape)
+        image_stack = np.append(image_stack, new_layer, axis=2)
+
+        new_layer = np.reshape(filters.difference_of_gaussians(image,low_sigma= sigma, high_sigma=high_sigma), shape)
         image_stack = np.append(image_stack, new_layer, axis=2)
         """
         new_layer = np.reshape(filters.median(image,selem), shape)
