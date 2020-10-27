@@ -474,42 +474,42 @@ def ClusterTrained(image, labels, classifier):
     -------
     classified mask, trained classifier
     """
+    if np.all(labels) != 0:
+        labels = labels.astype(np.float64)
+        shape = image.data.shape
+        image = image.data
 
-    labels = labels.astype(np.float64)
-    shape = image.data.shape
-    image = image.data
+        features = CreateFeatures(image)
+        features = np.rot90(np.rot90(features, axes=(2,0)), axes=(1,2))
+        #features are num/x/y
 
-    features = CreateFeatures(image)
-    features = np.rot90(np.rot90(features, axes=(2,0)), axes=(1,2))
-    #features are num/x/y
+        thin_mask = np.zeros([shape[0],shape[1]])
 
-    thin_mask = np.zeros([shape[0],shape[1]])
+        c = 1
+        for i in range(0,3):
+            non_zero = (labels[:,:,i] != 0)
+            if np.any(non_zero) == True:
+                thin_mask += c*non_zero.astype(int)
+                c += 1
 
-    c = 1
-    for i in range(0,3):
-        non_zero = (labels[:,:,i] != 0)
-        if np.any(non_zero) == True:
-            thin_mask += c*non_zero.astype(int)
-            c += 1
+        training_data = features[:, thin_mask > 0].T
+        #training data is number of labeled pixels by number of features
+        training_labels = thin_mask[thin_mask > 0].ravel()
+        training_labels = training_labels.astype('int')
+        #training labels is labelled pixels in 1D array
 
-    training_data = features[:, thin_mask > 0].T
-    #training data is number of labeled pixels by number of features
-    training_labels = thin_mask[thin_mask > 0].ravel()
-    training_labels = training_labels.astype('int')
-    #training labels is labelled pixels in 1D array
+        classifier.fit(training_data, training_labels)
+        print('finish training')
+        #train classifier on  labelled data
+        data = features[:, thin_mask == 0].T
+        #unlabelled data
+        pred_labels = classifier.predict(data)
+        #predict labels for rest of image
 
-    classifier.fit(training_data, training_labels)
-    print('finish training')
-    #train classifier on  labelled data
-    data = features[:, thin_mask == 0].T
-    #unlabelled data
-    pred_labels = classifier.predict(data)
-    #predict labels for rest of image
+        output = np.copy(thin_mask)
+        output[thin_mask == 0] = pred_labels
 
-    output = np.copy(thin_mask)
-    output[thin_mask == 0] = pred_labels
-
-    return output, classifier
+        return output, classifier
 
 def store_image(particle,image,params):
     ii = np.where(particle.mask)

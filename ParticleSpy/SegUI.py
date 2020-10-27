@@ -21,7 +21,9 @@ from skimage.util import invert
 from PIL import Image
 
 from ParticleSpy.segptcls import process
-from ParticleSpy.ParticleAnalysis import parameters
+from ParticleSpy.ParticleAnalysis import parameters, ClusterTrained
+
+from sklearn.ensemble import RandomForestClassifier
 
 class Application(QMainWindow):
 
@@ -208,6 +210,9 @@ class Application(QMainWindow):
 
         #Tab 3
 
+        self.mask = np.zeros([512,512,3])
+        self.classifier = RandomForestClassifier(n_estimators=200)
+
         lay3 = QHBoxLayout()
         im_lay = QVBoxLayout()
         button_lay = QVBoxLayout()
@@ -242,7 +247,15 @@ class Application(QMainWindow):
         self.clear = QPushButton('Clear', self)
         self.clear.clicked.connect(self.canvas2.clear)
 
+        self.bupdate = QPushButton('update', self)
+        self.bupdate.clicked.connect(self.train_update)
+
+        self.train = QPushButton('train classifier', self)
+        self.train.pressed.connect(self.train_classifier)
+
         button_lay.addLayout(colour_lay)
+        button_lay.addWidget(self.bupdate)
+        button_lay.addWidget(self.train)
         button_lay.addWidget(self.clear)
 
         self.getarrayc = QPushButton('Save and Close',self)
@@ -392,6 +405,22 @@ class Application(QMainWindow):
         if str(self.comboBox.currentText()) == "Sauvola":
             self.params.segment['threshold'] = "sauvola"
     
+    def train_update(self):
+        array = self.canvas2.array
+        self.mask = np.array(Image.fromarray(array).resize((self.image.shape[1],self.image.shape[0])))
+        import matplotlib.pyplot as plt
+        plt.imshow(self.mask)
+        plt.show()
+        print('updated labels')
+
+    def train_classifier(self):
+        
+        self.trained_mask, self.classifier = ClusterTrained(self.im_hs, self.mask, self.classifier)
+        print(self.trained_mask)
+        self.canvas2.clear()
+        if self.trained_mask != None:
+            self.canvas2.drawLabels(self.trained_mask)
+
     def save_array(self):
         self.canvas.savearray(self.image)
 
@@ -465,6 +494,19 @@ class Canvas(QLabel):
         painter = QPainter(self.pixmap())
         painter.eraseRect(0,0,512,512)
         painter.drawPixmap(0,0,self.OGpixmap)
+        painter.end()
+        self.update()
+
+    def drawLabels(self, thin_labels):
+
+        thicc_labels = np.zeros(thin_labels.shape[0], thin_labels.shape[1],3)
+        for c in range(1,4):
+            thicc_labels[:,:,i] = 255*(thin_labels == i)
+
+        painter = QPainter(self.pixmap())
+        painter.setOpacity(0.3)
+        painter.eraseRect(0,0,512,512)
+        painter.drawPixmap(0,0,thicc_labels)
         painter.end()
         self.update()
         
