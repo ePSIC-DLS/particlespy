@@ -8,6 +8,7 @@ Created on Tue Jul 31 13:35:23 2018
 from ParticleSpy.segptcls import process
 import numpy as np
 from ParticleSpy.ptcl_class import Particle, Particle_list
+from ParticleSpy.custom_kernels import membrane_projection
 from skimage import filters, morphology
 from skimage.measure import label, regionprops, perimeter
 from sklearn import preprocessing
@@ -233,7 +234,7 @@ def timeseriesanalysis(particles,max_dist=1,memory=3,properties=['area']):
     t = trackpy.link(df,max_dist,memory=memory)
     return(t)
 
-def CreateFeatures(image, intensity = True, edges = True, texture = True, sigma = 1, high_sigma = 16, disk_size = 20):
+def CreateFeatures(image, intensity = True, edges = True, texture = True, membrane = True, sigma = 1, high_sigma = 16, disk_size = 20):
 
     shape = [image.shape[0], image.shape[1], 1]
 
@@ -266,6 +267,9 @@ def CreateFeatures(image, intensity = True, edges = True, texture = True, sigma 
         new_layer = np.reshape(filters.hessian(im_blur, mode='constant',), shape)
         image_stack = np.append(image_stack, new_layer, axis=2)
 
+    if membrane:
+        mem_layers = membrane_projection(image)
+        image_stack = np.append(image_stack, mem_layers, axis=2)
 
     return image_stack
 
