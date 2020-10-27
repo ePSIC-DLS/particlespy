@@ -10,6 +10,20 @@ from skimage.transform import rotate
 from scipy.ndimage import convolve
 
 def membrane_projection(image):
+    """
+    creates a set of features  from a 19by19 kernel with the central column set 
+    as ones, rotated through 180 degrees and z projected into one image using 6 
+    different methods.
+
+    Parameters
+    ----------
+    image : greyscale image for feature creation.
+
+    Returns
+    -------
+    6 features for 
+
+    """
     kernel = np.zeros([19,19])
     kernel[:,9] = 1
     

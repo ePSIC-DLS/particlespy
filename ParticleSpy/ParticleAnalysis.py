@@ -37,8 +37,8 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         List of already analysed particles that the output can be appended
         to.
     mask: Numpy array
-        Numpy array of same 2D size as acquisition that contains a mask of presegmented
-        particles.
+        Numpy array of same 2D size as acquisition that contains a mask of 
+        presegmented particles.
         
     Returns
     -------
@@ -234,7 +234,26 @@ def timeseriesanalysis(particles,max_dist=1,memory=3,properties=['area']):
     t = trackpy.link(df,max_dist,memory=memory)
     return(t)
 
-def CreateFeatures(image, intensity = True, edges = True, texture = True, membrane = True, sigma = 1, high_sigma = 16, disk_size = 20):
+def CreateFeatures(image, intensity = True, 
+                          edges = True, 
+                          texture = True, 
+                          membrane = True, 
+                          sigma = 1, high_sigma = 16, disk_size = 20):
+    """
+    Creates set of features for data classification
+
+    Parameters
+    ----------
+    image : greyscale image for segmentation
+    intensity : adds intensity based features if set as True
+    edges : adds edges based features if set as True
+    texture : adds textures based features if set as True
+    membrane : adds membrane projection features if set as True
+
+    Returns
+    -------
+    set of chosen features of the inputted image.
+    """
 
     shape = [image.shape[0], image.shape[1], 1]
 
@@ -442,6 +461,19 @@ def ClusterLearnSeries(image_set, method='KMeans', parameters=[{'kernel': 'gauss
     return mask_set
 
 def ClusterTrained(image, labels, classifier):
+    """
+    Creates masks of given images by classifying based on .
+    
+    Parameters
+    ----------
+    image : Hyperspy signal object or list of hyperspy signal objects.
+    labels : user-labelled mask
+    classifier : empty or pretrained classifier to be trained on labelled data
+
+    Returns
+    -------
+    classified mask, trained classifier
+    """
 
     labels = labels.astype(np.float64)
     shape = image.data.shape
