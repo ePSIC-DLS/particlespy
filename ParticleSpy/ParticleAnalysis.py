@@ -474,7 +474,8 @@ def ClusterTrained(image, labels, classifier):
     -------
     classified mask, trained classifier
     """
-    if np.all(labels) != 0:
+    if labels.all() == False:
+        print('start training')
         labels = labels.astype(np.float64)
         shape = image.data.shape
         image = image.data

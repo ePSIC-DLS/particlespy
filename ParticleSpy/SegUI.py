@@ -408,17 +408,14 @@ class Application(QMainWindow):
     def train_update(self):
         array = self.canvas2.array
         self.mask = np.array(Image.fromarray(array).resize((self.image.shape[1],self.image.shape[0])))
-        import matplotlib.pyplot as plt
-        plt.imshow(self.mask)
-        plt.show()
+
         print('updated labels')
 
     def train_classifier(self):
         
         self.trained_mask, self.classifier = ClusterTrained(self.im_hs, self.mask, self.classifier)
-        print(self.trained_mask)
         self.canvas2.clear()
-        if self.trained_mask != None:
+        if self.trained_mask.any() != 0:
             self.canvas2.drawLabels(self.trained_mask)
 
     def save_array(self):
@@ -499,17 +496,24 @@ class Canvas(QLabel):
 
     def drawLabels(self, thin_labels):
 
-        thicc_labels = np.zeros(thin_labels.shape[0], thin_labels.shape[1],3)
+        shape = thin_labels.shape
+         
+        thicc_labels = np.zeros([shape[0], shape[1],4], dtype=np.uint8)
         for c in range(1,4):
-            thicc_labels[:,:,i] = 255*(thin_labels == i)
+            thicc_labels[:,:,c] = 255*(thin_labels == c)
+        thicc_labels[:,:,0] = 128*(thin_labels != 0)
 
+        thicc_labels = np.flip(thicc_labels, axis=2).copy()
+        qi = QImage(thicc_labels.data, thicc_labels.shape[1], thicc_labels.shape[0], 4*thicc_labels.shape[1], QImage.Format_ARGB32_Premultiplied)
+        
+        pixmap = QPixmap(qi)
+        pixmap = pixmap.scaled(512, 512, Qt.KeepAspectRatio)
         painter = QPainter(self.pixmap())
-        painter.setOpacity(0.3)
-        painter.eraseRect(0,0,512,512)
-        painter.drawPixmap(0,0,thicc_labels)
+        painter.setOpacity(0.5)
+        painter.drawPixmap(0,0,pixmap)
         painter.end()
         self.update()
-        
+
     def lineDraw(self,pos1,pos2):
         painter = QPainter(self.pixmap())
         p = painter.pen()
