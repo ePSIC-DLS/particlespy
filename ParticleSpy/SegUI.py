@@ -500,12 +500,10 @@ class Canvas(QLabel):
         thicc_labels = np.zeros([shape[0], shape[1],4], dtype=np.uint8)
         for c in range(1,4):
             thicc_labels[:,:,c] = 255*(thin_labels == c)
-        thicc_labels[:,:,0] = 128*(thin_labels != 0)
+        thicc_labels[:,:,0] = 255*(thin_labels != 0)
 
-        import matplotlib.pyplot as plt
-        plt.imshow(np.append(thicc_labels[:,:,1:], np.reshape(thicc_labels[:,:,0], [shape[0], shape[1], 1]), axis=2))
-        plt.show()
-
+        im = Image.fromarray(thicc_labels[:,:,1:])
+        im.save('mask.png')
         thicc_labels = np.flip(thicc_labels, axis=2).copy()
         qi = QImage(thicc_labels.data, thicc_labels.shape[1], thicc_labels.shape[0], 4*thicc_labels.shape[1], QImage.Format_ARGB32_Premultiplied)
         

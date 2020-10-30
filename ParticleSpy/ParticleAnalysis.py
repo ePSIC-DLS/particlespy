@@ -323,7 +323,6 @@ def ClusterLearnOld(image, method='KMeans',
     """
 
     image = image.data
-    image = preprocessing.maxabs_scale(image)
     shape = [image.shape[0], image.shape[1], 1]
 
     image_stack = np.zeros(shape)
@@ -382,7 +381,12 @@ def ClusterLearnOld(image, method='KMeans',
     
     return mask
 
-def ClusterLearn(image, method='KMeans'):
+def ClusterLearn(image, method='KMeans', 
+                        intensity = True, 
+                        edges = True, 
+                        texture = True, 
+                        membrane = False, 
+                        sigma = 1, high_sigma = 16, disk_size = 20):
     """
     Creates masks of given images using scikit learn clustering methods.
     
@@ -391,6 +395,7 @@ def ClusterLearn(image, method='KMeans'):
     image: Hyperspy signal object or list of hyperspy signal objects.
         Hyperpsy signal object containing nanoparticle images
     method: Clustering algorithm used to generate mask.
+    intensity, edges, texture, membrane: 
     disk_size: Size of the local pixel neighbourhood considered by select 
         segmentation methods.
     parameters: List of dictionaries of Parameters for segmentation methods used in clustering
@@ -402,10 +407,10 @@ def ClusterLearn(image, method='KMeans'):
     """
 
     image = image.data
-    image = preprocessing.maxabs_scale(image)
+    #image = preprocessing.maxabs_scale(image)
     shape = [image.shape[0], image.shape[1], 1]
 
-    image_stack = CreateFeatures(image)
+    image_stack = CreateFeatures(image, intensity, edges, membrane=membrane, sigma = sigma, high_sigma = high_sigma, disk_size = disk_size)
 
     pixel_stacks = np.zeros([shape[0]*shape[1],image_stack.shape[2]])
     for i in range(shape[1]):
