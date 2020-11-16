@@ -479,6 +479,7 @@ class Canvas(QLabel):
         self.pen_color = QColor(self.colors[self.color_index])
 
     def changePen(self, brush):
+        self.last_click = None
         self.lineCount = 0
         self.penType = brush
 
