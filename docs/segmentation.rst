@@ -122,7 +122,7 @@ This is done by calling:
 
 .. code-block:: python
 
-    >>> ClusterLearn(image, methods = name of clustering algorithm, parameters = list of dictionaries each containing a filter kernel and its parameters
+    >>> ClusterLearn(image, methods = name of clustering algorithm, desired feature sets, parameters)
 
 This returns a segmentation mask of the image.
 This can be carried out for a sequence of images using ``ClusterLearnSeries``.
@@ -133,6 +133,10 @@ Trainable Segmentation
 ----------------------
 
 Using the Segmentation User Interface trainable segmentation can be performed using the 'Training' tab in the the top bar.
+
+.. image:: _static/TrainUI.png
+    :align: center
+
 Labels can be drawn onto the image using the tools on the left hand side:
 
 * The freehand tool operates by pressing and holding the left mouse button to draw lines.

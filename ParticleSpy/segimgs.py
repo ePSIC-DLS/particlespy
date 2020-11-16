@@ -208,12 +208,12 @@ def ClassifierSegment(classifier, image):
     """
     shape = image.shape
 
-    features = ps.CreateFeatures(image)
+    features = CreateFeatures(image)
     features = np.rot90(np.rot90(features, axes=(2,0)), axes=(1,2))
     features = features[:, image == image].T
-    mask = clf.predict(features)
+    mask = classifier.predict(features)
 
-    output = np.copy(rescaled_im)
+    output = np.copy(image)
     output[image == image] = mask
 
     mask_im = np.zeros((shape[0],shape[1],3), dtype = np.uint8)

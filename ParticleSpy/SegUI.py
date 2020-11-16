@@ -21,7 +21,8 @@ from skimage.util import invert
 from PIL import Image
 
 from ParticleSpy.segptcls import process
-from ParticleSpy.ParticleAnalysis import parameters, ClusterTrained
+from ParticleSpy.ParticleAnalysis import parameters
+from ParticleSpy.segimgs import ClusterTrained
 
 from sklearn.ensemble import RandomForestClassifier
 
@@ -51,7 +52,7 @@ class Application(QMainWindow):
         # Add tabs
         self.tabs.addTab(self.tab1,"Auto")
         self.tabs.addTab(self.tab2,"Manual")
-        self.tabs.addTab(self.tab3,"WIP Training")
+        self.tabs.addTab(self.tab3,"Trainable")
 
         #self.central_widget = QWidget()               
         #self.setCentralWidget(self.central_widget)
