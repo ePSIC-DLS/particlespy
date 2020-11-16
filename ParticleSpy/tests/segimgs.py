@@ -79,11 +79,12 @@ def ClusterLearn(image, method='KMeans',
     image: Hyperspy signal object or list of hyperspy signal objects.
         Hyperpsy signal object containing nanoparticle images
     method: Clustering algorithm used to generate mask.
-    intensity, edges, texture, membrane: 
+    intensity, edges, texture, membrane: different kernel types used for 
+    creating features
     disk_size: Size of the local pixel neighbourhood considered by select 
         segmentation methods.
-    parameters: List of dictionaries of Parameters for segmentation methods used in clustering
-        The parameters can be inputted manually or use the default .
+    parameters: List of dictionaries of Parameters for segmentation methods used
+    in clustering. The parameters can be inputted manually or use the default.
 
     Returns
     -------
@@ -94,7 +95,8 @@ def ClusterLearn(image, method='KMeans',
     #image = preprocessing.maxabs_scale(image)
     shape = [image.shape[0], image.shape[1], 1]
 
-    image_stack = CreateFeatures(image, intensity, edges, membrane=membrane, sigma = sigma, high_sigma = high_sigma, disk_size = disk_size)
+    image_stack = CreateFeatures(image, intensity=intensity, edges=edges, texture=texture, membrane=membrane, 
+                                 sigma = sigma, high_sigma = high_sigma, disk_size = disk_size)
 
     pixel_stacks = np.zeros([shape[0]*shape[1],image_stack.shape[2]])
     for i in range(shape[1]):
@@ -113,17 +115,12 @@ def ClusterLearn(image, method='KMeans',
     
     return mask
 
-def ClusterLearnSeries(image_set, method='KMeans', parameters=[{'kernel': 'gaussian', 'sigma': 1}, 
-                                                    {'kernel': 'sobel'},
-                                                    {'kernel': 'hessian', 'black ridges': False},
-                                                    {'kernel': 'rank mean', 'disk size': 20},
-                                                    {'kernel': 'median', 'disk size': 20},
-                                                    {'kernel': 'minimum', 'disk size': 20},
-                                                    {'kernel': 'maximum', 'disk size': 20},
-                                                    {'kernel': 'bilateral', 'disk size': 20},
-                                                    {'kernel': 'entropy', 'disk size': 20},
-                                                    {'kernel': 'gabor', 'frequency': 100},
-                                                    {'kernel': 'gaussian diff', 'low sigma': 1, 'high sigma': None}]):
+def ClusterLearnSeries(image_set, method='KMeans', 
+                        intensity = True, 
+                        edges = True, 
+                        texture = True, 
+                        membrane = False, 
+                        sigma = 1, high_sigma = 16, disk_size = 20):
     """
     Creates masks of sets of images using scikit learn clustering methods.
     
@@ -132,11 +129,12 @@ def ClusterLearnSeries(image_set, method='KMeans', parameters=[{'kernel': 'gauss
     image_set: list of hyperspy signal objects.
         List of Hyperpsy signal object containing nanoparticle images
     method: Clustering algorithm used to generate mask.
+    intensity, edges, texture, membrane: different kernel types used for 
+    creating features
     disk_size: Size of the local pixel neighbourhood considered by select 
         segmentation methods.
-    parameters: List of dictionaries of Parameters for segmentation methods used in clustering
-        The parameters can be input manually in to a dictionary or can be generated
-        using param_generator().
+    parameters: List of dictionaries of Parameters for segmentation methods used
+    in clustering. The parameters can be inputted manually or use the default.
 
     Returns
     -------
@@ -145,7 +143,8 @@ def ClusterLearnSeries(image_set, method='KMeans', parameters=[{'kernel': 'gauss
 
     mask_set = []
     for image in image_set:
-        mask_set.append(ClusterLearn(image,method))
+        mask_set.append(ClusterLearn(image,method=method, intensity=intensity, edges=edges, texture=texture, membrane=membrane, 
+                                     sigma=sigma, high_sigma=16, disk_size=disk_size))
     
     return mask_set
 
