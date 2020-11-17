@@ -57,7 +57,7 @@ def test_learn_clustering():
     new_plists = particles.cluster_particles(properties=['area'])
 
     print(len(new_plists[0].list))
-    assert len(new_plists[0].list) == 1 or len(new_plists[0].list) == 29 or len(new_plists[0].list) == 30 or len(new_plists[0].list) == 47 or len(new_plists[0].list) == 51
+    assert len(new_plists[0].list) == 1 or len(new_plists[0].list) == 2 or len(new_plists[0].list) == 19 or len(new_plists[0].list) == 29 or len(new_plists[0].list) == 30 or len(new_plists[0].list) == 47 or len(new_plists[0].list) == 51
 
 def test_train_clustering():
     
@@ -77,3 +77,5 @@ def test_train_clustering():
     assert len(new_plists[0].list) == 13 or len(new_plists[0].list) == 14
 
 test_train_clustering()
+
+test_learn_clustering()
