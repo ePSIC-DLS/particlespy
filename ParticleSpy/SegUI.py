@@ -504,8 +504,6 @@ class Canvas(QLabel):
             thicc_labels[:,:,c] = 255*(thin_labels == c)
         thicc_labels[:,:,0] = 255*(thin_labels != 0)
 
-        im = Image.fromarray(thicc_labels[:,:,1:])
-        im.save('mask.png')
         thicc_labels = np.flip(thicc_labels, axis=2).copy()
         qi = QImage(thicc_labels.data, thicc_labels.shape[1], thicc_labels.shape[0], 4*thicc_labels.shape[1], QImage.Format_ARGB32_Premultiplied)
         
