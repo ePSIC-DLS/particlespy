@@ -156,7 +156,7 @@ def ClusterTrained(image, labels, classifier):
     Parameters
     ----------
     image : Hyperspy signal object or list of hyperspy signal objects.
-    labels : user-labelled mask
+    labels : user-labelled mask, 3 channel
     classifier : empty or pretrained classifier to be trained on labelled data
 
     Returns
