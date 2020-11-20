@@ -466,7 +466,6 @@ class Canvas(QLabel):
 
         self.brush_tools = ['Freehand', 'Line', 'Polygon']
         #self.colors is ARGB
-        #self.colors = ['#80FF0000', '#8000FF00', '#800000FF']
         self.colors =['#80A30015', '#806DA34D', '#8051E5FF', '#80BD2D87', '#80F5E663']
         self.color_index = 0
 
@@ -564,31 +563,41 @@ class Canvas(QLabel):
                 self.last_click = QPoint(e.x(),e.y())
                 self.lineCount += 1
     
-    #this probably needs changed
+    #this does need changed
     def flood(self, e):
         image = self.pixmap().toImage()
         b = image.bits()
         b.setsize(512 * 512 * 4)
         arr = np.frombuffer(b, np.uint8).reshape((512, 512, 4))
+        
+        OGimage = self.OGpixmap.toImage()
+        b = OGimage.bits()
+        b.setsize(512 * 512 * 4)
+        OGim = np.frombuffer(b, np.uint8).reshape((512, 512, 4))
+        OGim = np.flip(OGim, axis=2)
+
         arr = arr.astype(np.int32)
         arr = np.flip(arr, axis=2)
 
-        i = self.color_index + 1
-        arr_test = arr[:,:,i]-((arr[:,:,1]+ arr[:,:,2]+ arr[:,:,3])/3)
-        #arr test is not greyscale
+        arr_test = np.zeros_like(arr)
+        arr_test[arr != OGim] = arr[arr != OGim]
+        flat_arr = np.mean(arr_test[:,:,1:], axis=2)
+        flooded = flood(flat_arr,(e.y(),e.x()))
+
+        color = self.colors[self.color_index]
+        rgb = [int(color[3:5], 16), int(color[5:7], 16), int(color[7:], 16)]
+
+        #paint_arr is ARGB
+        paint_arr = np.zeros_like(arr,dtype=np.uint8)
+        paint_arr[:,:,0] = (flooded)*255
+        #sets alpha
+        paint_arr[flooded,1:] = rgb
+        #fills wil pen colour
         
-        i = 2 - self.color_index
-        #painted_arr is BGRA
-        painted_arr = np.zeros_like(arr,dtype=np.uint8)
-        painted_arr[:,:,i][arr_test!=0] = 255
-        #this makes the drawn images the same as pen color
-
-        painted_arr[:,:,i] = 255*flood(painted_arr[:,:,i],(e.y(),e.x()))
-        #sets alpha from ith channel
-        painted_arr[:,:,3] = painted_arr[:,:,i]
-
         #BGRA
-        qi = QImage(painted_arr.data, painted_arr.shape[1], painted_arr.shape[0], 4*painted_arr.shape[1], QImage.Format_ARGB32_Premultiplied)
+        paint_arr = np.flip(paint_arr, axis=2).copy()
+        
+        qi = QImage(paint_arr.data, paint_arr.shape[1], paint_arr.shape[0], 4*paint_arr.shape[1], QImage.Format_ARGB32_Premultiplied)
         pixmap = QPixmap(qi)
         
         painter = QPainter(self.pixmap())
@@ -599,7 +608,7 @@ class Canvas(QLabel):
         self.update()
         
         #self.array saves RGB values
-        self.array += np.flip(painted_arr[:,:,:3], axis=2)
+        self.array += np.flip(paint_arr[:,:,:3], axis=2)
 
     def mousePressEvent(self, e):
 
