@@ -602,7 +602,6 @@ class Canvas(QLabel):
         
         painter = QPainter(self.pixmap())
         painter.setOpacity(0.5)
-
         painter.drawPixmap(0,0,pixmap)
         painter.end()
         self.update()

@@ -164,12 +164,13 @@ def ClusterTrained(image, labels, classifier):
     -------
     classified mask (1 channel), trained classifier
     """
-    if len(labels.shape) != 2:
-        labels = toggle_channels(labels)
 
     #makes sure labels aren't empty
     if labels.all() == False:
         print('start training')
+
+        if len(labels.shape) != 2:
+            labels = toggle_channels(labels)
         thin_mask = labels.astype(np.float64)
         shape = image.data.shape
         image = image.data
