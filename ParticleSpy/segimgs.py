@@ -3,13 +3,14 @@ import numpy as np
 from ParticleSpy.custom_kernels import membrane_projection
 from skimage import filters, morphology
 from skimage.measure import label, regionprops, perimeter
+from skimage.exposure import rescale_intensity
 from sklearn import preprocessing
 from sklearn.cluster import DBSCAN, KMeans
 
 
 def CreateFeatures(image, intensity = True, 
-                          edges = True, 
-                          texture = True, 
+                          edges = False, 
+                          texture = False, 
                           membrane = True, 
                           sigma = 1, high_sigma = 16, disk_size = 20):
     """
@@ -34,6 +35,7 @@ def CreateFeatures(image, intensity = True,
 
     image_stack = np.zeros(shape)
     im_blur = filters.gaussian(image, sigma)
+    one_im = rescale_intensity(image, out_range = (-1,1))
 
     if intensity:
         new_layer = np.reshape(filters.gaussian(image, sigma), shape)
@@ -41,16 +43,16 @@ def CreateFeatures(image, intensity = True,
 
         new_layer = np.reshape(filters.difference_of_gaussians(image,low_sigma= sigma, high_sigma=high_sigma), shape)
         image_stack = np.append(image_stack, new_layer, axis=2)
-        """
-        new_layer = np.reshape(filters.median(image,selem), shape)
-        image_stack = np.append(image_stack, new_layer, axis=2)
-
-        new_layer = np.reshape(filters.rank.minimum(image,selem), shape)
-        image_stack = np.append(image_stack, new_layer, axis=2)
-
-        new_layer = np.reshape(filters.rank.maximum(image, selem), shape)
+        
+        new_layer = np.reshape(filters.median(one_im,selem), shape)
         image_stack = np.append(image_stack, new_layer, axis=2)
         """
+        new_layer = np.reshape(filters.rank.minimum(one_im,selem), shape)
+        image_stack = np.append(image_stack, new_layer, axis=2)
+        """
+        new_layer = np.reshape(filters.rank.maximum(one_im, selem), shape)
+        image_stack = np.append(image_stack, new_layer, axis=2)
+
     if edges:
         new_layer = np.reshape(filters.sobel(im_blur), shape)
         image_stack = np.append(image_stack, new_layer, axis=2)
@@ -88,7 +90,7 @@ def ClusterLearn(image, method='KMeans',
 
     Returns
     -------
-    generated mask
+    generated mask (1channel)
     """
 
     image = image.data
@@ -138,7 +140,7 @@ def ClusterLearnSeries(image_set, method='KMeans',
 
     Returns
     -------
-    list of generated mask per image
+    list of generated mask per image (1channel)
     """
 
     mask_set = []
@@ -149,38 +151,32 @@ def ClusterLearnSeries(image_set, method='KMeans',
     return mask_set
 
 def ClusterTrained(image, labels, classifier):
-
     """
-    Creates masks of given images by classifying based on .
+    Trains classifier and classifies an image.
     
     Parameters
     ----------
     image : Hyperspy signal object or list of hyperspy signal objects.
-    labels : user-labelled mask, 3 channel
+    labels : user-labelled mask
     classifier : empty or pretrained classifier to be trained on labelled data
 
     Returns
     -------
-    classified mask, trained classifier
+    classified mask (1 channel), trained classifier
     """
+    if len(labels.shape) != 2:
+        labels = toggle_channels(labels)
+
+    #makes sure labels aren't empty
     if labels.all() == False:
         print('start training')
-        labels = labels.astype(np.float64)
+        thin_mask = labels.astype(np.float64)
         shape = image.data.shape
         image = image.data
 
         features = CreateFeatures(image)
         features = np.rot90(np.rot90(features, axes=(2,0)), axes=(1,2))
         #features are num/x/y
-
-        thin_mask = np.zeros([shape[0],shape[1]])
-
-        c = 1
-        for i in range(0,3):
-            non_zero = (labels[:,:,i] != 0)
-            if np.any(non_zero) == True:
-                thin_mask += c*non_zero.astype(int)
-                c += 1
 
         training_data = features[:, thin_mask > 0].T
         #training data is number of labeled pixels by number of features
@@ -203,8 +199,16 @@ def ClusterTrained(image, labels, classifier):
 
 def ClassifierSegment(classifier, image):
     """
+    classifies image with pretrained classifier.
+    
+    Parameters
+    ----------
     classifier : sklearn classifier
     image: numpy array of image
+
+    Returns
+    -------
+    mask of labels (1channel)
     """
     shape = image.shape
 
@@ -216,8 +220,21 @@ def ClassifierSegment(classifier, image):
     output = np.copy(image)
     output[image == image] = mask
 
-    mask_im = np.zeros((shape[0],shape[1],3), dtype = np.uint8)
-    for c in range(3):
-        mask_im[:,:,c] = 255*(output == (c+1))
+    return output
 
-    return mask_im
+def toggle_channels(image):
+    shape = image.shape
+
+    if len(shape) == 3:
+        toggled = np.zeros((shape[0],shape[1]), dtype = np.uint8)
+        for i in range(len(colors)):
+            rgb = [int(colors[i][1:3], 16), int(colors[i][3:5], 16), int(colors[i][5:], 16)]
+            toggled[(image == rgb).all(axis=2)] = i+1
+
+    elif len(shape) == 2:
+        toggled = np.zeros((shape[0],shape[1],3), dtype = np.uint8)
+        for i in range(len(colors)):
+            rgb = [int(colors[i][1:3], 16), int(colors[i][3:5], 16), int(colors[i][5:], 16)]
+            toggled[image == (i+1),:] = rgb
+
+    return toggled

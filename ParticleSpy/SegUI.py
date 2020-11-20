@@ -22,7 +22,7 @@ from PIL import Image
 
 from ParticleSpy.segptcls import process
 from ParticleSpy.ParticleAnalysis import parameters
-from ParticleSpy.segimgs import ClusterTrained
+from ParticleSpy.segimgs import ClusterTrained, toggle_channels
 
 from sklearn.ensemble import RandomForestClassifier
 
@@ -465,7 +465,9 @@ class Canvas(QLabel):
         self.last_click  = None
 
         self.brush_tools = ['Freehand', 'Line', 'Polygon']
-        self.colors = ['#80FF0000', '#8000FF00', '#800000FF']
+        #self.colors is ARGB
+        #self.colors = ['#80FF0000', '#8000FF00', '#800000FF']
+        self.colors =['#80A30015', '#806DA34D', '#8051E5FF', '#80BD2D87', '#80F5E663']
         self.color_index = 0
 
         self.pen_color = QColor(self.colors[0])
@@ -500,9 +502,9 @@ class Canvas(QLabel):
 
         shape = thin_labels.shape
         thicc_labels = np.zeros([shape[0], shape[1],4], dtype=np.uint8)
-        for c in range(1,4):
-            thicc_labels[:,:,c] = 255*(thin_labels == c)
-        thicc_labels[:,:,0] = 255*(thin_labels != 0)
+        
+        thicc_labels[:,:,1:] = toggle_channels(thin_labels)
+        thicc_labels[:,:,0] = (thin_labels > 0)*255
 
         thicc_labels = np.flip(thicc_labels, axis=2).copy()
         qi = QImage(thicc_labels.data, thicc_labels.shape[1], thicc_labels.shape[0], 4*thicc_labels.shape[1], QImage.Format_ARGB32_Premultiplied)
@@ -562,6 +564,7 @@ class Canvas(QLabel):
                 self.last_click = QPoint(e.x(),e.y())
                 self.lineCount += 1
     
+    #this probably needs changed
     def flood(self, e):
         image = self.pixmap().toImage()
         b = image.bits()
