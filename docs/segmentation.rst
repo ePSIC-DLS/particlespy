@@ -150,5 +150,23 @@ Once areas have been labelled, training can be begun using the 'Update' and 'Tra
 When this finishes the labels will be shown on top of the image in the user interface, this can take up to several minutes.
 The classifier can then be retrained by pressing the 'Clear' button and drawing on any additional features. 
 
-Using the classifier generated multiple images can be segmented using it.
+Using the classifier generated multiple images can be segmented using it. This is shown in the following code:
 
+.. code-block:: python
+
+    folder = 'path fo folder of images to segment'
+    first = hs.load('{}/first image in folder'.format(folder))
+
+    out = ps.SegUI(first)
+    clf = out.classifier
+
+    params = ps.parameters()
+    params.generate()
+    particles = None
+
+    for image in os.listdir(folder):
+        imagefile = hs.load(os.path.join(folder,image))
+        l = imagefile.data
+        mask_im = ps.ClassifierSegment(clf, l)
+        
+        particles = ps.ParticleAnalysis(imagefile, params,particles=particles, mask=mask_im)
