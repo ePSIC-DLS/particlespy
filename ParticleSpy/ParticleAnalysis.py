@@ -8,13 +8,15 @@ Created on Tue Jul 31 13:35:23 2018
 from ParticleSpy.segptcls import process
 import numpy as np
 from ParticleSpy.ptcl_class import Particle, Particle_list
+from ParticleSpy.custom_kernels import membrane_projection
 from skimage import filters, morphology
 from skimage.measure import label, regionprops, perimeter
+from sklearn import preprocessing
+from sklearn.cluster import DBSCAN, KMeans
 import ParticleSpy.find_zoneaxis as zone
 import warnings
 import h5py
 import inspect
-import matplotlib.pyplot as plt
 import pandas as pd
 import trackpy
 import os
@@ -35,8 +37,8 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         List of already analysed particles that the output can be appended
         to.
     mask: Numpy array
-        Numpy array of same 2D size as acquisition that contains a mask of presegmented
-        particles.
+        Numpy array of same 2D size as acquisition that contains a mask of 
+        presegmented particles.
         
     Returns
     -------
@@ -170,7 +172,7 @@ def ParticleAnalysisSeries(image_series,parameters,particles=None):
     
     Parameters
     ----------
-    image_series: Hyperpsy signal object or list of hyperspy signal objects.
+    image_series: Hyperspy signal object or list of hyperspy signal objects.
         Hyperpsy signal object containing nanoparticle images or a list of signal
          objects that contains a time series.
     parameters: Dictionary of parameters
@@ -231,7 +233,7 @@ def timeseriesanalysis(particles,max_dist=1,memory=3,properties=['area']):
         
     t = trackpy.link(df,max_dist,memory=memory)
     return(t)
-    
+
 def store_image(particle,image,params):
     ii = np.where(particle.mask)
             
