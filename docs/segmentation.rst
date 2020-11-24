@@ -127,12 +127,12 @@ This is done by calling:
 This returns a segmentation mask of the image.
 This can be carried out for a sequence of images using ``ClusterLearnSeries``.
 
-In future versions this will most likely be updated to be selected via a GUI or with a list of presets.
+In future versions, this will most likely be updated to be selected via a GUI or with a list of presets.
 
 Trainable Segmentation
 ----------------------
 
-Using the Segmentation User Interface trainable segmentation can be performed using the 'Training' tab in the the top bar.
+Using the Segmentation User Interface, trainable segmentation can be performed using the 'Training' tab in the the top bar.
 
 .. image:: _static/TrainUI.png
     :align: center
@@ -140,17 +140,17 @@ Using the Segmentation User Interface trainable segmentation can be performed us
 Labels can be drawn onto the image using the tools on the left hand side:
 
 * The freehand tool operates by pressing and holding the left mouse button to draw lines.
-* The line tool operates by left clicking twice, which produces a line draw between them which is automatically added to the set of labels.
+* The line tool operates by left clicking twice, which produces a line between them, which is automatically added to the set of labels.
 * The polygon tool can be used to enclose a region by clicking to form the polygon and clicking on the start of the shape to finish one polygon.
 
-As with manual segmentation any enclosed region can be labelled by right clicking within it. 
-This can be done in multiple colours by selecting the desired colour before labelling a region.
+As with manual segmentation, any enclosed region can be labelled by right clicking within it. 
+This can be done in multiple colours, by selecting the desired colour before labelling a region.
 
-Once areas have been labelled, training can be begun using the 'Update' and 'Train Classifier' Button.
+Once areas have been labelled, training can be begun using the 'Update', followed by the 'Train Classifier' Button.
 When this finishes the labels will be shown on top of the image in the user interface, this can take up to several minutes.
 The classifier can then be retrained by pressing the 'Clear' button and drawing on any additional features. 
 
-Using the classifier generated multiple images can be segmented using it. This is shown in the following code:
+Using the classifier generated, multiple images can be segmented. An example is shown in the following code:
 
 .. code-block:: python
 
