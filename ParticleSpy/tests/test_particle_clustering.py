@@ -18,7 +18,6 @@ def test_clustering():
     
     assert len(new_plists[0].list) == 5 or len(new_plists[0].list) == 185 or len(new_plists[0].list) == 57 or len(new_plists[0].list) == 43 or len(new_plists[0].list) == 59 or len(new_plists[0].list) == 99
 
-
 def test_clustering_all():
     
     data = hs.load(str(Path(__file__).parent.parent / 'Data/SiO2 HAADF Image.hspy'))

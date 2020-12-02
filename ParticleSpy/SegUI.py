@@ -268,7 +268,7 @@ class Application(QMainWindow):
         
         
         self.show()
-    
+
     def updateLocalSize(self):
         if self.comboBox.currentText() == 'Niblack' or self.comboBox.currentText() == 'Sauvola' or self.comboBox.currentText() == 'Local':
             self.local_size.setEnabled(True)
