@@ -20,7 +20,7 @@ def load(filename):
     p_list = load_plist(filename)
     return(p_list)
 
-def plot(particle_lists,prop_list=['area'],bins=20):
+def plot(particle_lists,prop_list=['area'],**kwargs):
         """
         Plots properties of all particles in the Particle_lists.
         
@@ -43,8 +43,10 @@ def plot(particle_lists,prop_list=['area'],bins=20):
         plot([particles],['area'])
         
         """
-        
-        if len(prop_list) == 2:
+        if isinstance(prop_list,str):
+            fig = plt.figure()
+            ax = fig.add_subplot(111)
+        elif len(prop_list) == 1 or len(prop_list) == 2:
             fig = plt.figure()
             ax = fig.add_subplot(111)
         elif len(prop_list) == 3:
@@ -53,14 +55,14 @@ def plot(particle_lists,prop_list=['area'],bins=20):
         
         for p in particle_lists:
             if isinstance(prop_list,str):
-                p._plot_one_property(prop_list,bins)
+                p._plot_one_property(prop_list,ax,**kwargs)
             else:
                 if len(prop_list) == 1:
-                    p._plot_one_property(prop_list[0],bins)
+                    p._plot_one_property(prop_list[0],ax,**kwargs)
                 elif len(prop_list) == 2:
-                    p._plot_two_properties(prop_list,ax)
+                    p._plot_two_properties(prop_list,ax,**kwargs)
                 elif len(prop_list) == 3:
-                    p._plot_three_properties(prop_list,ax)
+                    p._plot_three_properties(prop_list,ax,**kwargs)
                 else:
                     print("Can only plot one or two properties, please change the length of the property list.")
                     break
