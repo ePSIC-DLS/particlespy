@@ -170,7 +170,7 @@ class Particle_list(object):
         if isinstance(prop_list,str):
             fig = plt.figure()
             ax = fig.add_subplot(111)
-            self._plot_one_property(prop_list,**kwargs)
+            self._plot_one_property(prop_list,ax,**kwargs)
         else:
             if len(prop_list) == 1:
                 fig = plt.figure()
