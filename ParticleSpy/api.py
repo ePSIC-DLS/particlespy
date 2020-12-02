@@ -43,8 +43,10 @@ def plot(particle_lists,prop_list=['area'],**kwargs):
         plot([particles],['area'])
         
         """
-        
-        if len(prop_list) == 1 or len(prop_list) == 2:
+        if isinstance(prop_list,str):
+            fig = plt.figure()
+            ax = fig.add_subplot(111)
+        elif len(prop_list) == 1 or len(prop_list) == 2:
             fig = plt.figure()
             ax = fig.add_subplot(111)
         elif len(prop_list) == 3:
