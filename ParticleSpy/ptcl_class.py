@@ -119,29 +119,29 @@ class Particle_list(object):
         """
         Displays a plot of particle areas for analysed particles.
         """
-        
+        fig, ax = plt.subplots()
         areas = []
         
         for p in self.list:
             areas.append(p.properties['area']['value'])
             
-        plt.hist(areas,bins=bins)
-        plt.xlabel("Area ("+self.list[0].properties['area']['units']+")")
-        plt.ylabel("No. of particles")
+        ax.hist(areas,bins=bins)
+        ax.xlabel("Area ("+self.list[0].properties['area']['units']+")")
+        ax.ylabel("No. of particles")
         
     def plot_circularity(self,bins=20):
         """
         Displays a plot of particle circularity for analysed particles.
         """
-        
+        fig, ax = plt.subplots()
         circularities = []
         
         for p in self.list:
             circularities.append(p.properties['circularity']['value'])
             
-        plt.hist(circularities,bins=bins)
-        plt.xlabel("Circularity")
-        plt.ylabel("No. of particles")
+        ax.hist(circularities,bins=bins)
+        ax.xlabel("Circularity")
+        ax.ylabel("No. of particles")
         
     def plot(self,prop_list=['area'],bins=20):
         """
@@ -171,7 +171,9 @@ class Particle_list(object):
             self._plot_one_property(prop_list,bins)
         else:
             if len(prop_list) == 1:
-                self._plot_one_property(prop_list[0],bins)
+                fig = plt.figure()
+                ax = fig.add_subplot(111)
+                self._plot_one_property(prop_list[0],bins,ax)
             elif len(prop_list) == 2:
                 fig = plt.figure()
                 ax = fig.add_subplot(111)
@@ -185,18 +187,18 @@ class Particle_list(object):
         
         plt.show()
         
-    def _plot_one_property(self,prop,bins):
+    def _plot_one_property(self,prop,bins,ax):
         property_list = []
         
         for p in self.list:
             property_list.append(p.properties[prop]['value'])
             
-        plt.hist(property_list,bins=bins,alpha=0.5)
+        ax.hist(property_list,bins=bins,alpha=0.5)
         
         if self.list[0].properties[prop]['units'] == None:
-            plt.xlabel(prop.capitalize())
+            ax.xlabel(prop.capitalize())
         else:
-            plt.xlabel(prop.capitalize()+" ("+self.list[0].properties[prop]['units']+")")
+            ax.xlabel(prop.capitalize()+" ("+self.list[0].properties[prop]['units']+")")
         plt.ylabel("No. of particles")
         
     def _plot_two_properties(self,prop_list,ax):

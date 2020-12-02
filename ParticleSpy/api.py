@@ -44,7 +44,7 @@ def plot(particle_lists,prop_list=['area'],bins=20):
         
         """
         
-        if len(prop_list) == 2:
+        if len(prop_list) == 1 or len(prop_list) == 2:
             fig = plt.figure()
             ax = fig.add_subplot(111)
         elif len(prop_list) == 3:
