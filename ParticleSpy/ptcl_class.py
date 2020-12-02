@@ -85,6 +85,9 @@ class Particle(object):
     def set_zone(self, zone):
         self.zone = zone
         
+    def set_boundingbox(self, bbox):
+        self.bbox = bbox
+        
     def set_mask(self, mask):
         self.mask = mask
         
