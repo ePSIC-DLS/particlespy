@@ -195,7 +195,7 @@ class Particle_list(object):
         for p in self.list:
             property_list.append(p.properties[prop]['value'])
             
-        ax.hist(property_list,bins=bins,alpha=0.5,**kwargs)
+        ax.hist(property_list,**kwargs)
         
         if self.list[0].properties[prop]['units'] == None:
             ax.set_xlabel(prop.capitalize())
@@ -212,7 +212,7 @@ class Particle_list(object):
             property_list_one.append(p.properties[prop_list[0]]['value'])
             property_list_two.append(p.properties[prop_list[1]]['value'])
         
-        ax.scatter(property_list_one,property_list_two,alpha=0.5,**kwargs)
+        ax.scatter(property_list_one,property_list_two,**kwargs)
         
         if self.list[0].properties[prop_list[0]]['units'] == None:
             ax.set_xlabel(prop_list[0].capitalize())
