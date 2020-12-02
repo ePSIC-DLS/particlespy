@@ -58,7 +58,7 @@ def plot(particle_lists,prop_list=['area'],**kwargs):
                 p._plot_one_property(prop_list,ax,**kwargs)
             else:
                 if len(prop_list) == 1:
-                    p._plot_one_property(prop_list[0],**kwargs)
+                    p._plot_one_property(prop_list[0],ax,**kwargs)
                 elif len(prop_list) == 2:
                     p._plot_two_properties(prop_list,ax,**kwargs)
                 elif len(prop_list) == 3:
