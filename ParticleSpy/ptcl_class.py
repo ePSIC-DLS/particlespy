@@ -126,8 +126,8 @@ class Particle_list(object):
             areas.append(p.properties['area']['value'])
             
         ax.hist(areas,bins=bins)
-        ax.xlabel("Area ("+self.list[0].properties['area']['units']+")")
-        ax.ylabel("No. of particles")
+        ax.set_xlabel("Area ("+self.list[0].properties['area']['units']+")")
+        ax.set_ylabel("No. of particles")
         
     def plot_circularity(self,bins=20):
         """
@@ -140,8 +140,8 @@ class Particle_list(object):
             circularities.append(p.properties['circularity']['value'])
             
         ax.hist(circularities,bins=bins)
-        ax.xlabel("Circularity")
-        ax.ylabel("No. of particles")
+        ax.set_xlabel("Circularity")
+        ax.set_ylabel("No. of particles")
         
     def plot(self,prop_list=['area'],bins=20):
         """
@@ -196,9 +196,9 @@ class Particle_list(object):
         ax.hist(property_list,bins=bins,alpha=0.5)
         
         if self.list[0].properties[prop]['units'] == None:
-            ax.xlabel(prop.capitalize())
+            ax.set_xlabel(prop.capitalize())
         else:
-            ax.xlabel(prop.capitalize()+" ("+self.list[0].properties[prop]['units']+")")
+            ax.set_xlabel(prop.capitalize()+" ("+self.list[0].properties[prop]['units']+")")
         plt.ylabel("No. of particles")
         
     def _plot_two_properties(self,prop_list,ax):
