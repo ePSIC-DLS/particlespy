@@ -115,34 +115,6 @@ class Particle_list(object):
     def save(self,filename):
         save_plist(self,filename)
         
-    def plot_area(self,bins=20):
-        """
-        Displays a plot of particle areas for analysed particles.
-        """
-        fig, ax = plt.subplots()
-        areas = []
-        
-        for p in self.list:
-            areas.append(p.properties['area']['value'])
-            
-        ax.hist(areas,bins=bins)
-        ax.set_xlabel("Area ("+self.list[0].properties['area']['units']+")")
-        ax.set_ylabel("No. of particles")
-        
-    def plot_circularity(self,bins=20):
-        """
-        Displays a plot of particle circularity for analysed particles.
-        """
-        fig, ax = plt.subplots()
-        circularities = []
-        
-        for p in self.list:
-            circularities.append(p.properties['circularity']['value'])
-            
-        ax.hist(circularities,bins=bins)
-        ax.set_xlabel("Circularity")
-        ax.set_ylabel("No. of particles")
-        
     def plot(self,prop_list=['area'],bins=20,**kwargs):
         """
         Plots properties of all particles in the Particle_list.
