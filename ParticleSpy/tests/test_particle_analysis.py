@@ -110,6 +110,11 @@ def test_particleanalysis():
     nptest.assert_allclose(p.composition['Au'],46.94530019)
     nptest.assert_allclose(p.properties['x']['value'], 100.)
     nptest.assert_allclose(p.properties['y']['value'], 100.)
+    nptest.assert_allclose(p.properties['bbox_area']['value'], 25281.0)
+    nptest.assert_allclose(p.properties['bbox_length']['value'], 224.8599564173221)
+    assert p.properties['bbox_area']['units'] == 'nm^2'
+    assert p.properties['bbox_length']['units'] == 'nm'
+    assert p.bbox == (21, 21, 180, 180)
     
 def test_series():
     image = gen_test.generate_test_image(hspy=True)
