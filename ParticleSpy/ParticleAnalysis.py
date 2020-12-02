@@ -132,6 +132,12 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         #Set mask
         p.set_mask(maskp)
         
+        #Set bounding box
+        p.set_boundingbox(region.bbox)
+        p.set_property("bbox_area", region.bbox_area*image.axes_manager[0].scale*image.axes_manager[1].scale, area_units)
+        bbox_length = (((region.bbox[2] - region.bbox[0])*image.axes_manager[0].scale)**2 + ((region.bbox[3] - region.bbox[1])*image.axes_manager[1].scale)**2)**0.5
+        p.set_property("bbox_length", bbox_length, image.axes_manager[0].units)
+        
         p.set_property('frame',None,None)
         
         if parameters.store["store_im"]==True:
