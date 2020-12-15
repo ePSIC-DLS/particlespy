@@ -9,8 +9,8 @@ from sklearn.cluster import DBSCAN, KMeans
 
 
 def CreateFeatures(image, intensity = True, 
-                          edges = False, 
-                          texture = False, 
+                          edges = True, 
+                          texture = True, 
                           membrane = True, 
                           sigma = 1, high_sigma = 16, disk_size = 20):
     """
@@ -43,13 +43,13 @@ def CreateFeatures(image, intensity = True,
 
         new_layer = np.reshape(filters.difference_of_gaussians(image,low_sigma= sigma, high_sigma=high_sigma), shape)
         image_stack = np.append(image_stack, new_layer, axis=2)
-        
+
         new_layer = np.reshape(filters.median(one_im,selem), shape)
         image_stack = np.append(image_stack, new_layer, axis=2)
-        """
+        
         new_layer = np.reshape(filters.rank.minimum(one_im,selem), shape)
         image_stack = np.append(image_stack, new_layer, axis=2)
-        """
+        
         new_layer = np.reshape(filters.rank.maximum(one_im, selem), shape)
         image_stack = np.append(image_stack, new_layer, axis=2)
 
@@ -65,7 +65,7 @@ def CreateFeatures(image, intensity = True,
         mem_layers = membrane_projection(image)
         image_stack = np.append(image_stack, mem_layers, axis=2)
 
-    return image_stack
+    return image_stack[:,:,1:]
 
 def ClusterLearn(image, method='KMeans', 
                         intensity = True, 
@@ -146,11 +146,16 @@ def ClusterLearnSeries(image_set, method='KMeans',
     mask_set = []
     for image in image_set:
         mask_set.append(ClusterLearn(image,method=method, intensity=intensity, edges=edges, texture=texture, membrane=membrane, 
-                                     sigma=sigma, high_sigma=16, disk_size=disk_size))
+                                     sigma=sigma, high_sigma=high_sigma, disk_size=disk_size))
     
     return mask_set
 
-def ClusterTrained(image, labels, classifier):
+def ClusterTrained(image, labels, classifier,
+                        intensity = True, 
+                        edges = True, 
+                        texture = True, 
+                        membrane = False, 
+                        sigma = 1, high_sigma = 16, disk_size = 20):
     """
     Trains classifier and classifies an image.
     
@@ -164,18 +169,18 @@ def ClusterTrained(image, labels, classifier):
     -------
     classified mask (1 channel), trained classifier
     """
-
+    if len(labels.shape) != 2:
+            labels = toggle_channels(labels)
     #makes sure labels aren't empty
-    if labels.all() == False:
+    if (labels != 0).any() == True:
         print('start training')
 
-        if len(labels.shape) != 2:
-            labels = toggle_channels(labels)
         thin_mask = labels.astype(np.float64)
         shape = image.data.shape
         image = image.data
 
-        features = CreateFeatures(image)
+        features = CreateFeatures(image, intensity=intensity, edges=edges, texture=texture, membrane=membrane, 
+                                         sigma=sigma, high_sigma=high_sigma, disk_size=disk_size)
         features = np.rot90(np.rot90(features, axes=(2,0)), axes=(1,2))
         #features are num/x/y
 
@@ -187,18 +192,25 @@ def ClusterTrained(image, labels, classifier):
 
         classifier.fit(training_data, training_labels)
         print('finish training')
-        #train classifier on  labelled data
-        data = features[:, thin_mask == 0].T
-        #unlabelled data
-        pred_labels = classifier.predict(data)
-        #predict labels for rest of image
 
         output = np.copy(thin_mask)
-        output[thin_mask == 0] = pred_labels
+        if (labels == 0).any() == True:
+            #train classifier on  labelled data
+            data = features[:, thin_mask == 0].T
+            #unlabelled data
+            pred_labels = classifier.predict(data)
+            #predict labels for rest of image
+
+            output[thin_mask == 0] = pred_labels
 
         return output, classifier
 
-def ClassifierSegment(classifier, image):
+def ClassifierSegment(classifier, image, 
+                        intensity = True, 
+                        edges = True, 
+                        texture = True, 
+                        membrane = False, 
+                        sigma = 1, high_sigma = 16, disk_size = 20):
     """
     classifies image with pretrained classifier.
     
@@ -211,11 +223,11 @@ def ClassifierSegment(classifier, image):
     -------
     mask of labels (1channel)
     """
-    shape = image.shape
-
-    features = CreateFeatures(image)
+    features = CreateFeatures(image, intensity=intensity, edges=edges, texture=texture, membrane=membrane, 
+                                     sigma=sigma, high_sigma=high_sigma, disk_size=disk_size)
     features = np.rot90(np.rot90(features, axes=(2,0)), axes=(1,2))
     features = features[:, image == image].T
+    print(features.shape)
     mask = classifier.predict(features)
 
     output = np.copy(image)
@@ -223,19 +235,20 @@ def ClassifierSegment(classifier, image):
 
     return output
 
-def toggle_channels(image):
+
+def toggle_channels(image, colors = ['#80A30015', '#806DA34D', '#8051E5FF', '#80BD2D87', '#80F5E663']):
     shape = image.shape
 
     if len(shape) == 3:
         toggled = np.zeros((shape[0],shape[1]), dtype = np.uint8)
         for i in range(len(colors)):
-            rgb = [int(colors[i][1:3], 16), int(colors[i][3:5], 16), int(colors[i][5:], 16)]
+            rgb = [int(colors[i][3:5], 16), int(colors[i][5:7], 16), int(colors[i][7:], 16)]
             toggled[(image == rgb).all(axis=2)] = i+1
 
     elif len(shape) == 2:
         toggled = np.zeros((shape[0],shape[1],3), dtype = np.uint8)
         for i in range(len(colors)):
-            rgb = [int(colors[i][1:3], 16), int(colors[i][3:5], 16), int(colors[i][5:], 16)]
+            rgb = [int(colors[i][3:5], 16), int(colors[i][5:7], 16), int(colors[i][7:], 16)]
             toggled[image == (i+1),:] = rgb
 
     return toggled

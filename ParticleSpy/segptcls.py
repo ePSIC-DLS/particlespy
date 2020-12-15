@@ -14,6 +14,7 @@ from skimage.filters import threshold_local, rank
 from skimage.filters import threshold_niblack, threshold_sauvola
 
 from skimage.measure import label
+from skimage.exposure import rescale_intensity
 from skimage.morphology import remove_small_objects, square, white_tophat, disk, binary_erosion
 from skimage.segmentation import clear_border, watershed
 from skimage.feature import peak_local_max
@@ -130,5 +131,5 @@ def rolling_ball(img,kernelsize=0):
     if kernelsize == 0:
         new_img = img
     else:
-        new_img = white_tophat(img,selem=square(kernelsize))
+        new_img = white_tophat(rescale_intensity(img, out_range = (-1,1)),selem=square(kernelsize))
     return (new_img)
