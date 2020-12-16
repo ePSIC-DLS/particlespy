@@ -25,6 +25,8 @@ from ParticleSpy.ParticleAnalysis import parameters
 from ParticleSpy.segimgs import ClusterTrained, toggle_channels
 
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB
 
 class Application(QMainWindow):
 
@@ -245,6 +247,12 @@ class Application(QMainWindow):
 
         im_lay.addWidget(self.canvas2)
 
+        self.comboBox = QComboBox(self)
+        self.comboBox.addItem("Random Forest")
+        self.comboBox.addItem("Nearest Neighbours")
+        self.comboBox.addItem("Naive Bayes")
+        self.comboBox.activated[str].connect(self.classifier_choice)
+
         self.clear = QPushButton('Clear', self)
         self.clear.clicked.connect(self.canvas2.clear)
 
@@ -255,6 +263,7 @@ class Application(QMainWindow):
         self.train.pressed.connect(self.train_classifier)
 
         button_lay.addLayout(colour_lay)
+        button_lay.addWidget(self.comboBox)
         button_lay.addWidget(self.bupdate)
         button_lay.addWidget(self.train)
         button_lay.addWidget(self.clear)
@@ -405,6 +414,14 @@ class Application(QMainWindow):
             self.params.segment['threshold'] = "niblack"
         if str(self.comboBox.currentText()) == "Sauvola":
             self.params.segment['threshold'] = "sauvola"
+    
+    def classifier_choice(self):
+        if str(self.comboBox.currentText()) == "Random Forest":
+            self.classifier = RandomForestClassifier(n_estimators=200)
+        if str(self.comboBox.currentText()) == "Nearest Neighbours":
+            self.classifier = KNeighborsClassifier()
+        if str(self.comboBox.currentText()) == "Naive Bayes":
+            self.classifier = GaussianNB()
     
     def train_update(self):
         array = self.canvas2.array

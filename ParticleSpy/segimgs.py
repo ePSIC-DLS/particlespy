@@ -154,7 +154,7 @@ def ClusterTrained(image, labels, classifier,
                         intensity = True, 
                         edges = True, 
                         texture = True, 
-                        membrane = False, 
+                        membrane = True, 
                         sigma = 1, high_sigma = 16, disk_size = 20):
     """
     Trains classifier and classifies an image.
@@ -209,7 +209,7 @@ def ClassifierSegment(classifier, image,
                         intensity = True, 
                         edges = True, 
                         texture = True, 
-                        membrane = False, 
+                        membrane = True, 
                         sigma = 1, high_sigma = 16, disk_size = 20):
     """
     classifies image with pretrained classifier.
