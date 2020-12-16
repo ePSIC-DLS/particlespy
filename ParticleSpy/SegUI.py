@@ -219,6 +219,9 @@ class Application(QMainWindow):
         self.edge = True
         self.texture = True
         self.membrane = True
+        self.sigma = 1    
+        self.high_sigma = 16
+        self.disk_size = 20
 
         lay3 = QHBoxLayout()
         im_lay = QVBoxLayout()
@@ -276,6 +279,22 @@ class Application(QMainWindow):
         cb4.setChecked(True)
         cb4.stateChanged.connect(self.toggle_mem)
 
+        self.ql1 = QLabel(self)
+        self.ql1.setText('Sigma')
+        self.spinb1 = QSpinBox(self)
+        self.spinb1.valueChanged.connect(self.change_sigma)
+        self.spinb1.setValue(1)
+        self.ql2 = QLabel(self)
+        self.ql2.setText('High Sigma')
+        self.spinb2 = QSpinBox(self)
+        self.spinb2.valueChanged.connect(self.change_high_sigma)
+        self.spinb2.setValue(16)
+        self.ql3 = QLabel(self)
+        self.ql3.setText('Disk Size')
+        self.spinb3 = QSpinBox(self)
+        self.spinb3.valueChanged.connect(self.change_disk)
+        self.spinb3.setValue(20)
+
         self.clear = QPushButton('Clear', self)
         self.clear.clicked.connect(self.canvas2.clear)
 
@@ -291,7 +310,16 @@ class Application(QMainWindow):
         button_lay.addWidget(cb1)
         button_lay.addWidget(cb2)
         button_lay.addWidget(cb3)
-        button_lay.addWidget(cb4)        
+        button_lay.addWidget(cb4)
+
+        self.ql = QLabel(self)
+
+        button_lay.addWidget(self.ql1)
+        button_lay.addWidget(self.spinb1)
+        button_lay.addWidget(self.ql2)
+        button_lay.addWidget(self.spinb2)
+        button_lay.addWidget(self.ql3)
+        button_lay.addWidget(self.spinb3)
         button_lay.addWidget(self.bupdate)
         button_lay.addWidget(self.train)
         button_lay.addWidget(self.clear)
@@ -302,8 +330,6 @@ class Application(QMainWindow):
         button_lay.addWidget(self.getarrayc)
         self.tab3.setLayout(lay3)
 
-        
-        
         self.show()
     
     def updateLocalSize(self):
@@ -452,6 +478,13 @@ class Application(QMainWindow):
     def toggle_mem(self):
         self.membrane = not self.membrane
 
+    def change_sigma(self):
+        self.sigma = self.spinb1.value()    
+    def change_high_sigma(self):
+        self.high_sigma = self.spinb2.value()
+    def change_disk(self):
+        self.disk_size = self.spinb3.value()    
+
     def classifier_choice(self):
         if str(self.comboBox.currentText()) == "Random Forest":
             self.classifier = RandomForestClassifier(n_estimators=200)
@@ -474,7 +507,10 @@ class Application(QMainWindow):
                                                             intensity = self.intensity,
                                                             edges = self.edge, 
                                                             texture = self.texture, 
-                                                            membrane = self.membrane)
+                                                            membrane = self.membrane,
+                                                            sigma = self.sigma,
+                                                            high_sigma = self.high_sigma,
+                                                            disk_size = self.disk_size)
         self.canvas2.clear()
         if self.trained_mask.any() != 0:
             self.canvas2.drawLabels(self.trained_mask)
