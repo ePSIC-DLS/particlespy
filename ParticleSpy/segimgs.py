@@ -173,7 +173,6 @@ def ClusterTrained(image, labels, classifier,
             labels = toggle_channels(labels)
     #makes sure labels aren't empty
     if (labels != 0).any() == True:
-        print('start training')
 
         thin_mask = labels.astype(np.float64)
         shape = image.data.shape
@@ -191,7 +190,6 @@ def ClusterTrained(image, labels, classifier,
         #training labels is labelled pixels in 1D array
 
         classifier.fit(training_data, training_labels)
-        print('finish training')
 
         output = np.copy(thin_mask)
         if (labels == 0).any() == True:

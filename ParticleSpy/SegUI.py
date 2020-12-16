@@ -215,6 +215,10 @@ class Application(QMainWindow):
 
         self.mask = np.zeros([512,512,3])
         self.classifier = RandomForestClassifier(n_estimators=200)
+        self.intensity = True
+        self.edge = True
+        self.texture = True
+        self.membrane = True
 
         lay3 = QHBoxLayout()
         im_lay = QVBoxLayout()
@@ -253,6 +257,25 @@ class Application(QMainWindow):
         self.comboBox.addItem("Naive Bayes")
         self.comboBox.activated[str].connect(self.classifier_choice)
 
+        self.kerneltxt = QLabel(self)
+        self.kerneltxt.setText('Filter Kernels')
+
+        cb1 = QCheckBox('Intensity', self)
+        cb1.setChecked(True)
+        cb1.stateChanged.connect(self.toggle_int)
+
+        cb2 = QCheckBox('Edge', self)
+        cb2.setChecked(True)
+        cb2.stateChanged.connect(self.toggle_edge)
+
+        cb3 = QCheckBox('Texture', self)
+        cb3.setChecked(True)
+        cb3.stateChanged.connect(self.toggle_tex)
+
+        cb4 = QCheckBox('Membrane Projection', self)
+        cb4.setChecked(True)
+        cb4.stateChanged.connect(self.toggle_mem)
+
         self.clear = QPushButton('Clear', self)
         self.clear.clicked.connect(self.canvas2.clear)
 
@@ -264,6 +287,11 @@ class Application(QMainWindow):
 
         button_lay.addLayout(colour_lay)
         button_lay.addWidget(self.comboBox)
+        button_lay.addWidget(self.kerneltxt)
+        button_lay.addWidget(cb1)
+        button_lay.addWidget(cb2)
+        button_lay.addWidget(cb3)
+        button_lay.addWidget(cb4)        
         button_lay.addWidget(self.bupdate)
         button_lay.addWidget(self.train)
         button_lay.addWidget(self.clear)
@@ -414,7 +442,16 @@ class Application(QMainWindow):
             self.params.segment['threshold'] = "niblack"
         if str(self.comboBox.currentText()) == "Sauvola":
             self.params.segment['threshold'] = "sauvola"
-    
+
+    def toggle_int(self):
+        self.intensity = not self.intensity
+    def toggle_edge(self):
+        self.edge = not self.edge
+    def toggle_tex(self):
+        self.texture = not self.texture
+    def toggle_mem(self):
+        self.membrane = not self.membrane
+
     def classifier_choice(self):
         if str(self.comboBox.currentText()) == "Random Forest":
             self.classifier = RandomForestClassifier(n_estimators=200)
@@ -431,7 +468,13 @@ class Application(QMainWindow):
 
     def train_classifier(self):
         
-        self.trained_mask, self.classifier = ClusterTrained(self.im_hs, self.mask, self.classifier)
+        self.trained_mask, self.classifier = ClusterTrained(self.im_hs, 
+                                                            self.mask, 
+                                                            self.classifier, 
+                                                            intensity = self.intensity,
+                                                            edges = self.edge, 
+                                                            texture = self.texture, 
+                                                            membrane = self.membrane)
         self.canvas2.clear()
         if self.trained_mask.any() != 0:
             self.canvas2.drawLabels(self.trained_mask)
@@ -580,7 +623,6 @@ class Canvas(QLabel):
                 self.last_click = QPoint(e.x(),e.y())
                 self.lineCount += 1
     
-    #this does need changed
     def flood(self, e):
         image = self.pixmap().toImage()
         b = image.bits()
