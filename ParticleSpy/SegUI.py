@@ -551,10 +551,6 @@ class Canvas(QLabel):
         self.setPixmap(pixmap)
         self.OGpixmap = pixmap
         self.lastpixmap = pixmap
-        """
-        self.tool_pixmap = QLabel()
-        tool_layer = QPixmap(self.size())
-        self.tool_pixmap.setPixmap(tool_layer)"""
         
         self.setMouseTracking(True)
         self.first_click = None
@@ -730,30 +726,6 @@ class Canvas(QLabel):
                 self.lineDraw(self.last_click, e.pos())
                 # Update the origin for next time.
                 self.last_click = QPoint(e.x(),e.y())
-
-        """
-        if e.buttons() != Qt.LeftButton and (self.penType == 'Line' or self.penType == 'Polygon'):
-            if self.lineCount == 1:
-                painter = QPainter(self.tool_pixmap)
-                
-
-                #this just paints over the line behind with black ideally should isolate to new canvas
-
-                #draw new temp line
-                p = painter.pen()
-                p.setWidth(2)
-                p.pen_color = QColor(255, 255, 255, 255)
-                painter.setPen(p)
-
-                painter.drawLine(self.last_x_clicked, self.last_y_clicked, e.x(), e.y())
-                painter.end()
-                self.update()
-
-                self.last_x = e.x()
-                self.last_y = e.y()
-                """
-
-
 
     def mouseReleaseEvent(self, e):
         if self.penType == 'Freehand':
