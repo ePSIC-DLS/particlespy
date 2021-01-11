@@ -557,7 +557,7 @@ class Canvas(QLabel):
         self.scaleFactor = 1
         #self.setBackgroundRole(QPalette.Base)
         #self.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
-        self.setScaledContents(True)
+        #self.setScaledContents(True)
 
         self.setMouseTracking(True)
         self.first_click = None
@@ -590,7 +590,7 @@ class Canvas(QLabel):
         self.lineCount = 0
         self.array = np.zeros((512,512,3), dtype=np.uint8)
 
-        painter = QPainter(self.imagelabel.pixmap())
+        painter = QPainter(self.pixmap())
         painter.eraseRect(0,0,512,512)
         painter.drawPixmap(0,0,self.OGpixmap)
         painter.end()
@@ -707,7 +707,6 @@ class Canvas(QLabel):
         #self.array saves RGB values
         self.array += np.flip(paint_arr[:,:,:3], axis=2)
 
-
     def wheelEvent(self, event):
         if event.angleDelta().y() > 0:
             self.scaleImage(1.25)
@@ -718,17 +717,10 @@ class Canvas(QLabel):
         self.scaleFactor *= factor
         self.resize(self.scaleFactor * self.pixmap().size())
 
-    def toggleDragMode(self):
-        if self.dragMode() == QGraphicsView.ScrollHandDrag:
-            self.setDragMode(QGraphicsView.NoDrag)
-        elif not self._photo.pixmap().isNull():
-            self.setDragMode(QGraphicsView.ScrollHandDrag)
-
     def mousePressEvent(self, e):
 
         if e.button() == Qt.RightButton:
             self.flood(e)
-            
         
         if e.button() ==Qt.LeftButton:
 
