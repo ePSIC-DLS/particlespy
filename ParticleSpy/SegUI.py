@@ -7,8 +7,8 @@ Created on Mon Oct 22 15:50:08 2018
 
 from PyQt5.QtWidgets import QCheckBox, QPushButton, QLabel, QMainWindow, QSpinBox
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QComboBox, QTabWidget
-from PyQt5.QtWidgets import QVBoxLayout, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
-from PyQt5.QtGui import QPixmap, QImage, QColor, QPainter
+from PyQt5.QtWidgets import QVBoxLayout, QSizePolicy
+from PyQt5.QtGui import QPixmap, QImage, QColor, QPainter, QPalette
 from PyQt5.QtCore import Qt, QPoint, QSize, QRectF
 import sys
 import os
@@ -213,8 +213,7 @@ class Application(QMainWindow):
 
         #Tab 3
 
-        qi = QImage(self.image.data, self.image.shape[1], self.image.shape[0], self.image.shape[1], QImage.Format_Grayscale8)
-        self.pixmap3 = QPixmap(qi)
+        
 
         self.mask = np.zeros([512,512,3])
         self.classifier = RandomForestClassifier(n_estimators=200)
@@ -235,7 +234,7 @@ class Application(QMainWindow):
         lay3.addLayout(button_lay)
         lay3.addLayout(im_lay)
 
-        self.canvas2 = Canvas(self.pixmap3)
+        self.canvas2 = Canvas(self.pixmap2)
         self.canvas2.setAlignment(Qt.AlignTop)
         
         for tool in self.canvas2.brush_tools:
@@ -547,23 +546,18 @@ class QPaletteButton(QPushButton):
 
 
 
-class Canvas(QGraphicsView):
+class Canvas(QLabel):
 
     def __init__(self,pixmap):
         super().__init__()
         self.OGpixmap = pixmap
         self.lastpixmap = pixmap
 
-        self._zoom = 0
-        self._scene = QGraphicsScene(self)
-        self.pixmap = QGraphicsPixmapItem()
-        self.pixmap.setPixmap(pixmap)
-        self._scene.addItem(self.pixmap)
-        self.setScene(self._scene)
-        self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
-        self.setResizeAnchor(QGraphicsView.AnchorUnderMouse)
-        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setPixmap(pixmap)
+        self.scaleFactor = 1
+        #self.setBackgroundRole(QPalette.Base)
+        #self.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+        self.setScaledContents(True)
 
         self.setMouseTracking(True)
         self.first_click = None
@@ -596,7 +590,7 @@ class Canvas(QGraphicsView):
         self.lineCount = 0
         self.array = np.zeros((512,512,3), dtype=np.uint8)
 
-        painter = QPainter(self.pixmap.pixmap())
+        painter = QPainter(self.imagelabel.pixmap())
         painter.eraseRect(0,0,512,512)
         painter.drawPixmap(0,0,self.OGpixmap)
         painter.end()
@@ -615,14 +609,14 @@ class Canvas(QGraphicsView):
         
         pixmap = QPixmap(qi)
         pixmap = pixmap.scaled(512, 512, Qt.KeepAspectRatio)
-        painter = QPainter(self.pixmap.pixmap())
+        painter = QPainter(self.pixmap())
         painter.setOpacity(0.5)
         painter.drawPixmap(0,0,pixmap)
         painter.end()
         self.update()
 
     def lineDraw(self,pos1,pos2):
-        painter = QPainter(self.pixmap.pixmap())
+        painter = QPainter(self.pixmap())
         p = painter.pen()
         p.setWidth(3)
         p.setColor(self.pen_color)
@@ -669,7 +663,7 @@ class Canvas(QGraphicsView):
                 self.lineCount += 1
     
     def flood(self, e):
-        image = self.pixmap.pixmap().toImage()
+        image = self.pixmap().toImage()
         b = image.bits()
         b.setsize(512 * 512 * 4)
         arr = np.frombuffer(b, np.uint8).reshape((512, 512, 4))
@@ -704,7 +698,7 @@ class Canvas(QGraphicsView):
         qi = QImage(paint_arr.data, paint_arr.shape[1], paint_arr.shape[0], 4*paint_arr.shape[1], QImage.Format_ARGB32_Premultiplied)
         pixmap = QPixmap(qi)
         
-        painter = QPainter(self.pixmap.pixmap())
+        painter = QPainter(self.pixmap())
         painter.setOpacity(0.5)
         painter.drawPixmap(0,0,pixmap)
         painter.end()
@@ -713,32 +707,16 @@ class Canvas(QGraphicsView):
         #self.array saves RGB values
         self.array += np.flip(paint_arr[:,:,:3], axis=2)
 
-    def fitInView(self, scale=True):
-        rect = QRectF(self.pixmap.pixmap().rect())
-        if not rect.isNull():
-            self.setSceneRect(rect)
-            unity = self.transform().mapRect(QRectF(0, 0, 1, 1))
-            self.scale(1 / unity.width(), 1 / unity.height())
-            viewrect = self.viewport().rect()
-            scenerect = self.transform().mapRect(rect)
-            factor = min(viewrect.width() / scenerect.width(),
-                            viewrect.height() / scenerect.height())
-            self.scale(factor, factor)
-            self._zoom = 0
 
     def wheelEvent(self, event):
         if event.angleDelta().y() > 0:
-            factor = 1.25
-            self._zoom += 1
-        else:
-            factor = 0.8
-            self._zoom -= 1
-        if self._zoom > 0:
-            self.scale(factor, factor)
-        elif self._zoom == 0:
-            self.fitInView()
-        else:
-            self._zoom = 0
+            self.scaleImage(1.25)
+        elif self.scaleFactor > 1:
+            self.scaleImage(0.8)
+
+    def scaleImage(self, factor):
+        self.scaleFactor *= factor
+        self.resize(self.scaleFactor * self.pixmap().size())
 
     def toggleDragMode(self):
         if self.dragMode() == QGraphicsView.ScrollHandDrag:
