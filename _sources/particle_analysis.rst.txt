@@ -18,23 +18,25 @@ Particle Analysis will run the segmentation on your data and calculate a number 
 
 The calculated parameters include:
 
-* Area
+* Area ("area")
 
-* Equivalent circular diameter
+* Equivalent circular diameter ("")
 
-* Major and minor axes lengths
+* Major and minor axes lengths ("major axis length" and "minor axis length")
 
-* Circularity
+* Circularity ("circularity")
 
-* Eccentricity
+* Eccentricity ("eccentricity")
 
-* Solidity
+* Solidity ("solidity")
 
-* Total particle intensity
+* Total particle intensity ("intensity")
 
-* Maximum particle intensity
+* Maximum particle intensity ("intensity_max")
 
-* X and Y coordinates
+* X and Y coordinates ("x" and "y")
+
+* Bounding box area and diagonal length ("bbox_area" and "bbox_length")
 
 
 .. code-block:: python

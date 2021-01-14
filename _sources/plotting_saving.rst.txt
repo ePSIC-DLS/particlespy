@@ -37,6 +37,8 @@ Plotting of more than one Particle_list can be done using the top level :py:meth
 
     >>> ps.plot([particles1,particles2],['area','circularity'])
 
+All keyword arguments in matplotlib are available by passing them as arguments to the corresponding plotting function.
+
 
 Plotting Radial Profiles
 -----------------------

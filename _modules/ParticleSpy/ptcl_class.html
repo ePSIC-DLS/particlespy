@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>ParticleSpy.ptcl_class &mdash; ParticleSpy 0.5.0 documentation</title>
+  <title>ParticleSpy.ptcl_class &mdash; ParticleSpy 0.5.1 documentation</title>
   
 
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,7 +32,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -49,7 +51,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> ParticleSpy
+            <a href="../../index.html" class="icon icon-home"> ParticleSpy
           
 
           
@@ -59,7 +61,7 @@
             
             
               <div class="version">
-                0.5.0
+                0.5.1
               </div>
             
           
@@ -116,6 +118,8 @@
         <div class="rst-content">
         
           
+
+
 
 
 
@@ -242,6 +246,9 @@
 <div class="viewcode-block" id="Particle.set_zone"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle.set_zone">[docs]</a>    <span class="k">def</span> <span class="nf">set_zone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">zone</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">zone</span> <span class="o">=</span> <span class="n">zone</span></div>
         
+<div class="viewcode-block" id="Particle.set_boundingbox"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle.set_boundingbox">[docs]</a>    <span class="k">def</span> <span class="nf">set_boundingbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bbox</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bbox</span> <span class="o">=</span> <span class="n">bbox</span></div>
+        
 <div class="viewcode-block" id="Particle.set_mask"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle.set_mask">[docs]</a>    <span class="k">def</span> <span class="nf">set_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span></div>
         
@@ -271,36 +278,8 @@
         
 <div class="viewcode-block" id="Particle_list.save"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle_list.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="p">):</span>
         <span class="n">save_plist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="p">)</span></div>
-        
-<div class="viewcode-block" id="Particle_list.plot_area"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle_list.plot_area">[docs]</a>    <span class="k">def</span> <span class="nf">plot_area</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Displays a plot of particle areas for analysed particles.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        
-        <span class="n">areas</span> <span class="o">=</span> <span class="p">[]</span>
-        
-        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">:</span>
-            <span class="n">areas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;area&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
-            
-        <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">areas</span><span class="p">,</span><span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Area (&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;area&#39;</span><span class="p">][</span><span class="s1">&#39;units&#39;</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;No. of particles&quot;</span><span class="p">)</span></div>
-        
-<div class="viewcode-block" id="Particle_list.plot_circularity"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle_list.plot_circularity">[docs]</a>    <span class="k">def</span> <span class="nf">plot_circularity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Displays a plot of particle circularity for analysed particles.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        
-        <span class="n">circularities</span> <span class="o">=</span> <span class="p">[]</span>
-        
-        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">:</span>
-            <span class="n">circularities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;circularity&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
-            
-        <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">circularities</span><span class="p">,</span><span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Circularity&quot;</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;No. of particles&quot;</span><span class="p">)</span></div>
-        
-<div class="viewcode-block" id="Particle_list.plot"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle_list.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">prop_list</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;area&#39;</span><span class="p">],</span><span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Particle_list.plot"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle_list.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">prop_list</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;area&#39;</span><span class="p">],</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots properties of all particles in the Particle_list.</span>
 <span class="sd">        </span>
@@ -312,8 +291,8 @@
 <span class="sd">        ----------</span>
 <span class="sd">        prop_list : str or list</span>
 <span class="sd">            A particle property or a list of the names of the properties to plot.</span>
-<span class="sd">        bins : int</span>
-<span class="sd">            The number of bins in the histogram if plotting one property.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Keyword arguments for matplotlib plotting functions.</span>
 <span class="sd">            </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -325,38 +304,42 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prop_list</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_plot_one_property</span><span class="p">(</span><span class="n">prop_list</span><span class="p">,</span><span class="n">bins</span><span class="p">)</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_plot_one_property</span><span class="p">(</span><span class="n">prop_list</span><span class="p">,</span><span class="n">ax</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">prop_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_plot_one_property</span><span class="p">(</span><span class="n">prop_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">bins</span><span class="p">)</span>
+                <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+                <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_plot_one_property</span><span class="p">(</span><span class="n">prop_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">ax</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">prop_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
                 <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_plot_two_properties</span><span class="p">(</span><span class="n">prop_list</span><span class="p">,</span><span class="n">ax</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_plot_two_properties</span><span class="p">(</span><span class="n">prop_list</span><span class="p">,</span><span class="n">ax</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">prop_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
                 <span class="n">fig3d</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
                 <span class="n">ax</span> <span class="o">=</span> <span class="n">fig3d</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_plot_three_properties</span><span class="p">(</span><span class="n">prop_list</span><span class="p">,</span><span class="n">ax</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_plot_three_properties</span><span class="p">(</span><span class="n">prop_list</span><span class="p">,</span><span class="n">ax</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Can only plot a maximum of three properties, please change the length of the property list.&quot;</span><span class="p">)</span>
         
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
         
-    <span class="k">def</span> <span class="nf">_plot_one_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">prop</span><span class="p">,</span><span class="n">bins</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_plot_one_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">prop</span><span class="p">,</span><span class="n">ax</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">property_list</span> <span class="o">=</span> <span class="p">[]</span>
         
         <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">:</span>
             <span class="n">property_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
             
-        <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">property_list</span><span class="p">,</span><span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">property_list</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop</span><span class="p">][</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="o">+</span><span class="s2">&quot; (&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop</span><span class="p">][</span><span class="s1">&#39;units&#39;</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="o">+</span><span class="s2">&quot; (&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop</span><span class="p">][</span><span class="s1">&#39;units&#39;</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;No. of particles&quot;</span><span class="p">)</span>
         
-    <span class="k">def</span> <span class="nf">_plot_two_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">prop_list</span><span class="p">,</span><span class="n">ax</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_plot_two_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">prop_list</span><span class="p">,</span><span class="n">ax</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         
         <span class="n">property_list_one</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">property_list_two</span> <span class="o">=</span> <span class="p">[]</span>
@@ -365,7 +348,7 @@
             <span class="n">property_list_one</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
             <span class="n">property_list_two</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
         
-        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">property_list_one</span><span class="p">,</span><span class="n">property_list_two</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">property_list_one</span><span class="p">,</span><span class="n">property_list_two</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">prop_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span>
@@ -377,7 +360,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">prop_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="o">+</span><span class="s2">&quot; (&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="s1">&#39;units&#39;</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_plot_three_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop_list</span><span class="p">,</span><span class="n">ax</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_plot_three_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop_list</span><span class="p">,</span><span class="n">ax</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
         <span class="n">property_list_one</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">property_list_two</span> <span class="o">=</span> <span class="p">[]</span>
@@ -388,7 +371,7 @@
             <span class="n">property_list_two</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
             <span class="n">property_list_three</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop_list</span><span class="p">[</span><span class="mi">2</span><span class="p">]][</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
 
-        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">property_list_one</span><span class="p">,</span> <span class="n">property_list_two</span><span class="p">,</span> <span class="n">property_list_three</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">property_list_one</span><span class="p">,</span> <span class="n">property_list_two</span><span class="p">,</span> <span class="n">property_list_three</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">prop_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span>
@@ -517,28 +500,25 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, ePSIC
+        &#169; Copyright 2020, ePSIC.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

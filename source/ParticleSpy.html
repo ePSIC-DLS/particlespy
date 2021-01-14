@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>ParticleSpy package &mdash; ParticleSpy 0.5.0 documentation</title>
+  <title>ParticleSpy package &mdash; ParticleSpy 0.5.1 documentation</title>
   
 
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,7 +32,6 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -49,7 +51,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> ParticleSpy
+            <a href="../index.html" class="icon icon-home"> ParticleSpy
           
 
           
@@ -59,7 +61,7 @@
             
             
               <div class="version">
-                0.5.0
+                0.5.1
               </div>
             
           
@@ -131,6 +133,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -142,7 +146,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="../_sources/source/ParticleSpy.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -181,8 +185,8 @@ using param_generator().</p>
 <dt>particles: list</dt><dd><p>List of already analysed particles that the output can be appended
 to.</p>
 </dd>
-<dt>mask: Numpy array</dt><dd><p>Numpy array of same 2D size as acquisition that contains a mask of presegmented
-particles.</p>
+<dt>mask: Numpy array</dt><dd><p>Numpy array of same 2D size as acquisition that contains a mask of 
+presegmented particles.</p>
 </dd>
 </dl>
 <p>Particle_list object</p>
@@ -193,7 +197,7 @@ particles.</p>
 <code class="sig-prename descclassname">ParticleSpy.ParticleAnalysis.</code><code class="sig-name descname">ParticleAnalysisSeries</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image_series</span></em>, <em class="sig-param"><span class="n">parameters</span></em>, <em class="sig-param"><span class="n">particles</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ParticleAnalysis.html#ParticleAnalysisSeries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ParticleAnalysis.ParticleAnalysisSeries" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform segmentation and analysis of times series of particles.</p>
 <dl class="simple">
-<dt>image_series: Hyperpsy signal object or list of hyperspy signal objects.</dt><dd><dl class="simple">
+<dt>image_series: Hyperspy signal object or list of hyperspy signal objects.</dt><dd><dl class="simple">
 <dt>Hyperpsy signal object containing nanoparticle images or a list of signal</dt><dd><p>objects that contains a time series.</p>
 </dd>
 </dl>
@@ -333,6 +337,11 @@ max_dist : int</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt id="ParticleSpy.SegUI.Application.save_and_close">
+<code class="sig-name descname">save_and_close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Application.save_and_close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Application.save_and_close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt id="ParticleSpy.SegUI.Application.save_array">
 <code class="sig-name descname">save_array</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Application.save_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Application.save_array" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -340,6 +349,16 @@ max_dist : int</p>
 <dl class="py method">
 <dt id="ParticleSpy.SegUI.Application.threshold_choice">
 <code class="sig-name descname">threshold_choice</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Application.threshold_choice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Application.threshold_choice" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ParticleSpy.SegUI.Application.train_classifier">
+<code class="sig-name descname">train_classifier</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Application.train_classifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Application.train_classifier" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ParticleSpy.SegUI.Application.train_update">
+<code class="sig-name descname">train_update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Application.train_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Application.train_update" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -377,6 +396,49 @@ update(self, int, int, int, int)</p>
 <em class="property">class </em><code class="sig-prename descclassname">ParticleSpy.SegUI.</code><code class="sig-name descname">Canvas</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pixmap</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Canvas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Canvas" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QLabel</span></code></p>
 <dl class="py method">
+<dt id="ParticleSpy.SegUI.Canvas.LineTool">
+<code class="sig-name descname">LineTool</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">e</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Canvas.LineTool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Canvas.LineTool" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ParticleSpy.SegUI.Canvas.PolyTool">
+<code class="sig-name descname">PolyTool</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">e</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Canvas.PolyTool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Canvas.PolyTool" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ParticleSpy.SegUI.Canvas.changePen">
+<code class="sig-name descname">changePen</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">brush</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Canvas.changePen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Canvas.changePen" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ParticleSpy.SegUI.Canvas.clear">
+<code class="sig-name descname">clear</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Canvas.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Canvas.clear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ParticleSpy.SegUI.Canvas.drawLabels">
+<code class="sig-name descname">drawLabels</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">thin_labels</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Canvas.drawLabels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Canvas.drawLabels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ParticleSpy.SegUI.Canvas.flood">
+<code class="sig-name descname">flood</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">e</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Canvas.flood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Canvas.flood" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ParticleSpy.SegUI.Canvas.lastpixmap">
+<code class="sig-name descname">lastpixmap</code><a class="headerlink" href="#ParticleSpy.SegUI.Canvas.lastpixmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>self.tool_pixmap = QLabel()
+tool_layer = QPixmap(self.size())
+self.tool_pixmap.setPixmap(tool_layer)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ParticleSpy.SegUI.Canvas.lineDraw">
+<code class="sig-name descname">lineDraw</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pos1</span></em>, <em class="sig-param"><span class="n">pos2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Canvas.lineDraw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Canvas.lineDraw" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt id="ParticleSpy.SegUI.Canvas.mouseMoveEvent">
 <code class="sig-name descname">mouseMoveEvent</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">QMouseEvent</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#Canvas.mouseMoveEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.Canvas.mouseMoveEvent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -403,10 +465,22 @@ update(self, int, int, int, int)</p>
 
 </dd></dl>
 
+<dl class="py class">
+<dt id="ParticleSpy.SegUI.QPaletteButton">
+<em class="property">class </em><code class="sig-prename descclassname">ParticleSpy.SegUI.</code><code class="sig-name descname">QPaletteButton</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">color</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#QPaletteButton"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.QPaletteButton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QPushButton</span></code></p>
+</dd></dl>
+
 <dl class="py function">
 <dt id="ParticleSpy.SegUI.SegUI">
 <code class="sig-prename descclassname">ParticleSpy.SegUI.</code><code class="sig-name descname">SegUI</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#SegUI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.SegUI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to launch the Segmentation User Interface.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="ParticleSpy.SegUI.ToolButton">
+<em class="property">class </em><code class="sig-prename descclassname">ParticleSpy.SegUI.</code><code class="sig-name descname">ToolButton</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tool</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/SegUI.html#ToolButton"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.SegUI.ToolButton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QPushButton</span></code></p>
 </dd></dl>
 
 <dl class="py function">
@@ -426,7 +500,7 @@ update(self, int, int, int, int)</p>
 
 <dl class="py function">
 <dt id="ParticleSpy.api.plot">
-<code class="sig-prename descclassname">ParticleSpy.api.</code><code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">particle_lists</span></em>, <em class="sig-param"><span class="n">prop_list</span><span class="o">=</span><span class="default_value">['area']</span></em>, <em class="sig-param"><span class="n">bins</span><span class="o">=</span><span class="default_value">20</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/api.html#plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.api.plot" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ParticleSpy.api.</code><code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">particle_lists</span></em>, <em class="sig-param"><span class="n">prop_list</span><span class="o">=</span><span class="default_value">['area']</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/api.html#plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.api.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots properties of all particles in the Particle_lists.</p>
 <p>If one property given, displays a histogram of the chosen particle property.</p>
 <p>If two properties given, displays a scatter plot of the two properties.</p>
@@ -460,7 +534,7 @@ update(self, int, int, int, int)</p>
 
 <dl class="py function">
 <dt id="ParticleSpy.find_zoneaxis.set_circle">
-<code class="sig-prename descclassname">ParticleSpy.find_zoneaxis.</code><code class="sig-name descname">set_circle</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">im_dim</span><span class="o">=</span><span class="default_value">2048, 2048</span></em>, <em class="sig-param"><span class="n">radius</span><span class="o">=</span><span class="default_value">150</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/find_zoneaxis.html#set_circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.find_zoneaxis.set_circle" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ParticleSpy.find_zoneaxis.</code><code class="sig-name descname">set_circle</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">im_dim</span><span class="o">=</span><span class="default_value">(2048, 2048)</span></em>, <em class="sig-param"><span class="n">radius</span><span class="o">=</span><span class="default_value">150</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/find_zoneaxis.html#set_circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.find_zoneaxis.set_circle" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -527,6 +601,11 @@ update(self, int, int, int, int)</p>
 <dl class="py method">
 <dt id="ParticleSpy.ptcl_class.Particle.set_axes_lengths">
 <code class="sig-name descname">set_axes_lengths</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axeslengths</span></em>, <em class="sig-param"><span class="n">units</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle.set_axes_lengths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle.set_axes_lengths" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ParticleSpy.ptcl_class.Particle.set_boundingbox">
+<code class="sig-name descname">set_boundingbox</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bbox</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle.set_boundingbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle.set_boundingbox" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -649,30 +728,18 @@ equal.</p>
 
 <dl class="py method">
 <dt id="ParticleSpy.ptcl_class.Particle_list.plot">
-<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prop_list</span><span class="o">=</span><span class="default_value">['area']</span></em>, <em class="sig-param"><span class="n">bins</span><span class="o">=</span><span class="default_value">20</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle_list.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle_list.plot" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prop_list</span><span class="o">=</span><span class="default_value">['area']</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle_list.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle_list.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots properties of all particles in the Particle_list.</p>
 <p>If one property given, displays a histogram of the chosen particle property.</p>
 <p>If two properties given, displays a scatter plot of the two properties.</p>
 <dl class="simple">
 <dt>prop_list<span class="classifier">str or list</span></dt><dd><p>A particle property or a list of the names of the properties to plot.</p>
 </dd>
-<dt>bins<span class="classifier">int</span></dt><dd><p>The number of bins in the histogram if plotting one property.</p>
+<dt><a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs</dt><dd><p>Keyword arguments for matplotlib plotting functions.</p>
 </dd>
 </dl>
 <p>particles.plot(‘area’, bins=20)</p>
 <p>particles.plot([‘equivalent circular diameter’,’circularity’])</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="ParticleSpy.ptcl_class.Particle_list.plot_area">
-<code class="sig-name descname">plot_area</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bins</span><span class="o">=</span><span class="default_value">20</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle_list.plot_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle_list.plot_area" title="Permalink to this definition">¶</a></dt>
-<dd><p>Displays a plot of particle areas for analysed particles.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="ParticleSpy.ptcl_class.Particle_list.plot_circularity">
-<code class="sig-name descname">plot_circularity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bins</span><span class="o">=</span><span class="default_value">20</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ParticleSpy/ptcl_class.html#Particle_list.plot_circularity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ParticleSpy.ptcl_class.Particle_list.plot_circularity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Displays a plot of particle circularity for analysed particles.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -779,28 +846,25 @@ particle.</p>
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, ePSIC
+        &#169; Copyright 2020, ePSIC.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

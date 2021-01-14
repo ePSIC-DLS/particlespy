@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Segmentation &mdash; ParticleSpy 0.5.0 documentation</title>
+  <title>Segmentation &mdash; ParticleSpy 0.5.1 documentation</title>
   
 
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,7 +32,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -51,7 +53,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ParticleSpy
+            <a href="index.html" class="icon icon-home"> ParticleSpy
           
 
           
@@ -61,7 +63,7 @@
             
             
               <div class="version">
-                0.5.0
+                0.5.1
               </div>
             
           
@@ -96,6 +98,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#manual-segmentation">Manual Segmentation</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#filter-based-clustering-and-segmentation">Filter-Based Clustering and Segmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#trainable-segmentation">Trainable Segmentation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="particle_analysis.html">Particle Analysis</a></li>
@@ -141,6 +145,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -152,7 +158,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/segmentation.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -265,6 +271,52 @@ Doing so will ruin the segmentation and you will have to reload SegUI.</p>
 </div>
 </div>
 </div>
+<div class="section" id="filter-based-clustering-and-segmentation">
+<h2>Filter-Based Clustering and Segmentation<a class="headerlink" href="#filter-based-clustering-and-segmentation" title="Permalink to this headline">¶</a></h2>
+<p>ParticleSpy can also segment images by clustering over different filter kernels.
+This is done by calling:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ClusterLearn</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">methods</span> <span class="o">=</span> <span class="n">name</span> <span class="n">of</span> <span class="n">clustering</span> <span class="n">algorithm</span><span class="p">,</span> <span class="n">desired</span> <span class="n">feature</span> <span class="n">sets</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This returns a segmentation mask of the image.
+This can be carried out for a sequence of images using <code class="docutils literal notranslate"><span class="pre">ClusterLearnSeries</span></code>.</p>
+<p>In future versions, this will most likely be updated to be selected via a GUI or with a list of presets.</p>
+</div>
+<div class="section" id="trainable-segmentation">
+<h2>Trainable Segmentation<a class="headerlink" href="#trainable-segmentation" title="Permalink to this headline">¶</a></h2>
+<p>Using the Segmentation User Interface, trainable segmentation can be performed using the ‘Training’ tab in the the top bar.</p>
+<img alt="_images/TrainUI.png" class="align-center" src="_images/TrainUI.png" />
+<p>Labels can be drawn onto the image using the tools on the left hand side:</p>
+<ul class="simple">
+<li><p>The freehand tool operates by pressing and holding the left mouse button to draw lines.</p></li>
+<li><p>The line tool operates by left clicking twice, which produces a line between them, which is automatically added to the set of labels.</p></li>
+<li><p>The polygon tool can be used to enclose a region by clicking to form the polygon and clicking on the start of the shape to finish one polygon.</p></li>
+</ul>
+<p>As with manual segmentation, any enclosed region can be labelled by right clicking within it.
+This can be done in multiple colours, by selecting the desired colour before labelling a region.</p>
+<p>Once areas have been labelled, training can be begun using the ‘Update’, followed by the ‘Train Classifier’ Button.
+When this finishes the labels will be shown on top of the image in the user interface, this can take up to several minutes.
+The classifier can then be retrained by pressing the ‘Clear’ button and drawing on any additional features.</p>
+<p>Using the classifier generated, multiple images can be segmented. An example is shown in the following code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">folder</span> <span class="o">=</span> <span class="s1">&#39;path fo folder of images to segment&#39;</span>
+<span class="n">first</span> <span class="o">=</span> <span class="n">hs</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/first image in folder&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">folder</span><span class="p">))</span>
+
+<span class="n">out</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">SegUI</span><span class="p">(</span><span class="n">first</span><span class="p">)</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">classifier</span>
+
+<span class="n">params</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">parameters</span><span class="p">()</span>
+<span class="n">params</span><span class="o">.</span><span class="n">generate</span><span class="p">()</span>
+<span class="n">particles</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
+    <span class="n">imagefile</span> <span class="o">=</span> <span class="n">hs</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span><span class="n">image</span><span class="p">))</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="n">imagefile</span><span class="o">.</span><span class="n">data</span>
+    <span class="n">mask_im</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">ClassifierSegment</span><span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span>
+
+    <span class="n">particles</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">ParticleAnalysis</span><span class="p">(</span><span class="n">imagefile</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span><span class="n">particles</span><span class="o">=</span><span class="n">particles</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask_im</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 </div>
 
 
@@ -272,37 +324,29 @@ Doing so will ruin the segmentation and you will have to reload SegUI.</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="particle_analysis.html" class="btn btn-neutral float-right" title="Particle Analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="getting_started.html" class="btn btn-neutral float-left" title="Getting started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="particle_analysis.html" class="btn btn-neutral float-right" title="Particle Analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="getting_started.html" class="btn btn-neutral float-left" title="Getting started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, ePSIC
+        &#169; Copyright 2020, ePSIC.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

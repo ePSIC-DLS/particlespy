@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>ParticleSpy.ParticleAnalysis &mdash; ParticleSpy 0.5.0 documentation</title>
+  <title>ParticleSpy.ParticleAnalysis &mdash; ParticleSpy 0.5.1 documentation</title>
   
 
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,7 +32,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -49,7 +51,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> ParticleSpy
+            <a href="../../index.html" class="icon icon-home"> ParticleSpy
           
 
           
@@ -59,7 +61,7 @@
             
             
               <div class="version">
-                0.5.0
+                0.5.1
               </div>
             
           
@@ -131,6 +133,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -165,13 +169,15 @@
 <span class="kn">from</span> <span class="nn">ParticleSpy.segptcls</span> <span class="kn">import</span> <span class="n">process</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">ParticleSpy.ptcl_class</span> <span class="kn">import</span> <span class="n">Particle</span><span class="p">,</span> <span class="n">Particle_list</span>
+<span class="kn">from</span> <span class="nn">ParticleSpy.custom_kernels</span> <span class="kn">import</span> <span class="n">membrane_projection</span>
 <span class="kn">from</span> <span class="nn">skimage</span> <span class="kn">import</span> <span class="n">filters</span><span class="p">,</span> <span class="n">morphology</span>
 <span class="kn">from</span> <span class="nn">skimage.measure</span> <span class="kn">import</span> <span class="n">label</span><span class="p">,</span> <span class="n">regionprops</span><span class="p">,</span> <span class="n">perimeter</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">preprocessing</span>
+<span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">DBSCAN</span><span class="p">,</span> <span class="n">KMeans</span>
 <span class="kn">import</span> <span class="nn">ParticleSpy.find_zoneaxis</span> <span class="k">as</span> <span class="nn">zone</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">h5py</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">trackpy</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -192,8 +198,8 @@
 <span class="sd">        List of already analysed particles that the output can be appended</span>
 <span class="sd">        to.</span>
 <span class="sd">    mask: Numpy array</span>
-<span class="sd">        Numpy array of same 2D size as acquisition that contains a mask of presegmented</span>
-<span class="sd">        particles.</span>
+<span class="sd">        Numpy array of same 2D size as acquisition that contains a mask of </span>
+<span class="sd">        presegmented particles.</span>
 <span class="sd">        </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -210,7 +216,8 @@
         <span class="n">image</span> <span class="o">=</span> <span class="n">acquisition</span>
     
     <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;UI&#39;</span><span class="p">:</span>
-        <span class="n">labeled</span> <span class="o">=</span> <span class="n">label</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">process</span><span class="p">))</span><span class="o">+</span><span class="s1">&#39;/Parameters/manual_mask.npy&#39;</span><span class="p">))</span>
+        <span class="n">labeled</span> <span class="o">=</span> <span class="n">label</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">process</span><span class="p">))</span><span class="o">+</span><span class="s1">&#39;/Parameters/manual_mask.npy&#39;</span><span class="p">)[:,:,</span><span class="mi">0</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labeled</span><span class="p">))</span>
         <span class="c1">#plt.imshow(labeled)</span>
         <span class="c1">#morphology.remove_small_objects(labeled,30,in_place=True)</span>
     <span class="k">elif</span> <span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
@@ -248,7 +255,7 @@
         <span class="n">p</span><span class="o">.</span><span class="n">set_area</span><span class="p">(</span><span class="n">cal_area</span><span class="p">,</span><span class="n">area_units</span><span class="p">)</span>
         
         <span class="c1">#Set diam measures</span>
-        <span class="n">cal_circdiam</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">cal_area</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+        <span class="n">cal_circdiam</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">cal_area</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mf">0.5</span>
         <span class="n">diam_units</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">units</span>
         <span class="n">p</span><span class="o">.</span><span class="n">set_circdiam</span><span class="p">(</span><span class="n">cal_circdiam</span><span class="p">,</span><span class="n">diam_units</span><span class="p">)</span>
         
@@ -286,6 +293,12 @@
         
         <span class="c1">#Set mask</span>
         <span class="n">p</span><span class="o">.</span><span class="n">set_mask</span><span class="p">(</span><span class="n">maskp</span><span class="p">)</span>
+        
+        <span class="c1">#Set bounding box</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">set_boundingbox</span><span class="p">(</span><span class="n">region</span><span class="o">.</span><span class="n">bbox</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s2">&quot;bbox_area&quot;</span><span class="p">,</span> <span class="n">region</span><span class="o">.</span><span class="n">bbox_area</span><span class="o">*</span><span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scale</span><span class="o">*</span><span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span> <span class="n">area_units</span><span class="p">)</span>
+        <span class="n">bbox_length</span> <span class="o">=</span> <span class="p">(((</span><span class="n">region</span><span class="o">.</span><span class="n">bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">region</span><span class="o">.</span><span class="n">bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">((</span><span class="n">region</span><span class="o">.</span><span class="n">bbox</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">region</span><span class="o">.</span><span class="n">bbox</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s2">&quot;bbox_length&quot;</span><span class="p">,</span> <span class="n">bbox_length</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
         
         <span class="n">p</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
         
@@ -327,7 +340,7 @@
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    image_series: Hyperpsy signal object or list of hyperspy signal objects.</span>
+<span class="sd">    image_series: Hyperspy signal object or list of hyperspy signal objects.</span>
 <span class="sd">        Hyperpsy signal object containing nanoparticle images or a list of signal</span>
 <span class="sd">         objects that contains a time series.</span>
 <span class="sd">    parameters: Dictionary of parameters</span>
@@ -388,7 +401,7 @@
         
     <span class="n">t</span> <span class="o">=</span> <span class="n">trackpy</span><span class="o">.</span><span class="n">link</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">max_dist</span><span class="p">,</span><span class="n">memory</span><span class="o">=</span><span class="n">memory</span><span class="p">)</span>
     <span class="k">return</span><span class="p">(</span><span class="n">t</span><span class="p">)</span></div>
-    
+
 <div class="viewcode-block" id="store_image"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.store_image">[docs]</a><span class="k">def</span> <span class="nf">store_image</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span><span class="n">image</span><span class="p">,</span><span class="n">params</span><span class="p">):</span>
     <span class="n">ii</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
             
@@ -536,28 +549,25 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, ePSIC
+        &#169; Copyright 2020, ePSIC.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
