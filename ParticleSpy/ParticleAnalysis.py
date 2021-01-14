@@ -55,7 +55,8 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         image = acquisition
     
     if str(mask) == 'UI':
-        labeled = label(np.load(os.path.dirname(inspect.getfile(process))+'/Parameters/manual_mask.npy'))
+        labeled = label(np.load(os.path.dirname(inspect.getfile(process))+'/Parameters/manual_mask.npy')[:,:,0])
+        print(len(labeled))
         #plt.imshow(labeled)
         #morphology.remove_small_objects(labeled,30,in_place=True)
     elif mask.sum()==0:
@@ -93,7 +94,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         p.set_area(cal_area,area_units)
         
         #Set diam measures
-        cal_circdiam = 2*(cal_area**0.5)/np.pi
+        cal_circdiam = 2*(cal_area**0.5)/np.pi**0.5
         diam_units = image.axes_manager[0].units
         p.set_circdiam(cal_circdiam,diam_units)
         
