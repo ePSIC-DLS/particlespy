@@ -117,7 +117,7 @@ class Particle_list(object):
         
     def save(self,filename):
         save_plist(self,filename)
-        
+
     def plot(self,prop_list=['area'],**kwargs):
         """
         Plots properties of all particles in the Particle_list.
