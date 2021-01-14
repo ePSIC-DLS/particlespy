@@ -85,6 +85,9 @@ class Particle(object):
     def set_zone(self, zone):
         self.zone = zone
         
+    def set_boundingbox(self, bbox):
+        self.bbox = bbox
+        
     def set_mask(self, mask):
         self.mask = mask
         
@@ -114,8 +117,8 @@ class Particle_list(object):
         
     def save(self,filename):
         save_plist(self,filename)
-        
-    def plot(self,prop_list=['area'],bins=20,**kwargs):
+
+    def plot(self,prop_list=['area'],**kwargs):
         """
         Plots properties of all particles in the Particle_list.
         
@@ -127,8 +130,8 @@ class Particle_list(object):
         ----------
         prop_list : str or list
             A particle property or a list of the names of the properties to plot.
-        bins : int
-            The number of bins in the histogram if plotting one property.
+        **kwargs
+            Keyword arguments for matplotlib plotting functions.
             
         Examples
         --------
