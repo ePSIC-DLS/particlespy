@@ -8,13 +8,15 @@ Created on Tue Jul 31 13:35:23 2018
 from ParticleSpy.segptcls import process
 import numpy as np
 from ParticleSpy.ptcl_class import Particle, Particle_list
+from ParticleSpy.custom_kernels import membrane_projection
 from skimage import filters, morphology
 from skimage.measure import label, regionprops, perimeter
+from sklearn import preprocessing
+from sklearn.cluster import DBSCAN, KMeans
 import ParticleSpy.find_zoneaxis as zone
 import warnings
 import h5py
 import inspect
-import matplotlib.pyplot as plt
 import pandas as pd
 import trackpy
 import os
@@ -35,8 +37,8 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         List of already analysed particles that the output can be appended
         to.
     mask: Numpy array
-        Numpy array of same 2D size as acquisition that contains a mask of presegmented
-        particles.
+        Numpy array of same 2D size as acquisition that contains a mask of 
+        presegmented particles.
         
     Returns
     -------
@@ -53,7 +55,8 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         image = acquisition
     
     if str(mask) == 'UI':
-        labeled = label(np.load(os.path.dirname(inspect.getfile(process))+'/Parameters/manual_mask.npy'))
+        labeled = label(np.load(os.path.dirname(inspect.getfile(process))+'/Parameters/manual_mask.npy')[:,:,0])
+        print(len(labeled))
         #plt.imshow(labeled)
         #morphology.remove_small_objects(labeled,30,in_place=True)
     elif mask.sum()==0:
@@ -91,7 +94,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         p.set_area(cal_area,area_units)
         
         #Set diam measures
-        cal_circdiam = 2*(cal_area**0.5)/np.pi
+        cal_circdiam = 2*(cal_area**0.5)/np.pi**0.5
         diam_units = image.axes_manager[0].units
         p.set_circdiam(cal_circdiam,diam_units)
         
@@ -129,6 +132,12 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         
         #Set mask
         p.set_mask(maskp)
+        
+        #Set bounding box
+        p.set_boundingbox(region.bbox)
+        p.set_property("bbox_area", region.bbox_area*image.axes_manager[0].scale*image.axes_manager[1].scale, area_units)
+        bbox_length = (((region.bbox[2] - region.bbox[0])*image.axes_manager[0].scale)**2 + ((region.bbox[3] - region.bbox[1])*image.axes_manager[1].scale)**2)**0.5
+        p.set_property("bbox_length", bbox_length, image.axes_manager[0].units)
         
         p.set_property('frame',None,None)
         
@@ -170,7 +179,7 @@ def ParticleAnalysisSeries(image_series,parameters,particles=None):
     
     Parameters
     ----------
-    image_series: Hyperpsy signal object or list of hyperspy signal objects.
+    image_series: Hyperspy signal object or list of hyperspy signal objects.
         Hyperpsy signal object containing nanoparticle images or a list of signal
          objects that contains a time series.
     parameters: Dictionary of parameters
@@ -231,7 +240,7 @@ def timeseriesanalysis(particles,max_dist=1,memory=3,properties=['area']):
         
     t = trackpy.link(df,max_dist,memory=memory)
     return(t)
-    
+
 def store_image(particle,image,params):
     ii = np.where(particle.mask)
             
