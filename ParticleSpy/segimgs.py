@@ -1,7 +1,7 @@
 import numpy as np
 
 from ParticleSpy.custom_kernels import membrane_projection
-from skimage import filters, morphology
+from skimage import filters, morphology, util
 from skimage.measure import label, regionprops, perimeter
 from skimage.exposure import rescale_intensity
 from sklearn import preprocessing
@@ -47,10 +47,10 @@ def CreateFeatures(image, intensity = True,
         new_layer = np.reshape(filters.median(one_im,selem), shape)
         image_stack = np.append(image_stack, new_layer, axis=2)
         
-        new_layer = np.reshape(filters.rank.minimum(one_im,selem), shape)
+        new_layer = np.reshape(filters.rank.minimum(util.img_as_ubyte(one_im),selem), shape)
         image_stack = np.append(image_stack, new_layer, axis=2)
         
-        new_layer = np.reshape(filters.rank.maximum(one_im, selem), shape)
+        new_layer = np.reshape(filters.rank.maximum(util.img_as_ubyte(one_im), selem), shape)
         image_stack = np.append(image_stack, new_layer, axis=2)
 
     if edges:
@@ -78,8 +78,8 @@ def ClusterLearn(image, method='KMeans',
     
     Parameters
     ----------
-    image: Hyperspy signal object or list of hyperspy signal objects.
-        Hyperpsy signal object containing nanoparticle images
+    image: Hyperspy signal object.
+        Hyperspy signal object containing nanoparticle images
     method: Clustering algorithm used to generate mask.
     intensity, edges, texture, membrane: different kernel types used for 
     creating features
@@ -162,46 +162,71 @@ def ClusterTrained(image, labels, classifier,
     Parameters
     ----------
     image : Hyperspy signal object or list of hyperspy signal objects.
-    labels : user-labelled mask
-    classifier : empty or pretrained classifier to be trained on labelled data
+    labels : user-labelled mask or list of user labelled masks
+    classifier : empty classifier to be trained on labelled data
 
     Returns
     -------
     classified mask (1 channel), trained classifier
     """
-    if len(labels.shape) != 2:
-            labels = toggle_channels(labels)
-    #makes sure labels aren't empty
-    if (labels != 0).any() == True:
+    if type(image) != 'list':
+        image = [image]
+        labels = [labels]
+        #changes single images into a list
 
-        thin_mask = labels.astype(np.float64)
-        shape = image.data.shape
-        image = image.data
+    features = []
+    for i in range(len(image)):
 
-        features = CreateFeatures(image, intensity=intensity, edges=edges, texture=texture, membrane=membrane, 
-                                         sigma=sigma, high_sigma=high_sigma, disk_size=disk_size)
-        features = np.rot90(np.rot90(features, axes=(2,0)), axes=(1,2))
-        #features are num/x/y
+        if len(labels[i].shape) != 2:
+                labels[i] = toggle_channels(labels)
 
-        training_data = features[:, thin_mask > 0].T
-        #training data is number of labeled pixels by number of features
-        training_labels = thin_mask[thin_mask > 0].ravel()
-        training_labels = training_labels.astype('int')
-        #training labels is labelled pixels in 1D array
+        #makes sure labels aren't empty - may need to include fitting at some point
+        if (labels[i] != 0).any() == True:
 
-        classifier.fit(training_data, training_labels)
+            thin_mask = labels[i].astype(np.float64)
+            shape = image[i].data.shape
+            image[i] = image[i].data
 
-        output = np.copy(thin_mask)
-        if (labels == 0).any() == True:
+            features.append(CreateFeatures(image[i], intensity=intensity, edges=edges, texture=texture, membrane=membrane, 
+                                            sigma=sigma, high_sigma=high_sigma, disk_size=disk_size))
+            features[i] = np.rot90(np.rot90(features[i], axes=(2,0)), axes=(1,2))
+            #features are num/x/y
+
+            training_data = features[:, thin_mask > 0].T
+            #training data is number of labeled pixels by number of features
+            training_labels = thin_mask[thin_mask > 0].ravel()
+            training_labels = training_labels.astype('int')
+            #training labels is labelled pixels in 1D array
+
+            if i == 0:
+                training_data_long = training_data
+                training_labels_long = training_labels
+            else:
+                training_data_long = np.concatenate((training_data_long, training_data))
+                training_labels_long = np.concatenate((training_labels_long,training_labels))
+
+    classifier.fit(training_data, training_labels)
+
+    output = []
+    for i in range(len(image)):
+
+        thin_mask = labels[i].astype(np.float64)
+        output[i] = np.copy(thin_mask)
+        if (labels[i] == 0).any() == True:
             #train classifier on  labelled data
-            data = features[:, thin_mask == 0].T
+            data = features[i][:, thin_mask == 0].T
             #unlabelled data
             pred_labels = classifier.predict(data)
             #predict labels for rest of image
 
-            output[thin_mask == 0] = pred_labels
+            output[i][thin_mask == 0] = pred_labels
+            #adds predicted labels to unlabelled data
 
-        return output, classifier
+    if len(output) == 1:
+        output = output[0]
+    #changes list of output into one image for single image training
+
+    return output, classifier
 
 def ClassifierSegment(classifier, image, 
                         intensity = True, 
@@ -225,7 +250,6 @@ def ClassifierSegment(classifier, image,
                                      sigma=sigma, high_sigma=high_sigma, disk_size=disk_size)
     features = np.rot90(np.rot90(features, axes=(2,0)), axes=(1,2))
     features = features[:, image == image].T
-    print(features.shape)
     mask = classifier.predict(features)
 
     output = np.copy(image)
@@ -235,6 +259,7 @@ def ClassifierSegment(classifier, image,
 
 
 def toggle_channels(image, colors = ['#80A30015', '#806DA34D', '#8051E5FF', '#80BD2D87', '#80F5E663']):
+    #colors are in ARGB format
     shape = image.shape
 
     if len(shape) == 3:
