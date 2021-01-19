@@ -169,7 +169,7 @@ def ClusterTrained(image, labels, classifier,
     -------
     classified mask (1 channel), trained classifier
     """
-    if type(image) != 'list':
+    if isinstance(image, list) == False:
         image = [image]
         labels = [labels]
         #changes single images into a list
@@ -180,7 +180,7 @@ def ClusterTrained(image, labels, classifier,
         if len(labels[i].shape) != 2:
                 labels[i] = toggle_channels(labels)
 
-        #makes sure labels aren't empty - may need to include fitting at some point
+        #makes sure labels aren't empty
         if (labels[i] != 0).any() == True:
 
             thin_mask = labels[i].astype(np.float64)
@@ -192,7 +192,7 @@ def ClusterTrained(image, labels, classifier,
             features[i] = np.rot90(np.rot90(features[i], axes=(2,0)), axes=(1,2))
             #features are num/x/y
 
-            training_data = features[:, thin_mask > 0].T
+            training_data = features[i][:, thin_mask > 0].T
             #training data is number of labeled pixels by number of features
             training_labels = thin_mask[thin_mask > 0].ravel()
             training_labels = training_labels.astype('int')
@@ -205,13 +205,15 @@ def ClusterTrained(image, labels, classifier,
                 training_data_long = np.concatenate((training_data_long, training_data))
                 training_labels_long = np.concatenate((training_labels_long,training_labels))
 
-    classifier.fit(training_data, training_labels)
+    classifier.fit(training_data_long, training_labels_long)
+    #will crash for one image with no labels
 
     output = []
     for i in range(len(image)):
 
         thin_mask = labels[i].astype(np.float64)
-        output[i] = np.copy(thin_mask)
+        output.append(np.copy(thin_mask))
+        #list assingment index out of range
         if (labels[i] == 0).any() == True:
             #train classifier on  labelled data
             data = features[i][:, thin_mask == 0].T
