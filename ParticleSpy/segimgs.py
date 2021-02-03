@@ -8,10 +8,11 @@ from sklearn import preprocessing
 from sklearn.cluster import DBSCAN, KMeans
 
 
-def CreateFeatures(image, intensity = True, 
+def CreateFeatures(image, intensity = True,
+                          minimum = False,
                           edges = True, 
-                          texture = True, 
-                          membrane = True, 
+                          texture = False, 
+                          membrane = [1,0,0,0,0,0,0], 
                           sigma = 1, high_sigma = 16, disk_size = 20):
     """
     Creates set of features for data classification
@@ -38,19 +39,15 @@ def CreateFeatures(image, intensity = True,
     one_im = rescale_intensity(image, out_range = (-1,1))
 
     if intensity:
-        new_layer = np.reshape(filters.gaussian(image, sigma), shape)
-        image_stack = np.append(image_stack, new_layer, axis=2)
+        new_layer1 = np.reshape(filters.gaussian(image, sigma), shape)
+        new_layer2 = np.reshape(filters.difference_of_gaussians(image,low_sigma= sigma, high_sigma=high_sigma), shape)
+        new_layer3 = np.reshape(filters.median(one_im,selem), shape)
+        new_layer4 = np.reshape(filters.rank.maximum(util.img_as_ubyte(one_im), selem), shape)
 
-        new_layer = np.reshape(filters.difference_of_gaussians(image,low_sigma= sigma, high_sigma=high_sigma), shape)
-        image_stack = np.append(image_stack, new_layer, axis=2)
-
-        new_layer = np.reshape(filters.median(one_im,selem), shape)
-        image_stack = np.append(image_stack, new_layer, axis=2)
-        
+        image_stack = np.concatenate((image_stack, new_layer1, new_layer2, new_layer3, new_layer4), axis=2)
+    
+    if minimum:
         new_layer = np.reshape(filters.rank.minimum(util.img_as_ubyte(one_im),selem), shape)
-        image_stack = np.append(image_stack, new_layer, axis=2)
-        
-        new_layer = np.reshape(filters.rank.maximum(util.img_as_ubyte(one_im), selem), shape)
         image_stack = np.append(image_stack, new_layer, axis=2)
 
     if edges:
@@ -61,8 +58,8 @@ def CreateFeatures(image, intensity = True,
         new_layer = np.reshape(filters.hessian(im_blur, mode='constant',), shape)
         image_stack = np.append(image_stack, new_layer, axis=2)
 
-    if membrane:
-        mem_layers = membrane_projection(image)
+    if membrane != [0,0,0,0,0,0]:
+        mem_layers = membrane_projection(image)[:,:,membrane]
         image_stack = np.append(image_stack, mem_layers, axis=2)
 
     return image_stack[:,:,1:]
@@ -70,8 +67,8 @@ def CreateFeatures(image, intensity = True,
 def ClusterLearn(image, method='KMeans', 
                         intensity = True, 
                         edges = True, 
-                        texture = True, 
-                        membrane = False, 
+                        texture = False, 
+                        membrane = [1,0,0,0,0,0], 
                         sigma = 1, high_sigma = 16, disk_size = 20):
     """
     Creates masks of given images using scikit learn clustering methods.
@@ -97,7 +94,7 @@ def ClusterLearn(image, method='KMeans',
     #image = preprocessing.maxabs_scale(image)
     shape = [image.shape[0], image.shape[1], 1]
 
-    image_stack = CreateFeatures(image, intensity=intensity, edges=edges, texture=texture, membrane=membrane, 
+    image_stack = CreateFeatures(image, intensity=intensity, minimum=minimum, edges=edges, texture=texture, membrane=membrane, 
                                  sigma = sigma, high_sigma = high_sigma, disk_size = disk_size)
 
     pixel_stacks = np.zeros([shape[0]*shape[1],image_stack.shape[2]])
@@ -118,10 +115,11 @@ def ClusterLearn(image, method='KMeans',
     return mask
 
 def ClusterLearnSeries(image_set, method='KMeans', 
-                        intensity = True, 
+                        intensity = True,
+                        minimum = False,
                         edges = True, 
-                        texture = True, 
-                        membrane = False, 
+                        texture = False, 
+                        membrane = [1,0,0,0,0,0,0],
                         sigma = 1, high_sigma = 16, disk_size = 20):
     """
     Creates masks of sets of images using scikit learn clustering methods.
@@ -152,9 +150,10 @@ def ClusterLearnSeries(image_set, method='KMeans',
 
 def ClusterTrained(image, labels, classifier,
                         intensity = True, 
+                        minimum = False,
                         edges = True, 
                         texture = True, 
-                        membrane = True, 
+                        membrane = [1,0,0,0,0,0], 
                         sigma = 1, high_sigma = 16, disk_size = 20):
     """
     Trains classifier and classifies an image.
@@ -187,7 +186,7 @@ def ClusterTrained(image, labels, classifier,
             shape = image[i].data.shape
             image[i] = image[i].data
 
-            features.append(CreateFeatures(image[i], intensity=intensity, edges=edges, texture=texture, membrane=membrane, 
+            features.append(CreateFeatures(image[i], intensity=intensity, edges=edges, texture=texture, membrane=membrane, minimum=minimum,
                                             sigma=sigma, high_sigma=high_sigma, disk_size=disk_size))
             features[i] = np.rot90(np.rot90(features[i], axes=(2,0)), axes=(1,2))
             #features are num/x/y
@@ -232,9 +231,10 @@ def ClusterTrained(image, labels, classifier,
 
 def ClassifierSegment(classifier, image, 
                         intensity = True, 
+                        minimum = False,
                         edges = True, 
                         texture = True, 
-                        membrane = True, 
+                        membrane = [1,0,0,0,0,0], 
                         sigma = 1, high_sigma = 16, disk_size = 20):
     """
     classifies image with pretrained classifier.
@@ -248,7 +248,7 @@ def ClassifierSegment(classifier, image,
     -------
     mask of labels (1channel)
     """
-    features = CreateFeatures(image, intensity=intensity, edges=edges, texture=texture, membrane=membrane, 
+    features = CreateFeatures(image, intensity=intensity, edges=edges, texture=texture, membrane=membrane, minimum=minimum,
                                      sigma=sigma, high_sigma=high_sigma, disk_size=disk_size)
     features = np.rot90(np.rot90(features, axes=(2,0)), axes=(1,2))
     features = features[:, image == image].T
