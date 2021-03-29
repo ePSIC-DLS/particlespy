@@ -375,3 +375,65 @@ class parameters(object):
         self.eds['factors'] = eds.attrs['factors']
         
         f.close()
+
+
+class trainableParameters(object):
+    """A parameters object for trainable segmentation."""
+    
+    def __init__(self,gaussian = (True,1), diff_gaussian = (True,(False,1),1,16),
+                      median = (True,(False,1),20), minimum = (True,(False,1),20), 
+                      maximum = (True,(False,1),20), sobel = (True,(True,1)),
+                      hessian = (False,(False,1)), laplacian = (False,(False,1)),
+                      membrane = ((False,1),True,False,False,False,False,False):
+        self.gaussian = gaussian
+        self.diff_gaussian = diff_gaussian 
+        self.median = median
+        self.minimum = minimum
+        self.maximum = maximum
+        self.sobel = sobel
+        self.hessian = hessian
+        self.laplacian = laplacian
+        self.membrane = membrane
+    
+    def setGlobalSigma(self, sigma):
+        self.gaussian[1] = sigma        
+        self.diff_gaussian[1][1] = sigma
+        self.median[1][1] = sigma
+        self.minimum[1][1] = sigma
+        self.maximum[1][1] = sigma
+        self.sobel[1][1] = sigma
+        self.hessian[1][1] = sigma
+        self.laplacian[1][1] = sigma
+        self.membrane[0][1] = sigma
+
+    def setGlobalDiskSize(self, disk_size):
+        self.median[2] = disk_size
+        self.minimum[2] = disk_size
+        self.maximum[2] = disk_size
+
+    def setGaussian(self,enabled = True, sigma = 1):
+        self.gaussian=(enabled,sigma)
+
+    def setDiffGaussian(self,enabled = True, prefilter=True, prefilter_sigma = 1, low_sigma=1,high_sigma=16):
+        self.diff_gaussian=(enabled,(prefilter,prefilter_sigma),low_sigma,high_sigma)
+
+    def setMedian(self,enabled = True, prefilter=True, prefilter_sigma = 1, disk_size=20):
+        self.median=(enabled,(prefilter,prefilter_sigma),disk_size)
+
+    def setMinimum(self,enabled = True, prefilter=True, prefilter_sigma = 1, disk_size=20):
+        self.minimum=(enabled,(prefilter,prefilter_sigma),disk_size)
+
+    def setMaximum(self,enabled = True, prefilter=True, prefilter_sigma = 1, disk_size=20):
+        self.maximum=(enabled,(prefilter,prefilter_sigma),disk_size)
+
+    def setSobel(self,enabled = True, prefilter=True, prefilter_sigma = 1):
+        self.sobel=(enabled,(prefilter,prefilter_sigma))
+
+    def setHessian(self,enabled = True, prefilter=True, prefilter_sigma = 1):
+        self.hessian=(enabled,(prefilter,prefilter_sigma))
+
+    def setLaplacian(self,enabled = True, prefilter=True, prefilter_sigma = 1):
+        self.laplacian=(enabled,(prefilter,prefilter_sigma))
+
+    def setMembrane(self,enabled = True, prefilter=True, prefilter_sigma = 1,summ = True,mean = True, stddev = True, maximum = True, minimum = True, median = True):
+        self.membrane=((prefilter, prefilter_sigma), summ, mean, stddev, maximum, minimum, median)
