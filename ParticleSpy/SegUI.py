@@ -256,11 +256,11 @@ class Application(QMainWindow):
 
         im_lay.addWidget(self.canvas2)
 
-        self.comboBox = QComboBox(self)
-        self.comboBox.addItem("Random Forest")
-        self.comboBox.addItem("Nearest Neighbours")
-        self.comboBox.addItem("Naive Bayes")
-        self.comboBox.activated[str].connect(self.classifier_choice)
+        self.clfBox = QComboBox(self)
+        self.clfBox.addItem("Random Forest")
+        self.clfBox.addItem("Nearest Neighbours")
+        self.clfBox.addItem("Naive Bayes")
+        self.clfBox.activated[str].connect(self.classifier_choice)
 
         self.kerneltxt = QLabel(self)
         self.kerneltxt.setText('Filter Kernels')
@@ -307,7 +307,7 @@ class Application(QMainWindow):
         self.train.pressed.connect(self.train_classifier)
 
         button_lay.addLayout(colour_lay)
-        button_lay.addWidget(self.comboBox)
+        button_lay.addWidget(self.clfBox)
         button_lay.addWidget(self.kerneltxt)
         button_lay.addWidget(cb1)
         button_lay.addWidget(cb2)
