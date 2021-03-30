@@ -21,7 +21,7 @@ from skimage.util import invert
 from PIL import Image
 
 from ParticleSpy.segptcls import process
-from ParticleSpy.ParticleAnalysis import parameters
+from ParticleSpy.ParticleAnalysis import parameters, trainableParameters
 from ParticleSpy.segimgs import ClusterTrained, toggle_channels
 
 from sklearn.ensemble import RandomForestClassifier
@@ -67,7 +67,7 @@ class Application(QMainWindow):
         self.label = QLabel(self)
         qi = QImage(self.image.data, self.image.shape[1], self.image.shape[0], self.image.shape[1], QImage.Format_Grayscale8)
         pixmap = QPixmap(qi)
-        self.pixmap2 = pixmap.scaled(512, 512, Qt.KeepAspectRatio)
+        self.pixmap2 = pixmap.scaled(1024, 1024, Qt.KeepAspectRatio)
         self.label.setPixmap(self.pixmap2)
         self.label.setGeometry(10,10,self.pixmap2.width(),self.pixmap2.height())
         
@@ -215,15 +215,10 @@ class Application(QMainWindow):
 
         
 
-        self.mask = np.zeros([512,512,3])
-        self.classifier = RandomForestClassifier(n_estimators=200)
-        self.intensity = True
-        self.edge = True
-        self.texture = True
-        self.membrane = True
-        self.sigma = 1    
-        self.high_sigma = 16
-        self.disk_size = 20
+        self.mask = np.zeros([1024,1024,3])
+        self.classifier = GaussianNB()
+        self.tsparams = trainableParameters()
+        self.filter_kernels = ['Gaussian','Diff. Gaussians','Median','Minimum','Maximum','Sobel','Hessian','Laplacian','M-Sum','M-Mean','M-Standard Deviation','M-Median','M-Minimum','M-Maximum']
 
         lay3 = QHBoxLayout()
         im_lay = QVBoxLayout()
@@ -255,6 +250,10 @@ class Application(QMainWindow):
             colour_lay.addWidget(b)
 
         im_lay.addWidget(self.canvas2)
+        
+        self.kerneltxt = QLabel(self)
+        self.kerneltxt.setText('Classifier')
+        button_lay.addWidget(self.kerneltxt)
 
         self.clfBox = QComboBox(self)
         self.clfBox.addItem("Random Forest")
@@ -265,21 +264,30 @@ class Application(QMainWindow):
         self.kerneltxt = QLabel(self)
         self.kerneltxt.setText('Filter Kernels')
 
-        cb1 = QCheckBox('Intensity', self)
-        cb1.setChecked(True)
-        cb1.stateChanged.connect(self.toggle_int)
+        button_lay.addLayout(colour_lay)
+        button_lay.addWidget(self.clfBox)
+        button_lay.addWidget(self.kerneltxt)
 
-        cb2 = QCheckBox('Edge', self)
-        cb2.setChecked(True)
-        cb2.stateChanged.connect(self.toggle_edge)
+        for t in range(8):
+            b = QCheckBox(self.filter_kernels[t], self)
+            b.pressed.connect(lambda tool=self.filter_kernels[t]: self.toggle_fk(tool))
+            if t in (0,1,2,3,4,5,8):
+                b.setChecked(True)
+            button_lay.addWidget(b)  
 
-        cb3 = QCheckBox('Texture', self)
-        cb3.setChecked(True)
-        cb3.stateChanged.connect(self.toggle_tex)
+        self.membranetext = QLabel(self)
+        self.membranetext.setText('Membrane Projections')
+        button_lay.addWidget(self.membranetext)
 
-        cb4 = QCheckBox('Membrane Projection', self)
-        cb4.setChecked(True)
-        cb4.stateChanged.connect(self.toggle_mem)
+        for t in range(8,14):
+            b = QCheckBox(self.filter_kernels[t][2:], self)
+            b.pressed.connect(lambda tool=self.filter_kernels[t]: self.toggle_fk(tool))
+            if t in (0,1,2,3,4,5,8):
+                b.setChecked(True)
+            
+            button_lay.addWidget(b)
+
+
 
         self.ql1 = QLabel(self)
         self.ql1.setText('Sigma')
@@ -297,39 +305,41 @@ class Application(QMainWindow):
         self.spinb3.valueChanged.connect(self.change_disk)
         self.spinb3.setValue(20)
 
-        self.clear = QPushButton('Clear', self)
-        self.clear.clicked.connect(self.canvas2.clear)
-
-        self.bupdate = QPushButton('update', self)
-        self.bupdate.clicked.connect(self.train_update)
-
-        self.train = QPushButton('train classifier', self)
-        self.train.pressed.connect(self.train_classifier)
-
-        button_lay.addLayout(colour_lay)
-        button_lay.addWidget(self.clfBox)
-        button_lay.addWidget(self.kerneltxt)
-        button_lay.addWidget(cb1)
-        button_lay.addWidget(cb2)
-        button_lay.addWidget(cb3)
-        button_lay.addWidget(cb4)
-
-        self.ql = QLabel(self)
-
         button_lay.addWidget(self.ql1)
         button_lay.addWidget(self.spinb1)
         button_lay.addWidget(self.ql2)
         button_lay.addWidget(self.spinb2)
         button_lay.addWidget(self.ql3)
         button_lay.addWidget(self.spinb3)
+
+        self.config = QPushButton('Configure Filter Kernels', self)
+        #self.config.clicked.connect()
+        button_lay.addWidget(self.config)
+        
+        self.bupdate = QPushButton('Update Training Labels', self)
+        self.bupdate.clicked.connect(self.train_update)
         button_lay.addWidget(self.bupdate)
+
+        self.clear = QPushButton('Clear Training Labels', self)
+        self.clear.clicked.connect(self.canvas2.clear)
+        button_lay.addWidget(self.clear)
+
+        self.clear = QPushButton('Redraw Training Labels', self)
+        self.clear.clicked.connect(self.canvas2.clear)
+        button_lay.addWidget(self.clear)
+
+        self.train = QPushButton('train classifier', self)
+        self.train.pressed.connect(self.train_classifier)
         button_lay.addWidget(self.train)
+
+        self.clear = QPushButton('Clear Canvas', self)
+        self.clear.clicked.connect(self.canvas2.clear)
         button_lay.addWidget(self.clear)
 
         self.getarrayc = QPushButton('Save and Close',self)
         self.getarrayc.clicked.connect(self.save_and_close)
-        
         button_lay.addWidget(self.getarrayc)
+
         self.tab3.setLayout(lay3)
 
         self.show()
@@ -450,49 +460,70 @@ class Application(QMainWindow):
     def threshold_choice(self):
         if str(self.comboBox.currentText()) == "Otsu":
             self.params.segment['threshold'] = "otsu"
-        if str(self.comboBox.currentText()) == "Mean":
+        elif str(self.comboBox.currentText()) == "Mean":
             self.params.segment['threshold'] = "mean"
-        if str(self.comboBox.currentText()) == "Minimum":
+        elif str(self.comboBox.currentText()) == "Minimum":
             self.params.segment['threshold'] = "minimum"
-        if str(self.comboBox.currentText()) == "Yen":
+        elif str(self.comboBox.currentText()) == "Yen":
             self.params.segment['threshold'] = "yen"
-        if str(self.comboBox.currentText()) == "Isodata":
+        elif str(self.comboBox.currentText()) == "Isodata":
             self.params.segment['threshold'] = "isodata"
-        if str(self.comboBox.currentText()) == "Li":
+        elif str(self.comboBox.currentText()) == "Li":
             self.params.segment['threshold'] = "li"
-        if str(self.comboBox.currentText()) == "Local":
+        elif str(self.comboBox.currentText()) == "Local":
             self.params.segment['threshold'] = "local"
-        if str(self.comboBox.currentText()) == "Local Otsu":
+        elif str(self.comboBox.currentText()) == "Local Otsu":
             self.params.segment['threshold'] = "local_otsu"
-        if str(self.comboBox.currentText()) == "Local+Global Otsu":
+        elif str(self.comboBox.currentText()) == "Local+Global Otsu":
             self.params.segment['threshold'] = "lg_otsu"
-        if str(self.comboBox.currentText()) == "Niblack":
+        elif str(self.comboBox.currentText()) == "Niblack":
             self.params.segment['threshold'] = "niblack"
-        if str(self.comboBox.currentText()) == "Sauvola":
+        elif str(self.comboBox.currentText()) == "Sauvola":
             self.params.segment['threshold'] = "sauvola"
 
-    def toggle_int(self):
-        self.intensity = not self.intensity
-    def toggle_edge(self):
-        self.edge = not self.edge
-    def toggle_tex(self):
-        self.texture = not self.texture
-    def toggle_mem(self):
-        self.membrane = not self.membrane
+    def toggle_fk(self, tool):
+        if tool == 'Gaussian':
+            self.tsparams.gaussian[0] = not self.tsparams.gaussian[0]
+        elif tool == 'Diff. Gaussians':
+            self.tsparams.diff_gaussian[0] = not self.tsparams.diff_gaussian[0]
+        elif tool == 'Median':
+            self.tsparams.median[0] = not self.tsparams.median[0]
+        elif tool == 'Minimum':
+            self.tsparams.minimum[0] = not self.tsparams.minimum[0]
+        elif tool == 'Maximum':
+            self.tsparams.maximum[0] = not self.tsparams.maximum[0]
+        elif tool == 'Sobel':
+            self.tsparams.sobel[0] = not self.tsparams.sobel[0]
+        elif tool == 'Hessian':
+            self.tsparams.hessian[0] = not self.tsparams.hessian[0]
+        elif tool == 'Laplacian':
+            self.tsparams.laplacian[0] = not self.tsparams.laplacian[0]
+        elif tool == 'M-Sum':
+            self.tsparams.membrane[1] = not self.tsparams.membrane[1]
+        elif tool == 'M-Mean':
+            self.tsparams.membrane[2] = not self.tsparams.membrane[2]
+        elif tool == 'M-Standard Deviation':
+            self.tsparams.membrane[3] = not self.tsparams.membrane[3]
+        elif tool == 'M-Median':
+            self.tsparams.membrane[4] = not self.tsparams.membrane[4]
+        elif tool == 'M-Minimum':
+            self.tsparams.membrane[5] = not self.tsparams.membrane[5]
+        elif tool == 'M-Maximum':
+            self.tsparams.membrane[6] = not self.tsparams.membrane[6]
 
     def change_sigma(self):
-        self.sigma = self.spinb1.value()    
+        self.tsparams.setGlobalSigma(self.spinb1.value())
     def change_high_sigma(self):
-        self.high_sigma = self.spinb2.value()
+        self.tsparams.diff_gaussian[3] = self.spinb2.value()
     def change_disk(self):
-        self.disk_size = self.spinb3.value()    
+        self.tsparams.setGlobalDiskSize(self.spinb3.value())
 
     def classifier_choice(self):
         if str(self.comboBox.currentText()) == "Random Forest":
             self.classifier = RandomForestClassifier(n_estimators=200)
-        if str(self.comboBox.currentText()) == "Nearest Neighbours":
+        elif str(self.comboBox.currentText()) == "Nearest Neighbours":
             self.classifier = KNeighborsClassifier()
-        if str(self.comboBox.currentText()) == "Naive Bayes":
+        elif str(self.comboBox.currentText()) == "Naive Bayes":
             self.classifier = GaussianNB()
     
     def train_update(self):

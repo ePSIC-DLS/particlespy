@@ -1,6 +1,6 @@
 import numpy as np
 
-from ParticleSpy.custom_kernels import membrane_projection, laplacian, max_sobel
+from ParticleSpy.custom_kernels import membrane_projection, laplacian
 from skimage import filters, morphology, util
 from skimage.measure import label, regionprops, perimeter
 from skimage.exposure import rescale_intensity
