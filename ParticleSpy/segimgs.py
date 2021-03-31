@@ -1,6 +1,7 @@
 import numpy as np
 
 from ParticleSpy.custom_kernels import membrane_projection, laplacian
+from ParticleSpy.ParticleAnalysis import trainableParameters
 from skimage import filters, morphology, util
 from skimage.measure import label, regionprops, perimeter
 from skimage.exposure import rescale_intensity
@@ -8,69 +9,107 @@ from sklearn import preprocessing
 from sklearn.cluster import DBSCAN, KMeans
 
 
-def CreateFeatures(image, intensity = True,
-                          edges = True, 
-                          texture = False, 
-                          membrane = [1,0,0,0,0,0], 
-                          test = False,
-                          sigma = 1, high_sigma = 16, disk_size = 20):
+def CreateFeatures(image, parameters=None):
     """
     Creates set of features for data classification
 
     Parameters
     ----------
     image : greyscale image for segmentation
-    intensity : adds intensity based features if set as True
-    edges : adds edges based features if set as True
-    texture : adds textures based features if set as True
-    membrane : adds membrane projection features if set as True
+    trainable segmentation parameters
 
     Returns
     -------
     set of chosen features of the inputted image.
     """
-
+    if parameters == None:
+        parameters = trainableParameters()
     shape = [image.shape[0], image.shape[1], 1]
 
-    selem = morphology.disk(disk_size)
-
     image_stack = np.zeros(shape, dtype=np.float16)
-    im_blur = filters.gaussian(image, sigma)
     one_im = rescale_intensity(image, out_range = (-1,1))
+    temp = util.img_as_ubyte(rescale_intensity(image, out_range=(0,1)))
 
-    if intensity:
-        temp = util.img_as_ubyte(rescale_intensity(image, out_range=(0,1)))
+    if parameters.gaussian[0]:
+        new_layer = np.reshape(filters.gaussian(image,parameters.gaussian[1]),shape)
+        image_stack = np.concatenate((image_stack, new_layer), axis=2)
 
-        new_layer1 = np.reshape(filters.gaussian(image, sigma), shape)
-        new_layer2 = np.reshape(filters.difference_of_gaussians(image,low_sigma= sigma, high_sigma=high_sigma), shape)
-        new_layer3 = np.reshape(filters.median(one_im,selem), shape)
-        new_layer4 = np.reshape(filters.rank.maximum(util.img_as_ubyte(one_im), selem), shape)
-        new_layer5 = np.reshape(filters.rank.minimum(temp,selem), shape)
+    if parameters.diff_gaussian[0]:
+        par = parameters.diff_gaussian
+        if par[1][0]:
+            blur = filters.gaussian(image,par[1][1])
+            new_layer = np.reshape(filters.difference_of_gaussians(blur, low_sigma=par[2],high_sigma=par[3]), shape)
+        else:
+            new_layer = np.reshape(filters.difference_of_gaussians(image, low_sigma=par[2],high_sigma=par[3]), shape)
+        image_stack = np.concatenate((image_stack, new_layer), axis=2)
 
-        image_stack = np.concatenate((image_stack, new_layer1, new_layer2, new_layer3, new_layer4,new_layer5), axis=2)
+    if parameters.median[0]:
+        par = parameters.median
+        if par[1][0]:
+            blur = filters.gaussian(one_im,par[1][1])
+            new_layer = np.reshape(filters.median(blur, morphology.disk(par[2])),shape)
+        else:
+            new_layer = np.reshape(filters.median(one_im, morphology.disk(par[2])),shape)
+        image_stack = np.concatenate((image_stack, new_layer), axis=2)
 
-    if edges:
-        new_layer = np.reshape(filters.sobel(im_blur), shape)
-        image_stack = np.append(image_stack, new_layer, axis=2)
+    if parameters.minimum[0]:
+        par = parameters.minimum
+        if par[1][0]:
+            blur = filters.gaussian(temp,par[1][1])
+            new_layer = np.reshape(filters.rank.minimum(blur, morphology.disk(par[2])),shape)
+        else:
+            new_layer = np.reshape(filters.rank.minimum(temp, morphology.disk(par[2])),shape)
+        image_stack = np.concatenate((image_stack, new_layer), axis=2)
+    
+    if parameters.maximum[0]:
+        par = parameters.maximum
+        if par[1][0]:
+            blur = filters.gaussian(temp,par[1][1])
+            new_layer = np.reshape(filters.rank.maximum(blur, morphology.disk(par[2])),shape)
+        else:
+            new_layer = np.reshape(filters.rank.maximum(temp, morphology.disk(par[2])),shape)
+        image_stack = np.concatenate((image_stack, new_layer), axis=2)
 
-    if texture:
-        new_layer1 = np.reshape(filters.hessian(image, mode='constant',), shape)
-        new_layer2 = np.reshape(laplacian(image),shape)
-        image_stack = np.concatenate((image_stack,new_layer1,new_layer2), axis=2)
+    if parameters.sobel[0]:
+        par = parameters.sobel
+        if par[1][0]:
+            blur = filters.gaussian(image,par[1][1])
+            new_layer = np.reshape(filters.sobel(blur),shape)
+        else:
+            new_layer = np.reshape(filters.sobel(image),shape)
+        image_stack = np.concatenate((image_stack, new_layer), axis=2)
 
-    if membrane != [0,0,0,0,0,0]:
-        indexes = np.asarray(membrane, dtype=np.bool_)
+    if parameters.hessian[0]:
+        par = parameters.hessian
+        if par[1][0]:
+            blur = filters.gaussian(image,par[1][1])
+            new_layer = np.reshape(filters.hessian(blur),shape)
+        else:
+            new_layer = np.reshape(filters.hessian(image),shape)
+        image_stack = np.concatenate((image_stack, new_layer), axis=2)
+
+    if parameters.laplacian[0]:
+        par = parameters.laplacian
+        if par[1][0]:
+            blur = filters.gaussian(image,par[1][1])
+            new_layer = np.reshape(filters.laplacian(blur),shape)
+        else:
+            new_layer = np.reshape(filters.laplacian(image),shape)
+        image_stack = np.concatenate((image_stack, new_layer), axis=2)
+
+    if True in parameters.membrane[1:]:
+        par = parameters.membrane
+        if par[0][0]:
+            temp_im = filters.gaussian(image,par[0][1])
+        else:
+            temp_im = image
+        indexes = np.asarray(par[1:], dtype=np.bool_)
         mem_layers = membrane_projection(image)[:,:,indexes]
-        if membrane == [1,1,1,1,1,1]:
+
+        if par[1:] == [1,1,1,1,1,1]:
             mem_layers = np.squeeze(mem_layers)
         image_stack = np.append(image_stack, mem_layers, axis=2)
-
-    if test:
-        new_layer1 = np.reshape(laplacian(im_blur), shape)
-
-        image_stack = np.concatenate((image_stack, new_layer1), axis=2)
-
-
+    
     return image_stack[:,:,1:]
 
 def ClusterLearn(image, method='KMeans', 
@@ -156,12 +195,7 @@ def ClusterLearnSeries(image_set, method='KMeans',
     
     return mask_set
 
-def ClusterTrained(image, labels, classifier,
-                        intensity = True, 
-                        edges = True, 
-                        texture = False, 
-                        membrane = [1,0,0,0,0,0], 
-                        sigma = 1, high_sigma = 16, disk_size = 20):
+def ClusterTrained(image, labels, classifier, parameters = None):
     """
     Trains classifier and classifies an image.
     
@@ -193,8 +227,7 @@ def ClusterTrained(image, labels, classifier,
             shape = image[i].data.shape
             image[i] = image[i].data
 
-            features.append(CreateFeatures(image[i], intensity=intensity, edges=edges, texture=texture, membrane=membrane,
-                                            sigma=sigma, high_sigma=high_sigma, disk_size=disk_size))
+            features.append(CreateFeatures(image[i], parameters=parameters))
             features[i] = np.rot90(np.rot90(features[i], axes=(2,0)), axes=(1,2))
             #features are num/x/y
 
@@ -203,7 +236,7 @@ def ClusterTrained(image, labels, classifier,
             training_labels = thin_mask[thin_mask > 0].ravel()
             training_labels = training_labels.astype('int')
             #training labels is labelled pixels in 1D array
-
+            
             if i == 0:
                 training_data_long = training_data
                 training_labels_long = training_labels
@@ -236,12 +269,7 @@ def ClusterTrained(image, labels, classifier,
 
     return output, classifier
 
-def ClassifierSegment(classifier, image, 
-                        intensity = True, 
-                        edges = True, 
-                        texture = False, 
-                        membrane = [1,0,0,0,0,0], 
-                        sigma = 1, high_sigma = 16, disk_size = 20):
+def ClassifierSegment(classifier, image, parameters = None):
     """
     classifies image with pretrained classifier.
     
@@ -254,8 +282,7 @@ def ClassifierSegment(classifier, image,
     -------
     mask of labels (1channel)
     """
-    features = CreateFeatures(image, intensity=intensity, edges=edges, texture=texture, membrane=membrane,
-                                     sigma=sigma, high_sigma=high_sigma, disk_size=disk_size)
+    features = CreateFeatures(image, parameters=parameters)
     features = np.rot90(np.rot90(features, axes=(2,0)), axes=(1,2))
     features = features[:, image == image].T
     mask = classifier.predict(features)

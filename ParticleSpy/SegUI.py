@@ -529,18 +529,10 @@ class Application(QMainWindow):
     def train_classifier(self):
         
         array = self.canvas2.array
-        self.trained_mask = np.array(Image.fromarray(array).resize((self.image.shape[1],self.image.shape[0])))
-        self.trained_mask, self.classifier = ClusterTrained(self.im_hs, 
-                                                            self.mask, 
-                                                            self.classifier, 
-                                                            intensity = self.intensity,
-                                                            edges = self.edge, 
-                                                            texture = self.texture, 
-                                                            membrane = self.membrane,
-                                                            sigma = self.sigma,
-                                                            high_sigma = self.high_sigma,
-                                                            disk_size = self.disk_size)
-        self.canvas2.clear()
+        self.mask = np.array(Image.fromarray(array).resize((self.image.shape[1],self.image.shape[0])))
+        self.trained_mask, self.classifier = ClusterTrained(self.im_hs, self.mask, self.classifier, self.tsparams)
+        
+        self.canvas2.clearCanvas()
         if self.trained_mask.any() != 0:
             self.canvas2.drawLabels(self.trained_mask)
 
