@@ -314,26 +314,26 @@ class Application(QMainWindow):
 
         self.config = QPushButton('Configure Filter Kernels', self)
         #self.config.clicked.connect()
+        self.config.setToolTip('Choose individual filter kernel parameters')
         button_lay.addWidget(self.config)
-        
-        self.bupdate = QPushButton('Update Training Labels', self)
-        self.bupdate.clicked.connect(self.train_update)
-        button_lay.addWidget(self.bupdate)
 
         self.clear = QPushButton('Clear Training Labels', self)
-        self.clear.clicked.connect(self.canvas2.clear)
+        self.clear.setToolTip('Removes existing training labels memory')
+        self.clear.clicked.connect(self.canvas2.clearLabels)
         button_lay.addWidget(self.clear)
 
-        self.clear = QPushButton('Redraw Training Labels', self)
-        self.clear.clicked.connect(self.canvas2.clear)
-        button_lay.addWidget(self.clear)
+        self.redraw = QPushButton('Redraw Training Labels', self)
+        self.redraw.setToolTip('draws any existing training labels in memory onto the canvas')
+        self.redraw.clicked.connect(self.canvas2.redrawLabels)
+        button_lay.addWidget(self.redraw)
 
         self.train = QPushButton('train classifier', self)
         self.train.pressed.connect(self.train_classifier)
         button_lay.addWidget(self.train)
 
         self.clear = QPushButton('Clear Canvas', self)
-        self.clear.clicked.connect(self.canvas2.clear)
+        self.clear.setToolTip('Removes any generated segmentation masks and labels from the image, does not clear training labels from memory')
+        self.clear.clicked.connect(self.canvas2.clearCanvas)
         button_lay.addWidget(self.clear)
 
         self.getarrayc = QPushButton('Save and Close',self)
@@ -526,14 +526,10 @@ class Application(QMainWindow):
         elif str(self.comboBox.currentText()) == "Naive Bayes":
             self.classifier = GaussianNB()
     
-    def train_update(self):
-        array = self.canvas2.array
-        self.mask = np.array(Image.fromarray(array).resize((self.image.shape[1],self.image.shape[0])))
-
-        print('updated labels')
-
     def train_classifier(self):
         
+        array = self.canvas2.array
+        self.trained_mask = np.array(Image.fromarray(array).resize((self.image.shape[1],self.image.shape[0])))
         self.trained_mask, self.classifier = ClusterTrained(self.im_hs, 
                                                             self.mask, 
                                                             self.classifier, 
@@ -603,7 +599,7 @@ class Canvas(QLabel):
         self.penType = self.brush_tools[0]
         self.lineCount = 0
 
-        self.array = np.zeros((512,512,3),dtype=np.uint8)
+        self.array = np.zeros((1024,1024,3),dtype=np.uint8)
 
     def set_pen_color(self, c):
         self.color_index = c
@@ -614,24 +610,30 @@ class Canvas(QLabel):
         self.lineCount = 0
         self.penType = brush
 
-    def clear(self):
+    def clearCanvas(self):
 
         self.last_click = None
         self.first_click = None
         self.lineCount = 0
-        self.array = np.zeros((512,512,3), dtype=np.uint8)
 
         painter = QPainter(self.pixmap())
-        painter.eraseRect(0,0,512,512)
+        painter.eraseRect(0,0,1024,1024)
         painter.drawPixmap(0,0,self.OGpixmap)
         painter.end()
         self.update()
+
+    def clearLabels(self):
+        self.array = np.zeros((1024,1024,3), dtype=np.uint8)
+
+    def redrawLabels(self):
+        array = toggle_channels(self.array)
+        self.drawLabels(array)
 
     def drawLabels(self, thin_labels):
 
         shape = thin_labels.shape
         thicc_labels = np.zeros([shape[0], shape[1],4], dtype=np.uint8)
-        
+
         thicc_labels[:,:,1:] = toggle_channels(thin_labels)
         thicc_labels[:,:,0] = (thin_labels > 0)*255
 
@@ -639,7 +641,7 @@ class Canvas(QLabel):
         qi = QImage(thicc_labels.data, thicc_labels.shape[1], thicc_labels.shape[0], 4*thicc_labels.shape[1], QImage.Format_ARGB32_Premultiplied)
         
         pixmap = QPixmap(qi)
-        pixmap = pixmap.scaled(512, 512, Qt.KeepAspectRatio)
+        pixmap = pixmap.scaled(1024, 1024, Qt.KeepAspectRatio)
         painter = QPainter(self.pixmap())
         painter.setOpacity(0.5)
         painter.drawPixmap(0,0,pixmap)
@@ -696,13 +698,13 @@ class Canvas(QLabel):
     def flood(self, e):
         image = self.pixmap().toImage()
         b = image.bits()
-        b.setsize(512 * 512 * 4)
-        arr = np.frombuffer(b, np.uint8).reshape((512, 512, 4))
+        b.setsize(1024 * 1024 * 4)
+        arr = np.frombuffer(b, np.uint8).reshape((1024, 1024, 4))
         
         OGimage = self.OGpixmap.toImage()
         b = OGimage.bits()
-        b.setsize(512 * 512 * 4)
-        OGim = np.frombuffer(b, np.uint8).reshape((512, 512, 4))
+        b.setsize(1024 * 1024 * 4)
+        OGim = np.frombuffer(b, np.uint8).reshape((1024, 1024, 4))
         OGim = np.flip(OGim, axis=2)
 
         arr = arr.astype(np.int32)
@@ -752,6 +754,7 @@ class Canvas(QLabel):
 
         if e.button() == Qt.RightButton:
             self.flood(e)
+
         
         if e.button() ==Qt.LeftButton:
 
