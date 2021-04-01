@@ -7,6 +7,7 @@ from skimage.measure import label, regionprops, perimeter
 from skimage.exposure import rescale_intensity
 from sklearn import preprocessing
 from sklearn.cluster import DBSCAN, KMeans
+from scipy import ndimage as ndi
 
 
 def CreateFeatures(image, parameters=None):
@@ -310,3 +311,42 @@ def toggle_channels(image, colors = ['#A30015', '#6DA34D', '#51E5FF', '#BD2D87',
             toggled[image == (i+1),:] = rgb
 
     return toggled
+
+def remove_large_objects(ar, max_size=200, connectivity=1, in_place=False):
+
+        # Raising type error if not int or bool
+    if not (ar.dtype == bool or np.issubdtype(ar.dtype, np.integer)):
+        raise TypeError("Only bool or integer image types are supported. "
+                        "Got %s." % ar.dtype)
+
+    if in_place:
+        out = ar
+    else:
+        out = ar.copy()
+
+    if max_size == 0:  # shortcut for efficiency
+        return out
+
+    if out.dtype == bool:
+        selem = ndi.generate_binary_structure(ar.ndim, connectivity)
+        ccs = np.zeros_like(ar, dtype=np.int32)
+        ndi.label(ar, selem, output=ccs)
+    else:
+        ccs = out
+
+    try:
+        component_sizes = np.bincount(ccs.ravel())
+    except ValueError:
+        raise ValueError("Negative value labels are not supported. Try "
+                         "relabeling the input with `scipy.ndimage.label` or "
+                         "`skimage.morphology.label`.")
+
+    if len(component_sizes) == 2:
+        warn("Only one label was provided to `remove_small_objects`. "
+             "Did you mean to use a boolean array?")
+
+    too_small = component_sizes > max_size
+    too_small_mask = too_small[ccs]
+    out[too_small_mask] = 0
+
+    return out

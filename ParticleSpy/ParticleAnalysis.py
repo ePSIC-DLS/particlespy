@@ -411,6 +411,16 @@ class trainableParameters(object):
         self.minimum[2] = disk_size
         self.maximum[2] = disk_size
 
+    def setGlobalPrefilter(self, sigma):
+        self.diff_gaussian[1] = [True,sigma]        
+        self.median[1] = [True,sigma]
+        self.minimum[1] = [True,sigma]
+        self.maximum[1] = [True,sigma]
+        self.sobel[1] = [True,sigma]
+        self.hessian[1] = [True,sigma]
+        self.laplacian[1] = [True,sigma]
+        self.membrane[0] = [True,sigma]        
+
     def setGaussian(self,enabled = True, sigma = 1):
         self.gaussian=[enabled,sigma]
 
