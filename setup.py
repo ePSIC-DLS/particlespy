@@ -7,20 +7,13 @@ install_requires=["hyperspy",
                   "scikit-image>=0.17.1",
                   "scikit-learn>=0.21",
 				  "trackpy",
-                  "numpy>=1.16.5"]
-
-try:
-    import PyQt5  # noqa
-except ImportError:
-    try:
-        import PySide2  # noqa
-    except ImportError:
-        install_requires.append('PyQt5==5.14.0')
+                  "numpy>=1.16.5",
+				  "PyQt5>=5.14.0"]
 
 setuptools.setup(
     name="particlespy",
     package_dir={'particlespy':'particlespy'},
-    version="0.5.1",
+    version="0.5.2",
     author="Thomas Slater",
     author_email="tjaslater@gmail.com",
     description="A package to perform particle segmentation and analysis",
