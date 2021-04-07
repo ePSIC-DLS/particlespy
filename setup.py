@@ -21,13 +21,11 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/ePSIC-DLS/particlespy",
     packages=setuptools.find_packages(),
-    install_requires=install_requires,   
-    include_package_data=True,
+    install_requires=install_requires,
     package_data={
         'ParticleSpy':
         [
-            'data/*.dm4',
-            'parameters/*.hdf5'
+            'parameters/*'
         ],
     },
     classifiers=[
