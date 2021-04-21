@@ -8,7 +8,7 @@ Created on Mon Nov  5 09:48:31 2018
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-from ParticleSpy.ParticleAnalysis import ParticleAnalysis, parameters, ParticleAnalysisSeries, timeseriesanalysis
+from ParticleSpy.ParticleAnalysis import ParticleAnalysis, parameters, trainableParameters, ParticleAnalysisSeries, timeseriesanalysis
 from ParticleSpy.segimgs import *
 from ParticleSpy.SegUI import SegUI
 from ParticleSpy.ptcl_class import Particle_list, Particle
