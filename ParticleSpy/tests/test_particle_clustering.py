@@ -5,6 +5,7 @@ import hyperspy.api as hs
 import numpy as np
 from ParticleSpy import api as ps
 from PIL import Image
+from sklearn.cluster import DBSCAN
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 
@@ -45,7 +46,7 @@ def test_learn_clustering():
     
     data = hs.load(str(Path(__file__).parent.parent / 'Data/SiO2 HAADF Image.hspy'))
 
-    mask = ps.ClusterLearn(data)
+    mask = ps.ClusterLearn(data, DBSCAN())
 
     params = ps.parameters()
     params.generate()
@@ -69,3 +70,5 @@ def test_train_clustering():
     new_plists = particles.cluster_particles(properties=['area'])
 
     assert len(new_plists[0].list) == 17
+    
+test_learn_clustering()
