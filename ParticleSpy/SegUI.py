@@ -14,9 +14,10 @@ import numpy as np
 from PIL import Image
 from PyQt5.QtCore import QPoint, QRectF, QSize, Qt
 from PyQt5.QtGui import QColor, QImage, QPainter, QPalette, QPixmap
-from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QHBoxLayout,
-                             QLabel, QMainWindow, QPushButton, QSizePolicy,
-                             QSpinBox, QTabWidget, QVBoxLayout, QWidget)
+from PyQt5.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QComboBox,
+                             QHBoxLayout, QLabel, QMainWindow, QPushButton,
+                             QSizePolicy, QSpinBox, QTabWidget, QVBoxLayout,
+                             QWidget)
 from skimage.segmentation import flood, flood_fill, mark_boundaries
 from skimage.util import invert
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
@@ -213,8 +214,7 @@ class Application(QMainWindow):
         self.tab2.setLayout(tab2layout)
 
         #Tab 3
-
-        
+      
 
         self.mask = np.zeros([1024,1024,3])
         self.classifier = GaussianNB()
@@ -223,23 +223,27 @@ class Application(QMainWindow):
 
         lay3 = QHBoxLayout()
         im_lay = QVBoxLayout()
-        button_lay = QVBoxLayout()
-        colour_lay = QHBoxLayout()
+        self.button_lay = QVBoxLayout()
+        self.tool_lay = QVBoxLayout()
+        self.colour_lay = QHBoxLayout()
 
 
-        lay3.addLayout(button_lay)
+        lay3.addLayout(self.button_lay)
         lay3.addLayout(im_lay)
 
         self.canvas2 = Canvas(self.pixmap2)
         self.canvas2.setAlignment(Qt.AlignTop)
         
+        self.tool_group = QButtonGroup()
         for tool in self.canvas2.brush_tools:
             b = ToolButton(tool)
             b.pressed.connect(lambda tool=tool: self.canvas2.changePen(tool))
             b.setText(tool)
+            self.tool_group.addButton(b)
             if tool == 'Freehand':
                 b.setChecked(True)
-            button_lay.addWidget(b)
+            self.tool_lay.addWidget(b)
+        self.button_lay.addItem(self.tool_lay)
 
 
         for i in range(len(self.canvas2.colors)):
@@ -248,13 +252,13 @@ class Application(QMainWindow):
             b.pressed.connect(lambda i=i: self.canvas2.set_pen_color(i))
             if i== 0:
                 b.setChecked(True)
-            colour_lay.addWidget(b)
-        button_lay.addLayout(colour_lay)
+            self.colour_lay.addWidget(b)
+        self.button_lay.addLayout(self.colour_lay)
         im_lay.addWidget(self.canvas2)
         
         self.kerneltxt = QLabel(self)
         self.kerneltxt.setText('Classifier')
-        button_lay.addWidget(self.kerneltxt)
+        self.button_lay.addWidget(self.kerneltxt)
 
         self.clfBox = QComboBox(self)
         self.clfBox.addItem("Random Forest")
@@ -267,19 +271,19 @@ class Application(QMainWindow):
         self.kerneltxt.setText('Filter Kernels')
 
         
-        button_lay.addWidget(self.clfBox)
-        button_lay.addWidget(self.kerneltxt)
+        self.button_lay.addWidget(self.clfBox)
+        self.button_lay.addWidget(self.kerneltxt)
 
         for t in range(8):
             b = QCheckBox(self.filter_kernels[t], self)
             b.pressed.connect(lambda tool=self.filter_kernels[t]: self.toggle_fk(tool))
             if t in (0,1,2,3,4,5,8):
                 b.setChecked(True)
-            button_lay.addWidget(b)  
+            self.button_lay.addWidget(b)  
 
         self.membranetext = QLabel(self)
         self.membranetext.setText('Membrane Projections')
-        button_lay.addWidget(self.membranetext)
+        self.button_lay.addWidget(self.membranetext)
 
         for t in range(8,14):
             b = QCheckBox(self.filter_kernels[t][2:], self)
@@ -287,7 +291,7 @@ class Application(QMainWindow):
             if t in (0,1,2,3,4,5,8):
                 b.setChecked(True)
             
-            button_lay.addWidget(b)
+            self.button_lay.addWidget(b)
 
 
 
@@ -307,40 +311,40 @@ class Application(QMainWindow):
         self.spinb3.valueChanged.connect(self.change_disk)
         self.spinb3.setValue(20)
 
-        button_lay.addWidget(self.ql1)
-        button_lay.addWidget(self.spinb1)
-        button_lay.addWidget(self.ql2)
-        button_lay.addWidget(self.spinb2)
-        button_lay.addWidget(self.ql3)
-        button_lay.addWidget(self.spinb3)
+        self.button_lay.addWidget(self.ql1)
+        self.button_lay.addWidget(self.spinb1)
+        self.button_lay.addWidget(self.ql2)
+        self.button_lay.addWidget(self.spinb2)
+        self.button_lay.addWidget(self.ql3)
+        self.button_lay.addWidget(self.spinb3)
 
         self.config = QPushButton('Configure Filter Kernels', self)
         #self.config.clicked.connect()
         self.config.setToolTip('Choose individual filter kernel parameters')
-        button_lay.addWidget(self.config)
+        self.button_lay.addWidget(self.config)
 
         self.clear = QPushButton('Clear Training Labels', self)
         self.clear.setToolTip('Removes existing training labels memory')
         self.clear.clicked.connect(self.canvas2.clearLabels)
-        button_lay.addWidget(self.clear)
+        self.button_lay.addWidget(self.clear)
 
         self.redraw = QPushButton('Redraw Training Labels', self)
         self.redraw.setToolTip('draws any existing training labels in memory onto the canvas')
         self.redraw.clicked.connect(self.canvas2.redrawLabels)
-        button_lay.addWidget(self.redraw)
+        self.button_lay.addWidget(self.redraw)
 
         self.train = QPushButton('train classifier', self)
         self.train.pressed.connect(self.train_classifier)
-        button_lay.addWidget(self.train)
+        self.button_lay.addWidget(self.train)
 
         self.clear = QPushButton('Clear Canvas', self)
         self.clear.setToolTip('Removes any generated segmentation masks and labels from the image, does not clear training labels from memory')
         self.clear.clicked.connect(self.canvas2.clearCanvas)
-        button_lay.addWidget(self.clear)
+        self.button_lay.addWidget(self.clear)
 
         self.getarrayc = QPushButton('Save and Close',self)
         self.getarrayc.clicked.connect(self.save_and_close)
-        button_lay.addWidget(self.getarrayc)
+        self.button_lay.addWidget(self.getarrayc)
 
         self.tab3.setLayout(lay3)
 
