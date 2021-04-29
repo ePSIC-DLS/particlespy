@@ -1,13 +1,13 @@
 import numpy as np
-
-from ParticleSpy.custom_kernels import membrane_projection, laplacian
-from ParticleSpy.ParticleAnalysis import trainableParameters
+from scipy import ndimage as ndi
 from skimage import filters, morphology, util
-from skimage.measure import label, regionprops, perimeter
 from skimage.exposure import rescale_intensity
+from skimage.measure import label, perimeter, regionprops
 from sklearn import preprocessing
 from sklearn.cluster import DBSCAN, KMeans
-from scipy import ndimage as ndi
+
+from ParticleSpy.custom_kernels import laplacian, membrane_projection
+from ParticleSpy.ParticleAnalysis import trainableParameters
 
 
 def CreateFeatures(image, parameters=None):
