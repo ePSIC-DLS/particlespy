@@ -93,9 +93,9 @@ def CreateFeatures(image, parameters=None):
         par = parameters.laplacian
         if par[1][0]:
             blur = filters.gaussian(image,par[1][1])
-            new_layer = np.reshape(laplacian(blur),shape)
+            new_layer = np.reshape(filters.laplacian(blur),shape)
         else:
-            new_layer = np.reshape(laplacian(image),shape)
+            new_layer = np.reshape(filters.laplacian(image),shape)
         image_stack = np.concatenate((image_stack, new_layer), axis=2)
 
     if True in parameters.membrane[1:]:
@@ -340,12 +340,10 @@ def remove_large_objects(ar, max_size=200, connectivity=1, in_place=False):
         raise ValueError("Negative value labels are not supported. Try "
                          "relabeling the input with `scipy.ndimage.label` or "
                          "`skimage.morphology.label`.")
-    
-    """
+
     if len(component_sizes) == 2:
         warn("Only one label was provided to `remove_small_objects`. "
              "Did you mean to use a boolean array?")
-    """
 
     too_small = component_sizes > max_size
     too_small_mask = too_small[ccs]
