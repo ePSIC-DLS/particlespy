@@ -5,29 +5,29 @@ Created on Mon Oct 22 15:50:08 2018
 @author: qzo13262
 """
 
-import inspect
-import math as m
-import os
+from PyQt5.QtWidgets import QCheckBox, QPushButton, QLabel, QMainWindow, QSpinBox, QGroupBox, QGridLayout
+from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QComboBox, QTabWidget
+from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QSizePolicy
+from PyQt5.QtGui import QPixmap, QImage, QColor, QPainter, QPalette
+from PyQt5.QtCore import Qt, QPoint, QSize, QRectF
 import sys
+import os
 
-from PIL import Image
-from PyQt5.QtCore import QPoint, QRectF, QSize, Qt
-from PyQt5.QtGui import QColor, QImage, QPainter, QPalette, QPixmap
-from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QGridLayout,
-                             QGroupBox, QHBoxLayout, QLabel, QMainWindow,
-                             QPushButton, QSizePolicy, QSpinBox, QTabWidget,
-                             QVBoxLayout, QWidget)
-from skimage.segmentation import flood, flood_fill, mark_boundaries
+import inspect
+import numpy as np
+import math as m
+from skimage.segmentation import mark_boundaries, flood_fill, flood
 from skimage.util import invert
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.naive_bayes import GaussianNB
-from sklearn.neighbors import KNeighborsClassifier
+from PIL import Image
 
-from ParticleSpy.Canvas import *
+from ParticleSpy.segptcls import process
 from ParticleSpy.ParticleAnalysis import parameters, trainableParameters
 from ParticleSpy.segimgs import ClusterTrained, toggle_channels
-from ParticleSpy.segptcls import process
+from ParticleSpy.Canvas import *
 
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB
 
 class FKConfig(QWidget):
     def __init__(self, params, parent=None):
