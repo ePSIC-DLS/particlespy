@@ -132,12 +132,12 @@ In future versions this will most likely be updated to be selected via a GUI or 
 Trainable Segmentation
 ----------------------
 
-Using the Segmentation User Interface trainable segmentation can be performed using the 'Training' tab in the the top bar.
+Using the Segmentation User Interface, trainable segmentation can be performed using the 'Training' tab in the the top bar.
 
 .. image:: _static/TrainUI.png
     :align: center
 
-Labels can be drawn onto the image using the tools on the left hand side:
+Labels can be drawn onto the image using the tools at the top-left :
 
 * The freehand tool operates by pressing and holding the left mouse button to draw lines.
 * The line tool operates by left clicking twice, which produces a line draw between them which is automatically added to the set of labels.
@@ -146,9 +146,13 @@ Labels can be drawn onto the image using the tools on the left hand side:
 As with manual segmentation any enclosed region can be labelled by right clicking within it. 
 This can be done in multiple colours by selecting the desired colour before labelling a region.
 
+Different filter kernels and classifiers can be chosen using the dropdowns and tick boxes. 
+The filter kernel parameters can also be altered using the Sigma, High Sigma and Disk Size parameters.
 Once areas have been labelled, training can be begun using the 'Update' and 'Train Classifier' Button.
-When this finishes the labels will be shown on top of the image in the user interface, this can take up to several minutes.
-The classifier can then be retrained by pressing the 'Clear' button and drawing on any additional features. 
 
-Using the classifier generated multiple images can be segmented using it.
+When this finishes the labels will be shown on top of the image in the user interface, this can take up to several minutes.
+The classifier can then be retrained with additional pixels by by clearing the canvas of the displayed segmentation with `Clear Canvas`, and redrawing previous training labels with `redraw training labels`.
+the `clear training labels` can be used to delete the existing labels in memory, visible or not.
+
+Once the classifier has been trained it can be used to segment multiple images.
 

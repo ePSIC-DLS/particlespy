@@ -1,13 +1,13 @@
 import numpy as np
-
-from ParticleSpy.custom_kernels import membrane_projection, laplacian
-from ParticleSpy.ParticleAnalysis import trainableParameters
+from scipy import ndimage as ndi
 from skimage import filters, morphology, util
-from skimage.measure import label, regionprops, perimeter
 from skimage.exposure import rescale_intensity
+from skimage.measure import label, perimeter, regionprops
 from sklearn import preprocessing
 from sklearn.cluster import DBSCAN, KMeans
-from scipy import ndimage as ndi
+
+from ParticleSpy.custom_kernels import laplacian, membrane_projection
+from ParticleSpy.ParticleAnalysis import trainableParameters
 
 
 def CreateFeatures(image, parameters=None):
@@ -113,12 +113,7 @@ def CreateFeatures(image, parameters=None):
     
     return image_stack[:,:,1:]
 
-def ClusterLearn(image, method='KMeans', 
-                        intensity = True, 
-                        edges = True, 
-                        texture = False, 
-                        membrane = [1,0,0,0,0,0], 
-                        sigma = 1, high_sigma = 16, disk_size = 20):
+def ClusterLearn(image, method='KMeans', parameters = None):
     """
     Creates masks of given images using scikit learn clustering methods.
     
@@ -138,13 +133,14 @@ def ClusterLearn(image, method='KMeans',
     -------
     generated mask (1channel)
     """
-
+    if parameters == None:
+        parameters = trainableParameters()
+        
     image = image.data
     #image = preprocessing.maxabs_scale(image)
     shape = [image.shape[0], image.shape[1], 1]
 
-    image_stack = CreateFeatures(image, intensity=intensity, edges=edges, texture=texture, membrane=membrane, 
-                                 sigma = sigma, high_sigma = high_sigma, disk_size = disk_size)
+    image_stack = CreateFeatures(image, parameters=parameters)
 
     pixel_stacks = np.zeros([shape[0]*shape[1],image_stack.shape[2]])
     for i in range(shape[1]):
@@ -163,12 +159,7 @@ def ClusterLearn(image, method='KMeans',
     
     return mask
 
-def ClusterLearnSeries(image_set, method='KMeans', 
-                        intensity = True,
-                        edges = True, 
-                        texture = False, 
-                        membrane = [1,0,0,0,0,0,0],
-                        sigma = 1, high_sigma = 16, disk_size = 20):
+def ClusterLearnSeries(image_set, method='KMeans', parameters = None):
     """
     Creates masks of sets of images using scikit learn clustering methods.
     
@@ -181,18 +172,17 @@ def ClusterLearnSeries(image_set, method='KMeans',
     creating features
     disk_size: Size of the local pixel neighbourhood considered by select 
         segmentation methods.
-    parameters: List of dictionaries of Parameters for segmentation methods used
-    in clustering. The parameters can be inputted manually or use the default.
+    parameters: ts parameters object.
 
     Returns
     -------
     list of generated mask per image (1channel)
     """
-
+    if parameters == None:
+        parameters = trainableParameters()
     mask_set = []
     for image in image_set:
-        mask_set.append(ClusterLearn(image,method=method, intensity=intensity, edges=edges, texture=texture, membrane=membrane, 
-                                     sigma=sigma, high_sigma=high_sigma, disk_size=disk_size))
+        mask_set.append(ClusterLearn(image,method=method, parameters=parameters))
     
     return mask_set
 
@@ -215,12 +205,16 @@ def ClusterTrained(image, labels, classifier, parameters = None):
         labels = [labels]
         #changes single images into a list
 
+    if parameters == None:
+        parameters = trainableParameters()
+        
     features = []
     for i in range(len(image)):
 
         if len(labels[i].shape) != 2:
                 labels[i] = toggle_channels(labels[i])
 
+        print((labels[i] != 0).any())
         #makes sure labels aren't empty
         if (labels[i] != 0).any() == True:
 

@@ -5,28 +5,29 @@ Created on Mon Oct 22 15:50:08 2018
 @author: qzo13262
 """
 
-from PyQt5.QtWidgets import QCheckBox, QPushButton, QLabel, QMainWindow, QSpinBox
-from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QComboBox, QTabWidget
-from PyQt5.QtWidgets import QVBoxLayout, QSizePolicy
-from PyQt5.QtGui import QPixmap, QImage, QColor, QPainter, QPalette
-from PyQt5.QtCore import Qt, QPoint, QSize, QRectF
-import sys
-import os
-
 import inspect
-import numpy as np
 import math as m
-from skimage.segmentation import mark_boundaries, flood_fill, flood
-from skimage.util import invert
-from PIL import Image
+import os
+import sys
 
-from ParticleSpy.segptcls import process
+import numpy as np
+from PIL import Image
+from PyQt5.QtCore import QPoint, QRectF, QSize, Qt
+from PyQt5.QtGui import QColor, QImage, QPainter, QPalette, QPixmap
+from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QHBoxLayout,
+                             QLabel, QMainWindow, QPushButton, QSizePolicy,
+                             QSpinBox, QTabWidget, QVBoxLayout, QWidget)
+from skimage.segmentation import flood, flood_fill, mark_boundaries
+from skimage.util import invert
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
+
 from ParticleSpy.ParticleAnalysis import parameters, trainableParameters
 from ParticleSpy.segimgs import ClusterTrained, toggle_channels
+from ParticleSpy.segptcls import process
 
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.naive_bayes import GaussianNB
 
 class Application(QMainWindow):
 
@@ -248,7 +249,7 @@ class Application(QMainWindow):
             if i== 0:
                 b.setChecked(True)
             colour_lay.addWidget(b)
-
+        button_lay.addLayout(colour_lay)
         im_lay.addWidget(self.canvas2)
         
         self.kerneltxt = QLabel(self)
@@ -259,12 +260,13 @@ class Application(QMainWindow):
         self.clfBox.addItem("Random Forest")
         self.clfBox.addItem("Nearest Neighbours")
         self.clfBox.addItem("Naive Bayes")
+        self.clfBox.addItem("QDA")
         self.clfBox.activated[str].connect(self.classifier_choice)
 
         self.kerneltxt = QLabel(self)
         self.kerneltxt.setText('Filter Kernels')
 
-        button_lay.addLayout(colour_lay)
+        
         button_lay.addWidget(self.clfBox)
         button_lay.addWidget(self.kerneltxt)
 
@@ -525,6 +527,8 @@ class Application(QMainWindow):
             self.classifier = KNeighborsClassifier()
         elif str(self.comboBox.currentText()) == "Naive Bayes":
             self.classifier = GaussianNB()
+        elif str(self.comboBox.currentText()) == "QDA":
+            self.classifier = QuadraticDiscriminantAnalysis()
     
     def train_classifier(self):
         
