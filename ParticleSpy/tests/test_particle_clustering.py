@@ -60,6 +60,20 @@ def test_train_clustering():
     maskfile = Image.open(str(Path(__file__).parent.parent / 'Data/trainingmask.png'))
     mask = np.asarray(maskfile)
 
+    params = ps.trainableParameters()
+    params.setGaussian()
+    params.setDiffGaussian()
+    params.setMedian()
+    params.setMinimum()
+    params.setMaximum()
+    params.setSobel()
+    params.setHessian()
+    params.setLaplacian()
+    params.setMembrane()
+    params.setGlobalSigma(1)
+    params.setGlobalDiskSize(20)
+    params.setGlobalPrefilter(1)
+    
     labels, _ = ps.ClusterTrained(data, mask, GaussianNB())
     labels = 2 - labels
 
@@ -67,4 +81,4 @@ def test_train_clustering():
     params.generate()
     particles = ps.ParticleAnalysis(data, params, mask=labels)
     new_plists = particles.cluster_particles(properties=['area'])
-    assert len(new_plists[0].list) == 9
+    assert len(new_plists[0].list) == 2
