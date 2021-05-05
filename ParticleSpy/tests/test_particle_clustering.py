@@ -4,6 +4,7 @@ from pathlib import Path
 import hyperspy.api as hs
 import numpy as np
 from ParticleSpy import api as ps
+from ParticleSpy.segimgs import remove_large_objects
 from PIL import Image
 from sklearn.cluster import DBSCAN
 from sklearn.naive_bayes import GaussianNB
@@ -74,11 +75,16 @@ def test_train_clustering():
     params.setGlobalDiskSize(20)
     params.setGlobalPrefilter(1)
     
-    labels, _ = ps.ClusterTrained(data, mask, GaussianNB())
+    _, clf = ps.ClusterTrained(data, mask, GaussianNB(), parameters=params)
+    labels = ps.ClassifierSegment(clf, data.data, parameters=params)
+    labels = ps.toggle_channels(labels)
+    labels = ps.toggle_channels(labels)
     labels = 2 - labels
+    labels = remove_large_objects(labels)
 
     params = ps.parameters()
     params.generate()
     particles = ps.ParticleAnalysis(data, params, mask=labels)
     new_plists = particles.cluster_particles(properties=['area'])
     assert len(new_plists[0].list) == 9
+
