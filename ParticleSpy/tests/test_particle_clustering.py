@@ -6,8 +6,7 @@ import numpy as np
 from ParticleSpy import api as ps
 from PIL import Image
 from sklearn.cluster import DBSCAN
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB
 
 np.random.seed(10)
 random.seed(10)
@@ -21,7 +20,7 @@ def test_clustering():
     particles = ps.ParticleAnalysis(data,params)
     
     new_plists = particles.cluster_particles(properties=['area','circularity'])
-    assert len(new_plists[0].list) == 185
+    assert len(new_plists[0].list) == 11
 
 
 def test_clustering_all():
@@ -52,8 +51,7 @@ def test_learn_clustering():
     params.generate()
     particles = ps.ParticleAnalysis(data, params, mask=mask)
     new_plists = particles.cluster_particles(properties=['area'])
-
-    assert len(new_plists[0].list) == 14
+    assert len(new_plists[0].list) == 268
 
 def test_train_clustering():
     
@@ -61,12 +59,11 @@ def test_train_clustering():
     maskfile = Image.open(str(Path(__file__).parent.parent / 'Data/trainingmask.png'))
     mask = np.asarray(maskfile)
 
-    labels, _ = ps.ClusterTrained(data, mask, RandomForestClassifier())
+    labels, _ = ps.ClusterTrained(data, mask, GaussianNB())
     labels = 2 - labels
 
     params = ps.parameters()
     params.generate()
     particles = ps.ParticleAnalysis(data, params, mask=labels)
     new_plists = particles.cluster_particles(properties=['area'])
-
-    assert len(new_plists[0].list) == 17
+    assert len(new_plists[0].list) == 9

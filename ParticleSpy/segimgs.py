@@ -155,7 +155,7 @@ def ClusterLearn(images, clust, parameters = None):
         pixel_stacks = preprocessing.scale(pixel_stacks)
         labels = clust.fit_predict(pixel_stacks)
 
-        mask[i] = np.zeros_like(image)
+        mask.append(np.zeros_like(image))
         for ii in range(shape[1]):
             mask[i][:,ii] = labels[ii*shape[0]:(ii+1)*shape[0]]
     
