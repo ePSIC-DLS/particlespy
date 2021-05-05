@@ -44,6 +44,7 @@ class Application(QMainWindow):
         self.prev_params.generate()
         
         offset = 50
+        canvas_size = 1024
         
         self.layout = QHBoxLayout(self)
         
@@ -69,7 +70,7 @@ class Application(QMainWindow):
         self.label = QLabel(self)
         qi = QImage(self.image.data, self.image.shape[1], self.image.shape[0], self.image.shape[1], QImage.Format_Grayscale8)
         pixmap = QPixmap(qi)
-        self.pixmap2 = pixmap.scaled(1024, 1024, Qt.KeepAspectRatio)
+        self.pixmap2 = pixmap.scaled(canvas_size, canvas_size, Qt.KeepAspectRatio)
         self.label.setPixmap(self.pixmap2)
         self.label.setGeometry(10,10,self.pixmap2.width(),self.pixmap2.height())
         
@@ -216,17 +217,17 @@ class Application(QMainWindow):
         #Tab 3
       
 
-        self.mask = np.zeros([1024,1024,3])
+        self.mask = np.zeros([canvas_size,canvas_size,3])
         self.classifier = GaussianNB()
         self.tsparams = trainableParameters()
         self.filter_kernels = ['Gaussian','Diff. Gaussians','Median','Minimum','Maximum','Sobel','Hessian','Laplacian','M-Sum','M-Mean','M-Standard Deviation','M-Median','M-Minimum','M-Maximum']
 
         lay3 = QHBoxLayout()
         im_lay = QVBoxLayout()
+               
         self.button_lay = QVBoxLayout()
-        self.tool_lay = QVBoxLayout()
-        self.colour_lay = QHBoxLayout()
-
+        self.button_lay.setSpacing(0)
+        self.button_lay.setContentsMargins(0,0,0,0)
 
         lay3.addLayout(self.button_lay)
         lay3.addLayout(im_lay)
@@ -234,6 +235,7 @@ class Application(QMainWindow):
         self.canvas2 = Canvas(self.pixmap2)
         self.canvas2.setAlignment(Qt.AlignTop)
         
+        self.tool_lay = QVBoxLayout()
         self.tool_group = QButtonGroup()
         for tool in self.canvas2.brush_tools:
             b = ToolButton(tool)
@@ -246,6 +248,7 @@ class Application(QMainWindow):
         self.button_lay.addItem(self.tool_lay)
 
 
+        self.colour_lay = QHBoxLayout()
         for i in range(len(self.canvas2.colors)):
             c = self.canvas2.colors[i]
             b = QPaletteButton(c)
@@ -266,63 +269,73 @@ class Application(QMainWindow):
         self.clfBox.addItem("Naive Bayes")
         self.clfBox.addItem("QDA")
         self.clfBox.activated[str].connect(self.classifier_choice)
-
-        self.kerneltxt = QLabel(self)
-        self.kerneltxt.setText('Filter Kernels')
-
-        
         self.button_lay.addWidget(self.clfBox)
-        self.button_lay.addWidget(self.kerneltxt)
-
+        
+        
+        fk_lay = QVBoxLayout(self)
+        self.kerneltxt = QLabel(self)
+        self.kerneltxt.setText('Filter Kernels')     
+        fk_lay.addWidget(self.kerneltxt)
         for t in range(8):
             b = QCheckBox(self.filter_kernels[t], self)
             b.pressed.connect(lambda tool=self.filter_kernels[t]: self.toggle_fk(tool))
             if t in (0,1,2,3,4,5,8):
                 b.setChecked(True)
-            self.button_lay.addWidget(b)  
-
+            fk_lay.addWidget(b)  
+        
         self.membranetext = QLabel(self)
         self.membranetext.setText('Membrane Projections')
-        self.button_lay.addWidget(self.membranetext)
+        fk_lay.addWidget(self.membranetext)
 
         for t in range(8,14):
             b = QCheckBox(self.filter_kernels[t][2:], self)
             b.pressed.connect(lambda tool=self.filter_kernels[t]: self.toggle_fk(tool))
             if t in (0,1,2,3,4,5,8):
                 b.setChecked(True)
+            fk_lay.addWidget(b)
             
-            self.button_lay.addWidget(b)
+        self.button_lay.addLayout(fk_lay)
 
-
-
+        fkp_lay = QVBoxLayout()
         self.ql1 = QLabel(self)
         self.ql1.setText('Sigma')
+        fkp_lay.addWidget(self.ql1)
+        
         self.spinb1 = QSpinBox(self)
         self.spinb1.valueChanged.connect(self.change_sigma)
         self.spinb1.setValue(1)
+        fkp_lay.addWidget(self.spinb1)
+        
         self.ql2 = QLabel(self)
         self.ql2.setText('High Sigma')
+        fkp_lay.addWidget(self.ql2)
+        
         self.spinb2 = QSpinBox(self)
         self.spinb2.valueChanged.connect(self.change_high_sigma)
         self.spinb2.setValue(16)
+        fkp_lay.addWidget(self.spinb2)
+        
         self.ql3 = QLabel(self)
         self.ql3.setText('Disk Size')
+        fkp_lay.addWidget(self.ql3)
+        
         self.spinb3 = QSpinBox(self)
         self.spinb3.valueChanged.connect(self.change_disk)
         self.spinb3.setValue(20)
+        fkp_lay.addWidget(self.spinb3)
+        
+        self.button_lay.addLayout(fkp_lay)
+        
+             
+        
 
-        self.button_lay.addWidget(self.ql1)
-        self.button_lay.addWidget(self.spinb1)
-        self.button_lay.addWidget(self.ql2)
-        self.button_lay.addWidget(self.spinb2)
-        self.button_lay.addWidget(self.ql3)
-        self.button_lay.addWidget(self.spinb3)
-
+        """
         self.config = QPushButton('Configure Filter Kernels', self)
         #self.config.clicked.connect()
         self.config.setToolTip('Choose individual filter kernel parameters')
         self.button_lay.addWidget(self.config)
-
+        """
+        
         self.clear = QPushButton('Clear Training Labels', self)
         self.clear.setToolTip('Removes existing training labels memory')
         self.clear.clicked.connect(self.canvas2.clearLabels)
@@ -580,6 +593,7 @@ class Canvas(QLabel):
         self.OGpixmap = pixmap
         self.lastpixmap = pixmap
 
+        canvas_size = 1024
         self.setPixmap(pixmap)
         self.scaleFactor = 1
         #self.setBackgroundRole(QPalette.Base)
@@ -599,7 +613,7 @@ class Canvas(QLabel):
         self.penType = self.brush_tools[0]
         self.lineCount = 0
 
-        self.array = np.zeros((1024,1024,3),dtype=np.uint8)
+        self.array = np.zeros((canvas_size,canvas_size,3),dtype=np.uint8)
 
     def set_pen_color(self, c):
         self.color_index = c
@@ -617,13 +631,13 @@ class Canvas(QLabel):
         self.lineCount = 0
 
         painter = QPainter(self.pixmap())
-        painter.eraseRect(0,0,1024,1024)
+        painter.eraseRect(0,0,canvas_size,canvas_size)
         painter.drawPixmap(0,0,self.OGpixmap)
         painter.end()
         self.update()
 
     def clearLabels(self):
-        self.array = np.zeros((1024,1024,3), dtype=np.uint8)
+        self.array = np.zeros((canvas_size,canvas_size,3), dtype=np.uint8)
 
     def redrawLabels(self):
         array = toggle_channels(self.array)
@@ -698,12 +712,12 @@ class Canvas(QLabel):
     def flood(self, e):
         image = self.pixmap().toImage()
         b = image.bits()
-        b.setsize(1024 * 1024 * 4)
+        b.setsize(canvas_size * canvas_size * 4)
         arr = np.frombuffer(b, np.uint8).reshape((1024, 1024, 4))
         
         OGimage = self.OGpixmap.toImage()
         b = OGimage.bits()
-        b.setsize(1024 * 1024 * 4)
+        b.setsize(canvas_size * canvas_size * 4)
         OGim = np.frombuffer(b, np.uint8).reshape((1024, 1024, 4))
         OGim = np.flip(OGim, axis=2)
 
