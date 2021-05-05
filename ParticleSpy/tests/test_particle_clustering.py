@@ -86,5 +86,5 @@ def test_train_clustering():
     params.generate()
     particles = ps.ParticleAnalysis(data, params, mask=labels)
     new_plists = particles.cluster_particles(properties=['area'])
-    assert len(new_plists[0].list) == 9
+    assert len(new_plists[0].list) == 11
 
