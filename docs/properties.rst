@@ -34,6 +34,12 @@ When using the :py:meth:`~.ParticleAnalysis` function ParticleSpy is able to cal
     | Total intensity             | intensity                    | The sum of intensity contained within  |
     |                             |                              | the segmented region of the image.     |
     +-----------------------------+------------------------------+----------------------------------------+
+    | Bounding box area           | bbox_area                    | The area of the bounding box           |
+    |                             |                              | surrounding the particle.              |
+    +-----------------------------+------------------------------+----------------------------------------+
+    | Bounding box length         | bbox_length                  | The diagonal length of the bounding    |
+    |                             |                              | box surrounding the particle.          |
+    +-----------------------------+------------------------------+----------------------------------------+
 
 
 Adding Properties
