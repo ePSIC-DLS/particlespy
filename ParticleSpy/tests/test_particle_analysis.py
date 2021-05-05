@@ -98,6 +98,8 @@ def test_particleanalysis():
     nptest.assert_almost_equal(p.properties['area']['value'],20069.0)
     assert p.properties['area']['units'] == 'nm^2'
     nptest.assert_almost_equal(p.properties['circularity']['value'],0.9095832157785668)
+    nptest.assert_almost_equal(p.properties['equivalent circular diameter']['value'],159.8519453221949)
+    assert p.properties['equivalent circular diameter']['units'] == 'nm'
     #assert p.zone == None
     nptest.assert_allclose(p.mask,mask)
     nptest.assert_allclose(p.image.data,image.data[16:184,16:184])
@@ -110,6 +112,11 @@ def test_particleanalysis():
     nptest.assert_allclose(p.composition['Au'],46.94530019)
     nptest.assert_allclose(p.properties['x']['value'], 100.)
     nptest.assert_allclose(p.properties['y']['value'], 100.)
+    nptest.assert_allclose(p.properties['bbox_area']['value'], 25281.0)
+    nptest.assert_allclose(p.properties['bbox_length']['value'], 224.8599564173221)
+    assert p.properties['bbox_area']['units'] == 'nm^2'
+    assert p.properties['bbox_length']['units'] == 'nm'
+    assert p.bbox == (21, 21, 180, 180)
     
 def test_series():
     image = gen_test.generate_test_image(hspy=True)

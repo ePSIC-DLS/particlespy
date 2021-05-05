@@ -55,7 +55,8 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         image = acquisition
     
     if str(mask) == 'UI':
-        labeled = label(np.load(os.path.dirname(inspect.getfile(process))+'/Parameters/manual_mask.npy'))
+        labeled = label(np.load(os.path.dirname(inspect.getfile(process))+'/Parameters/manual_mask.npy')[:,:,0])
+        print(len(labeled))
         #plt.imshow(labeled)
         #morphology.remove_small_objects(labeled,30,in_place=True)
     elif mask.sum()==0:
@@ -93,7 +94,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         p.set_area(cal_area,area_units)
         
         #Set diam measures
-        cal_circdiam = 2*(cal_area**0.5)/np.pi
+        cal_circdiam = 2*(cal_area**0.5)/np.pi**0.5
         diam_units = image.axes_manager[0].units
         p.set_circdiam(cal_circdiam,diam_units)
         
@@ -131,6 +132,12 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         
         #Set mask
         p.set_mask(maskp)
+        
+        #Set bounding box
+        p.set_boundingbox(region.bbox)
+        p.set_property("bbox_area", region.bbox_area*image.axes_manager[0].scale*image.axes_manager[1].scale, area_units)
+        bbox_length = (((region.bbox[2] - region.bbox[0])*image.axes_manager[0].scale)**2 + ((region.bbox[3] - region.bbox[1])*image.axes_manager[1].scale)**2)**0.5
+        p.set_property("bbox_length", bbox_length, image.axes_manager[0].units)
         
         p.set_property('frame',None,None)
         

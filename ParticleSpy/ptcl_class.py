@@ -85,6 +85,9 @@ class Particle(object):
     def set_zone(self, zone):
         self.zone = zone
         
+    def set_boundingbox(self, bbox):
+        self.bbox = bbox
+        
     def set_mask(self, mask):
         self.mask = mask
         
@@ -114,36 +117,8 @@ class Particle_list(object):
         
     def save(self,filename):
         save_plist(self,filename)
-        
-    def plot_area(self,bins=20):
-        """
-        Displays a plot of particle areas for analysed particles.
-        """
-        
-        areas = []
-        
-        for p in self.list:
-            areas.append(p.properties['area']['value'])
-            
-        plt.hist(areas,bins=bins)
-        plt.xlabel("Area ("+self.list[0].properties['area']['units']+")")
-        plt.ylabel("No. of particles")
-        
-    def plot_circularity(self,bins=20):
-        """
-        Displays a plot of particle circularity for analysed particles.
-        """
-        
-        circularities = []
-        
-        for p in self.list:
-            circularities.append(p.properties['circularity']['value'])
-            
-        plt.hist(circularities,bins=bins)
-        plt.xlabel("Circularity")
-        plt.ylabel("No. of particles")
-        
-    def plot(self,prop_list=['area'],bins=20):
+
+    def plot(self,prop_list=['area'],**kwargs):
         """
         Plots properties of all particles in the Particle_list.
         
@@ -155,8 +130,8 @@ class Particle_list(object):
         ----------
         prop_list : str or list
             A particle property or a list of the names of the properties to plot.
-        bins : int
-            The number of bins in the histogram if plotting one property.
+        **kwargs
+            Keyword arguments for matplotlib plotting functions.
             
         Examples
         --------
@@ -168,38 +143,42 @@ class Particle_list(object):
         """
         
         if isinstance(prop_list,str):
-            self._plot_one_property(prop_list,bins)
+            fig = plt.figure()
+            ax = fig.add_subplot(111)
+            self._plot_one_property(prop_list,ax,**kwargs)
         else:
             if len(prop_list) == 1:
-                self._plot_one_property(prop_list[0],bins)
+                fig = plt.figure()
+                ax = fig.add_subplot(111)
+                self._plot_one_property(prop_list[0],ax,**kwargs)
             elif len(prop_list) == 2:
                 fig = plt.figure()
                 ax = fig.add_subplot(111)
-                self._plot_two_properties(prop_list,ax)
+                self._plot_two_properties(prop_list,ax,**kwargs)
             elif len(prop_list) == 3:
                 fig3d = plt.figure()
                 ax = fig3d.add_subplot(111, projection='3d')
-                self._plot_three_properties(prop_list,ax)
+                self._plot_three_properties(prop_list,ax,**kwargs)
             else:
                 print("Can only plot a maximum of three properties, please change the length of the property list.")
         
         plt.show()
         
-    def _plot_one_property(self,prop,bins):
+    def _plot_one_property(self,prop,ax,**kwargs):
         property_list = []
         
         for p in self.list:
             property_list.append(p.properties[prop]['value'])
             
-        plt.hist(property_list,bins=bins,alpha=0.5)
+        ax.hist(property_list,**kwargs)
         
         if self.list[0].properties[prop]['units'] == None:
-            plt.xlabel(prop.capitalize())
+            ax.set_xlabel(prop.capitalize())
         else:
-            plt.xlabel(prop.capitalize()+" ("+self.list[0].properties[prop]['units']+")")
+            ax.set_xlabel(prop.capitalize()+" ("+self.list[0].properties[prop]['units']+")")
         plt.ylabel("No. of particles")
         
-    def _plot_two_properties(self,prop_list,ax):
+    def _plot_two_properties(self,prop_list,ax,**kwargs):
         
         property_list_one = []
         property_list_two = []
@@ -208,7 +187,7 @@ class Particle_list(object):
             property_list_one.append(p.properties[prop_list[0]]['value'])
             property_list_two.append(p.properties[prop_list[1]]['value'])
         
-        ax.scatter(property_list_one,property_list_two,alpha=0.5)
+        ax.scatter(property_list_one,property_list_two,**kwargs)
         
         if self.list[0].properties[prop_list[0]]['units'] == None:
             ax.set_xlabel(prop_list[0].capitalize())
@@ -220,7 +199,7 @@ class Particle_list(object):
         else:
             ax.set_ylabel(prop_list[1].capitalize()+" ("+self.list[0].properties[prop_list[1]]['units']+")")
 
-    def _plot_three_properties(self, prop_list,ax):
+    def _plot_three_properties(self, prop_list,ax,**kwargs):
 
         property_list_one = []
         property_list_two = []
@@ -231,7 +210,7 @@ class Particle_list(object):
             property_list_two.append(p.properties[prop_list[1]]['value'])
             property_list_three.append(p.properties[prop_list[2]]['value'])
 
-        ax.scatter(property_list_one, property_list_two, property_list_three)
+        ax.scatter(property_list_one, property_list_two, property_list_three,**kwargs)
 
         if self.list[0].properties[prop_list[0]]['units'] == None:
             ax.set_xlabel(prop_list[0].capitalize())

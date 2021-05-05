@@ -127,7 +127,7 @@ This is done by calling:
 This returns a segmentation mask of the image.
 This can be carried out for a sequence of images using ``ClusterLearnSeries``.
 
-In future versions this will most likely be updated to be selected via a GUI or with a list of presets.
+In future versions, this will most likely be updated to be selected via a GUI or with a list of presets.
 
 Trainable Segmentation
 ----------------------
@@ -140,11 +140,11 @@ Using the Segmentation User Interface, trainable segmentation can be performed u
 Labels can be drawn onto the image using the tools at the top-left :
 
 * The freehand tool operates by pressing and holding the left mouse button to draw lines.
-* The line tool operates by left clicking twice, which produces a line draw between them which is automatically added to the set of labels.
+* The line tool operates by left clicking twice, which produces a line between them, which is automatically added to the set of labels.
 * The polygon tool can be used to enclose a region by clicking to form the polygon and clicking on the start of the shape to finish one polygon.
 
-As with manual segmentation any enclosed region can be labelled by right clicking within it. 
-This can be done in multiple colours by selecting the desired colour before labelling a region.
+As with manual segmentation, any enclosed region can be labelled by right clicking within it. 
+This can be done in multiple colours, by selecting the desired colour before labelling a region.
 
 Different filter kernels and classifiers can be chosen using the dropdowns and tick boxes. 
 The filter kernel parameters can also be altered using the Sigma, High Sigma and Disk Size parameters.
@@ -154,5 +154,24 @@ When this finishes the labels will be shown on top of the image in the user inte
 The classifier can then be retrained with additional pixels by by clearing the canvas of the displayed segmentation with `Clear Canvas`, and redrawing previous training labels with `redraw training labels`.
 the `clear training labels` can be used to delete the existing labels in memory, visible or not.
 
-Once the classifier has been trained it can be used to segment multiple images.
+Using the classifier generated, multiple images can be segmented. An example is shown in the following code:
 
+
+.. code-block:: python
+
+    folder = 'path fo folder of images to segment'
+    first = hs.load('{}/first image in folder'.format(folder))
+
+    out = ps.SegUI(first)
+    clf = out.classifier
+
+    params = ps.parameters()
+    params.generate()
+    particles = None
+
+    for image in os.listdir(folder):
+        imagefile = hs.load(os.path.join(folder,image))
+        l = imagefile.data
+        mask_im = ps.ClassifierSegment(clf, l)
+        
+        particles = ps.ParticleAnalysis(imagefile, params,particles=particles, mask=mask_im)

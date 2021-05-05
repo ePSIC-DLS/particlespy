@@ -23,6 +23,7 @@ def test_clustering():
     assert len(new_plists[0].list) == 11
 
 
+
 def test_clustering_all():
     
     data = hs.load(str(Path(__file__).parent.parent / 'Data/SiO2 HAADF Image.hspy'))
@@ -67,3 +68,5 @@ def test_train_clustering():
     particles = ps.ParticleAnalysis(data, params, mask=labels)
     new_plists = particles.cluster_particles(properties=['area'])
     assert len(new_plists[0].list) == 9
+
+
