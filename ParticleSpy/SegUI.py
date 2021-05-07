@@ -815,6 +815,10 @@ def SegUI(image):
     screen = app.primaryScreen()
     size = screen.size()
     height = int(0.8*size.height())
+
+    if 1024 < height:
+        height = 1024
+
     #params = ParticleAnalysis.param_generator()
     ex = main(image,height)
     
