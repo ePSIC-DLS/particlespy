@@ -32,7 +32,7 @@ from ParticleSpy.segptcls import process
 
 class Application(QMainWindow):
 
-    def __init__(self,im_hs):
+    def __init__(self,im_hs,height):
         super().__init__()
         self.setWindowTitle("Segmentation UI")
         self.imflag = "Image"
@@ -44,7 +44,7 @@ class Application(QMainWindow):
         self.prev_params.generate()
         
         offset = 50
-        canvas_size = 1024
+        self.canvas_size = height
         
         self.layout = QHBoxLayout(self)
         
@@ -70,7 +70,7 @@ class Application(QMainWindow):
         self.label = QLabel(self)
         qi = QImage(self.image.data, self.image.shape[1], self.image.shape[0], self.image.shape[1], QImage.Format_Grayscale8)
         pixmap = QPixmap(qi)
-        self.pixmap2 = pixmap.scaled(canvas_size, canvas_size, Qt.KeepAspectRatio)
+        self.pixmap2 = pixmap.scaled(self.canvas_size, self.canvas_size, Qt.KeepAspectRatio)
         self.label.setPixmap(self.pixmap2)
         self.label.setGeometry(10,10,self.pixmap2.width(),self.pixmap2.height())
         
@@ -217,7 +217,7 @@ class Application(QMainWindow):
         #Tab 3
       
 
-        self.mask = np.zeros([canvas_size,canvas_size,3])
+        self.mask = np.zeros([self.canvas_size,self.canvas_size,3])
         self.classifier = GaussianNB()
         self.tsparams = trainableParameters()
         self.filter_kernels = ['Gaussian','Diff. Gaussians','Median','Minimum','Maximum','Sobel','Hessian','Laplacian','M-Sum','M-Mean','M-Standard Deviation','M-Median','M-Minimum','M-Maximum']
@@ -232,7 +232,7 @@ class Application(QMainWindow):
         lay3.addLayout(self.button_lay)
         lay3.addLayout(im_lay)
 
-        self.canvas2 = Canvas(self.pixmap2)
+        self.canvas2 = Canvas(self.pixmap2,self.canvas_size)
         self.canvas2.setAlignment(Qt.AlignTop)
         
         self.tool_lay = QVBoxLayout()
@@ -412,7 +412,7 @@ class Application(QMainWindow):
             qi = QImage(self.image.data, self.image.shape[1], self.image.shape[0], self.image.shape[1], QImage.Format_Indexed8)
         
         pixmap = QPixmap(qi)
-        self.pixmap2 = pixmap.scaled(512, 512, Qt.KeepAspectRatio)
+        self.pixmap2 = pixmap.scaled(self.canvas_size, self.canvas_size, Qt.KeepAspectRatio)
         self.label.setPixmap(self.pixmap2)
             
     def rollingball(self):
@@ -450,7 +450,7 @@ class Application(QMainWindow):
             qi = QImage(labels.data, labels.shape[1], labels.shape[0], labels.shape[1], QImage.Format_Indexed8)
         #qi = QImage(imchoice.data, imchoice.shape[1], imchoice.shape[0], imchoice.shape[1], QImage.Format_Indexed8)
         pixmap = QPixmap(qi)
-        pixmap2 = pixmap.scaled(512, 512, Qt.KeepAspectRatio)
+        pixmap2 = pixmap.scaled(self.canvas_size, self.canvas_size, Qt.KeepAspectRatio)
         self.label.setPixmap(pixmap2)
         
         self.prev_params.load()
@@ -470,7 +470,7 @@ class Application(QMainWindow):
             qi = QImage(labels.data, labels.shape[1], labels.shape[0], labels.shape[1], QImage.Format_Indexed8)
         #qi = QImage(imchoice.data, imchoice.shape[1], imchoice.shape[0], imchoice.shape[1], QImage.Format_Indexed8)
         pixmap = QPixmap(qi)
-        pixmap2 = pixmap.scaled(512, 512, Qt.KeepAspectRatio)
+        pixmap2 = pixmap.scaled(self.canvas_size, self.canvas_size, Qt.KeepAspectRatio)
         self.label.setPixmap(pixmap2)
         
     def return_params(self,params):
@@ -588,12 +588,12 @@ class QPaletteButton(QPushButton):
 
 class Canvas(QLabel):
 
-    def __init__(self,pixmap):
+    def __init__(self,pixmap,canvas_size):
         super().__init__()
         self.OGpixmap = pixmap
         self.lastpixmap = pixmap
 
-        canvas_size = 1024
+        self.canvas_size = canvas_size
         self.setPixmap(pixmap)
         self.scaleFactor = 1
         #self.setBackgroundRole(QPalette.Base)
@@ -613,7 +613,7 @@ class Canvas(QLabel):
         self.penType = self.brush_tools[0]
         self.lineCount = 0
 
-        self.array = np.zeros((canvas_size,canvas_size,3),dtype=np.uint8)
+        self.array = np.zeros((self.canvas_size,self.canvas_size,3),dtype=np.uint8)
 
     def set_pen_color(self, c):
         self.color_index = c
@@ -631,13 +631,13 @@ class Canvas(QLabel):
         self.lineCount = 0
 
         painter = QPainter(self.pixmap())
-        painter.eraseRect(0,0,canvas_size,canvas_size)
+        painter.eraseRect(0,0,self.canvas_size,self.canvas_size)
         painter.drawPixmap(0,0,self.OGpixmap)
         painter.end()
         self.update()
 
     def clearLabels(self):
-        self.array = np.zeros((canvas_size,canvas_size,3), dtype=np.uint8)
+        self.array = np.zeros((self.canvas_size,self.canvas_size,3), dtype=np.uint8)
 
     def redrawLabels(self):
         array = toggle_channels(self.array)
@@ -655,7 +655,7 @@ class Canvas(QLabel):
         qi = QImage(thicc_labels.data, thicc_labels.shape[1], thicc_labels.shape[0], 4*thicc_labels.shape[1], QImage.Format_ARGB32_Premultiplied)
         
         pixmap = QPixmap(qi)
-        pixmap = pixmap.scaled(1024, 1024, Qt.KeepAspectRatio)
+        pixmap = pixmap.scaled(self.canvas_size, self.canvas_size, Qt.KeepAspectRatio)
         painter = QPainter(self.pixmap())
         painter.setOpacity(0.5)
         painter.drawPixmap(0,0,pixmap)
@@ -712,13 +712,13 @@ class Canvas(QLabel):
     def flood(self, e):
         image = self.pixmap().toImage()
         b = image.bits()
-        b.setsize(canvas_size * canvas_size * 4)
-        arr = np.frombuffer(b, np.uint8).reshape((1024, 1024, 4))
+        b.setsize(self.canvas_size * self.canvas_size * 4)
+        arr = np.frombuffer(b, np.uint8).reshape((self.canvas_size, self.canvas_size, 4))
         
         OGimage = self.OGpixmap.toImage()
         b = OGimage.bits()
-        b.setsize(canvas_size * canvas_size * 4)
-        OGim = np.frombuffer(b, np.uint8).reshape((1024, 1024, 4))
+        b.setsize(self.canvas_size * self.canvas_size * 4)
+        OGim = np.frombuffer(b, np.uint8).reshape((self.canvas_size, self.canvas_size, 4))
         OGim = np.flip(OGim, axis=2)
 
         arr = arr.astype(np.int32)
@@ -799,9 +799,9 @@ class Canvas(QLabel):
         resized = np.array(Image.fromarray(self.array).resize((image.shape[1],image.shape[0])))
         np.save(os.path.dirname(inspect.getfile(process))+'/parameters/manual_mask',resized)
 
-def main(haadf):
+def main(image,height):
     
-    ex = Application(haadf)
+    ex = Application(image,height)
     
     return(ex)
     
@@ -812,8 +812,11 @@ def SegUI(image):
     app = QApplication(sys.argv)
     app.aboutToQuit.connect(app.deleteLater)
     
+    screen = app.primaryScreen()
+    size = screen.size()
+    height = int(0.8*size.height())
     #params = ParticleAnalysis.param_generator()
-    ex = main(image)
+    ex = main(image,height)
     
     #ex.show()
     app.exec_()
@@ -829,6 +832,13 @@ if __name__ == '__main__':
     
     app = QApplication(sys.argv)
     app.aboutToQuit.connect(app.deleteLater)
+    
+    screen = app.primaryScreen()
+    print('Screen: %s' % screen.name())
+    size = screen.size()
+    print('Size: %d x %d' % (size.width(), size.height()))
+    rect = screen.availableGeometry()
+    print('Available: %d x %d' % (rect.width(), rect.height()))
     
     #params = ParticleAnalysis.param_generator()
     ex = main(haadf)
