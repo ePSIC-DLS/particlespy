@@ -159,8 +159,8 @@ Using the classifier generated, multiple images can be segmented. An example is 
 
 .. code-block:: python
 
-    folder = 'path fo folder of images to segment'
-    first = hs.load('{}/first image in folder'.format(folder))
+    folder = 'folder path of images to segment'
+    first = hs.load(f'{folder}/first image in folder')
 
     out = ps.SegUI(first)
     clf = out.classifier
@@ -175,3 +175,25 @@ Using the classifier generated, multiple images can be segmented. An example is 
         mask_im = ps.ClassifierSegment(clf, l)
         
         particles = ps.ParticleAnalysis(imagefile, params,particles=particles, mask=mask_im)
+
+
+Trainable Segmentation can also be performed using an existing segmentation mask to train the classifier before further classification.
+This is shown in the example below:
+
+.. code-block:: python
+
+    from PIL import Image
+    import numpy as np
+    from sklearn.naive_bayes import GaussianNB
+    import ParticleSpy.api as ps
+
+    image = hs.load("image path")
+    mask = np.asarray(Image.open("mask path"))
+    mask = ps.toggle_channels(mask[:,:,:3], colors = ['#000000','#ffffff'])
+    clf = GaussianNB()
+
+    _, clf = ps.ClusterTrained(image, mask, clf)
+
+This classifier can then be used to segment images.
+The function ``ps.toggle_channels`` is used to convert an RGB image into a 2D indexed array of labels. 
+This can also be used to convert the output of the ``ClassifierSegment`` into RGB images which can be exported.
