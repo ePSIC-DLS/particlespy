@@ -137,7 +137,7 @@ Using the Segmentation User Interface, trainable segmentation can be performed u
 .. image:: _static/TrainUI.png
     :align: center
 
-Labels can be drawn onto the image using the tools on the left hand side:
+Labels can be drawn onto the image using the tools at the top-left :
 
 * The freehand tool operates by pressing and holding the left mouse button to draw lines.
 * The line tool operates by left clicking twice, which produces a line between them, which is automatically added to the set of labels.
@@ -146,16 +146,21 @@ Labels can be drawn onto the image using the tools on the left hand side:
 As with manual segmentation, any enclosed region can be labelled by right clicking within it. 
 This can be done in multiple colours, by selecting the desired colour before labelling a region.
 
-Once areas have been labelled, training can be begun using the 'Update', followed by the 'Train Classifier' Button.
+Different filter kernels and classifiers can be chosen using the dropdowns and tick boxes. 
+The filter kernel parameters can also be altered using the Sigma, High Sigma and Disk Size parameters.
+Once areas have been labelled, training can be begun using the 'Update' and 'Train Classifier' Button.
+
 When this finishes the labels will be shown on top of the image in the user interface, this can take up to several minutes.
-The classifier can then be retrained by pressing the 'Clear' button and drawing on any additional features. 
+The classifier can then be retrained with additional pixels by by clearing the canvas of the displayed segmentation with `Clear Canvas`, and redrawing previous training labels with `redraw training labels`.
+the `clear training labels` can be used to delete the existing labels in memory, visible or not.
 
 Using the classifier generated, multiple images can be segmented. An example is shown in the following code:
 
+
 .. code-block:: python
 
-    folder = 'path fo folder of images to segment'
-    first = hs.load('{}/first image in folder'.format(folder))
+    folder = 'folder path of images to segment'
+    first = hs.load(f'{folder}/first image in folder')
 
     out = ps.SegUI(first)
     clf = out.classifier
@@ -170,3 +175,25 @@ Using the classifier generated, multiple images can be segmented. An example is 
         mask_im = ps.ClassifierSegment(clf, l)
         
         particles = ps.ParticleAnalysis(imagefile, params,particles=particles, mask=mask_im)
+
+
+Trainable Segmentation can also be performed using an existing segmentation mask to train the classifier before further classification.
+This is shown in the example below:
+
+.. code-block:: python
+
+    from PIL import Image
+    import numpy as np
+    from sklearn.naive_bayes import GaussianNB
+    import ParticleSpy.api as ps
+
+    image = hs.load("image path")
+    mask = np.asarray(Image.open("mask path"))
+    mask = ps.toggle_channels(mask[:,:,:3], colors = ['#000000','#ffffff'])
+    clf = GaussianNB()
+
+    _, clf = ps.ClusterTrained(image, mask, clf)
+
+This classifier can then be used to segment images.
+The function ``ps.toggle_channels`` is used to convert an RGB image into a 2D indexed array of labels. 
+This can also be used to convert the output of the ``ClassifierSegment`` into RGB images which can be exported.
