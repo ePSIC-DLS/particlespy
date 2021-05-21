@@ -27,9 +27,9 @@ def radial_profile(particle,signals,plot=True, mark_radius=False):
     dist_count_dic = {}
     for sig in signals:
         if sig == 'Image':
-            dist_count_dic['Image'] = concentric_scan_AbsoluteDis(particle.image)
+            dist_count_dic['Image'] = concentric_scan_absolutedis(particle.image)
         else:
-            dist_count_dic[sig] = concentric_scan_AbsoluteDis(particle.maps[sig])
+            dist_count_dic[sig] = concentric_scan_absolutedis(particle.maps[sig])
     
     scale = particle.image.axes_manager[0].scale
     units = particle.image.axes_manager[0].units
@@ -45,7 +45,7 @@ def radial_profile(particle,signals,plot=True, mark_radius=False):
         for sig in dist_count_dic:
             tuple(map(sum, zip(a, b)))'''
 
-def concentric_scan_AbsoluteDis(element_map):
+def concentric_scan_absolutedis(element_map):
     '''
     Distance unit is pixel and length is absolute length from particle center
     ----

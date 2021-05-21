@@ -1,4 +1,4 @@
-from ParticleSpy import api as ps
+from particlespy import api as ps
 import numpy.testing as nptest
 import generate_test_data as gen_test
 import os
@@ -6,7 +6,7 @@ import os
 def test_load_particles():
     my_path = os.path.dirname(__file__)
     
-    p_list = ps.load(os.path.join(my_path, 'Test_particle.hdf5'))
+    p_list = ps.load(os.path.join(my_path, 'test_particle.hdf5'))
     p = p_list.list[0]
     
     image = gen_test.generate_test_image(hspy=True)

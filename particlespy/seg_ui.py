@@ -25,9 +25,9 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 
-from ParticleSpy.ParticleAnalysis import parameters, trainableParameters
-from ParticleSpy.segimgs import ClusterTrained, toggle_channels
-from ParticleSpy.segptcls import process
+from particlespy.particle_analysis import parameters, trainable_parameters
+from particlespy.segimgs import cluster_trained, toggle_channels
+from particlespy.segptcls import process
 
 
 class Application(QMainWindow):
@@ -805,7 +805,7 @@ def main(image,height):
     
     return(ex)
     
-def SegUI(image):
+def seg_ui(image):
     """
     Function to launch the Segmentation User Interface.
     """
@@ -829,7 +829,7 @@ def SegUI(image):
     
 if __name__ == '__main__':
     import hyperspy.api as hs
-    filename = "Data/JEOL HAADF Image.dm4"
+    filename = "data/JEOL HAADF Image.dm4"
     haadf = hs.load(filename)
     
     image_out = np.zeros_like(haadf)

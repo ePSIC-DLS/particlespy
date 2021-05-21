@@ -1,1 +1,1 @@
-name = "ParticleSpy"
+name = "particlespy"

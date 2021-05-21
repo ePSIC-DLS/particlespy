@@ -5,15 +5,15 @@ Created on Tue Jul 31 13:35:23 2018
 @author: qzo13262
 """
 
-from ParticleSpy.segptcls import process
+from particlespy.segptcls import process
 import numpy as np
-from ParticleSpy.ptcl_class import Particle, Particle_list
-from ParticleSpy.custom_kernels import membrane_projection
+from particlespy.ptcl_class import particle, particle_list
+from particlespy.custom_kernels import membrane_projection
 from skimage import filters, morphology
 from skimage.measure import label, regionprops, perimeter
 from sklearn import preprocessing
 from sklearn.cluster import DBSCAN, KMeans
-import ParticleSpy.find_zoneaxis as zone
+import particlespy.find_zoneaxis as zone
 import warnings
 import h5py
 import inspect
@@ -21,7 +21,7 @@ import pandas as pd
 import trackpy
 import os
 
-def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
+def particle_analysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
     """
     Perform segmentation and analysis of images of particles.
     
@@ -46,7 +46,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
     """
     
     if particles==None:
-        particles=Particle_list()
+        particles=particle_list()
     
     #Check if input is list of signal objects or single one
     if isinstance(acquisition,list):
@@ -55,7 +55,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         image = acquisition
     
     if str(mask) == 'UI':
-        labeled = label(np.load(os.path.dirname(inspect.getfile(process))+'/Parameters/manual_mask.npy')[:,:,0])
+        labeled = label(np.load(os.path.dirname(inspect.getfile(process))+'/parameters/manual_mask.npy')[:,:,0])
         print(len(labeled))
         #plt.imshow(labeled)
         #morphology.remove_small_objects(labeled,30,in_place=True)
@@ -67,7 +67,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         labeled = label(mask)
         
     for region in regionprops(labeled): #'count' start with 1, 0 is background
-        p = Particle()
+        p = particle()
         
         p_im = np.zeros_like(image.data)
         p_im[labeled==region.label] = image.data[labeled==region.label] - np.min(image.data[labeled==region.label])
@@ -173,7 +173,7 @@ def ParticleAnalysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         
     return(particles)
     
-def ParticleAnalysisSeries(image_series,parameters,particles=None):
+def particle_analysis_series(image_series,parameters,particles=None):
     """
     Perform segmentation and analysis of times series of particles.
     
@@ -194,23 +194,23 @@ def ParticleAnalysisSeries(image_series,parameters,particles=None):
     Particle_list object
     """
     
-    particles = Particle_list()
+    particles = particle_list()
     if isinstance(image_series,list):
         for i,image in enumerate(image_series):
-            ParticleAnalysis(image,parameters,particles)
+            particle_analysis(image,parameters,particles)
             for particle in particles.list:
                 if particle.properties['frame']['value'] == None:
                     particle.set_property('frame',i,None)
     else:
         for i,image in enumerate(image_series.inav):
-            ParticleAnalysis(image,parameters,particles)
+            particle_analysis(image,parameters,particles)
             for particle in particles.list:
                 if particle.properties['frame']['value'] == None:
                     particle.set_property('frame',i,None)
     
     return(particles)
 
-def timeseriesanalysis(particles,max_dist=1,memory=3,properties=['area']):
+def time_series_analysis(particles,max_dist=1,memory=3,properties=['area']):
     """
     Perform tracking of particles for times series data.
 
@@ -384,7 +384,7 @@ class parameters(object):
         f.close()
 
 
-class trainableParameters(object):
+class trainable_parameters(object):
     """A parameters object for trainable segmentation."""
     
     def __init__(self,gaussian = [True,1], diff_gaussian = [True,[False,1],1,16],
@@ -402,7 +402,7 @@ class trainableParameters(object):
         self.laplacian = laplacian
         self.membrane = membrane
     
-    def setGlobalSigma(self, sigma):
+    def set_global_sigma(self, sigma):
         self.gaussian[1] = sigma        
         self.diff_gaussian[1][1] = sigma
         self.median[1][1] = sigma
@@ -413,12 +413,12 @@ class trainableParameters(object):
         self.laplacian[1][1] = sigma
         self.membrane[0][1] = sigma
 
-    def setGlobalDiskSize(self, disk_size):
+    def set_global_disk_size(self, disk_size):
         self.median[2] = disk_size
         self.minimum[2] = disk_size
         self.maximum[2] = disk_size
 
-    def setGlobalPrefilter(self, sigma):
+    def set_global_prefilter(self, sigma):
         self.diff_gaussian[1] = [True,sigma]        
         self.median[1] = [True,sigma]
         self.minimum[1] = [True,sigma]
@@ -428,29 +428,29 @@ class trainableParameters(object):
         self.laplacian[1] = [True,sigma]
         self.membrane[0] = [True,sigma]        
 
-    def setGaussian(self,enabled = True, sigma = 1):
+    def set_gaussian(self,enabled = True, sigma = 1):
         self.gaussian=[enabled,sigma]
 
-    def setDiffGaussian(self,enabled = True, prefilter=True, prefilter_sigma = 1, low_sigma=1,high_sigma=16):
+    def set_diff_gaussian(self,enabled = True, prefilter=True, prefilter_sigma = 1, low_sigma=1,high_sigma=16):
         self.diff_gaussian=[enabled,[prefilter,prefilter_sigma],low_sigma,high_sigma]
 
-    def setMedian(self,enabled = True, prefilter=True, prefilter_sigma = 1, disk_size=20):
+    def set_median(self,enabled = True, prefilter=True, prefilter_sigma = 1, disk_size=20):
         self.median=[enabled,[prefilter,prefilter_sigma],disk_size]
 
-    def setMinimum(self,enabled = True, prefilter=True, prefilter_sigma = 1, disk_size=20):
+    def set_minimum(self,enabled = True, prefilter=True, prefilter_sigma = 1, disk_size=20):
         self.minimum=[enabled,[prefilter,prefilter_sigma],disk_size]
 
-    def setMaximum(self,enabled = True, prefilter=True, prefilter_sigma = 1, disk_size=20):
+    def set_maximum(self,enabled = True, prefilter=True, prefilter_sigma = 1, disk_size=20):
         self.maximum=[enabled,[prefilter,prefilter_sigma],disk_size]
 
-    def setSobel(self,enabled = True, prefilter=True, prefilter_sigma = 1):
+    def set_sobel(self,enabled = True, prefilter=True, prefilter_sigma = 1):
         self.sobel=[enabled,[prefilter,prefilter_sigma]]
 
-    def setHessian(self,enabled = True, prefilter=True, prefilter_sigma = 1):
+    def set_hessian(self,enabled = True, prefilter=True, prefilter_sigma = 1):
         self.hessian=[enabled,[prefilter,prefilter_sigma]]
 
-    def setLaplacian(self,enabled = True, prefilter=True, prefilter_sigma = 1):
+    def set_laplacian(self,enabled = True, prefilter=True, prefilter_sigma = 1):
         self.laplacian=[enabled,[prefilter,prefilter_sigma]]
 
-    def setMembrane(self,enabled = True, prefilter=True, prefilter_sigma = 1,summ = True,mean = True, stddev = True, maximum = True, minimum = True, median = True):
+    def set_membrane(self,enabled = True, prefilter=True, prefilter_sigma = 1,summ = True,mean = True, stddev = True, maximum = True, minimum = True, median = True):
         self.membrane=[[prefilter, prefilter_sigma], summ, mean, stddev, maximum, minimum, median]

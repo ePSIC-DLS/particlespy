@@ -21,7 +21,7 @@ def save_plist(p_list,filename):
         
         p_group.create_dataset("Mask",data=particle.mask)
         
-        if hasattr(particle, 'image'):
+        if hasattr(particle, 'Image'):
             p_group.create_dataset("Image",data=particle.image.data)
         
     f.close()

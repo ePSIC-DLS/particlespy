@@ -8,13 +8,13 @@ Created on Mon Nov  5 09:48:31 2018
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-from ParticleSpy.ParticleAnalysis import ParticleAnalysis, parameters, ParticleAnalysisSeries, timeseriesanalysis
-from ParticleSpy.segimgs import *
-from ParticleSpy.SegUI import SegUI
-from ParticleSpy.ptcl_class import Particle_list, Particle
+from particlespy.particle_analysis import particle_analysis, parameters, particle_analysis_series, time_series_analysis
+from particlespy.segimgs import *
+from particlespy.seg_ui import seg_ui
+from particlespy.ptcl_class import particle_list, particle
 
-from ParticleSpy.particle_load import load_plist
-from ParticleSpy.radial_profile import radial_profile, plot_profile
+from particlespy.particle_load import load_plist
+from particlespy.radial_profile import radial_profile, plot_profile
 
 def load(filename):
     p_list = load_plist(filename)

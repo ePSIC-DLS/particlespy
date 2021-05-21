@@ -8,12 +8,12 @@ Created on Tue Jul 31 14:51:58 2018
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.ndimage import interpolation
-from ParticleSpy.particle_save import save_plist
+from particlespy.particle_save import save_plist
 from sklearn import feature_extraction, cluster, preprocessing
 import itertools as it
 from mpl_toolkits.mplot3d import Axes3D
 
-class Particle(object):
+class particle(object):
     """A segmented particle object.
     
     Attributes
@@ -65,7 +65,7 @@ class Particle(object):
         
     def set_property(self,propname,value,units):
         """
-        Give a Particle() object an arbitrary property.
+        Give a particle() object an arbitrary property.
         
         Parameters
         ----------
@@ -106,7 +106,7 @@ class Particle(object):
     def store_composition(self,composition):
         self.composition = {el.metadata.Sample.elements[0]:el.data for el in composition}
         
-class Particle_list(object):
+class particle_list(object):
     """A particle list object."""
     
     def __init__(self):
@@ -315,7 +315,7 @@ class Particle_list(object):
         
         plist_clusters = []
         for n in range(start,cluster_out.max()+1):
-            p_list_new = Particle_list()
+            p_list_new = particle_list()
             p_list_new.list = list(it.compress(self.list,[c==n for c in cluster_out]))
             plist_clusters.append(p_list_new)
         

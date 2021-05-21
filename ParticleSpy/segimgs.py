@@ -5,11 +5,11 @@ from skimage.exposure import rescale_intensity
 from skimage.measure import label, perimeter, regionprops
 from sklearn import preprocessing
 
-from ParticleSpy.custom_kernels import laplacian, membrane_projection
-from ParticleSpy.ParticleAnalysis import trainableParameters
+from particlespy.custom_kernels import laplacian, membrane_projection
+from particlespy.particle_analysis import trainable_parameters
 
 
-def CreateFeatures(image, parameters=None):
+def create_features(image, parameters=None):
     """
     Creates set of features for data classification
 
@@ -23,7 +23,7 @@ def CreateFeatures(image, parameters=None):
     set of chosen features of the inputted image.
     """
     if parameters == None:
-        parameters = trainableParameters()
+        parameters = trainable_parameters()
     shape = [image.shape[0], image.shape[1], 1]
 
     image_stack = np.zeros(shape, dtype=np.float16)
@@ -112,7 +112,7 @@ def CreateFeatures(image, parameters=None):
     
     return image_stack[:,:,1:]
 
-def ClusterLearn(images, clust, parameters = None):
+def cluster_learn(images, clust, parameters = None):
     """
     Creates masks of given images using scikit learn clustering methods.
     
@@ -137,7 +137,7 @@ def ClusterLearn(images, clust, parameters = None):
         image = [images]
         
     if parameters == None:
-        parameters = trainableParameters()
+        parameters = trainable_parameters()
     
     mask = []
     
@@ -146,7 +146,7 @@ def ClusterLearn(images, clust, parameters = None):
         #image = preprocessing.maxabs_scale(image)
         shape = [image.shape[0], image.shape[1], 1]
 
-        image_stack = CreateFeatures(image, parameters=parameters)
+        image_stack = create_features(image, parameters=parameters)
 
         pixel_stacks = np.zeros([shape[0]*shape[1],image_stack.shape[2]])
         for ii in range(shape[1]):
@@ -164,7 +164,7 @@ def ClusterLearn(images, clust, parameters = None):
         
     return mask
 
-def ClusterTrained(image, labels, classifier, parameters = None):
+def cluster_trained(image, labels, classifier, parameters = None):
     """
     Trains classifier and classifies an image.
     
@@ -184,7 +184,7 @@ def ClusterTrained(image, labels, classifier, parameters = None):
         #changes single images into a list
 
     if parameters == None:
-        parameters = trainableParameters()
+        parameters = trainable_parameters()
         
     features = []
     for i in range(len(image)):
@@ -200,7 +200,7 @@ def ClusterTrained(image, labels, classifier, parameters = None):
             shape = image[i].data.shape
             image[i] = image[i].data
 
-            features.append(CreateFeatures(image[i], parameters=parameters))
+            features.append(create_features(image[i], parameters=parameters))
             features[i] = np.rot90(np.rot90(features[i], axes=(2,0)), axes=(1,2))
             #features are num/x/y
 
@@ -242,7 +242,7 @@ def ClusterTrained(image, labels, classifier, parameters = None):
 
     return output, classifier
 
-def ClassifierSegment(classifier, image, parameters = None):
+def classifier_segment(classifier, image, parameters = None):
     """
     classifies image with pretrained classifier.
     
@@ -255,7 +255,7 @@ def ClassifierSegment(classifier, image, parameters = None):
     -------
     mask of labels (1channel)
     """
-    features = CreateFeatures(image, parameters=parameters)
+    features = create_features(image, parameters=parameters)
     features = np.rot90(np.rot90(features, axes=(2,0)), axes=(1,2))
     features = features[:, image == image].T
     mask = classifier.predict(features)
