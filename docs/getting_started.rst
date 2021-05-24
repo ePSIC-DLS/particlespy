@@ -10,11 +10,12 @@ Installing ParticleSpy
 Install ParticleSpy
 -------------------
 
-The easiest way to install the latest stable build of ParticleSpy is via pip. This will install the package and its dependencies. You can do this by typing the following in to the command line:
+The easiest way to install the latest stable build of ParticleSpy is either via conda or pip. This will install the package and its dependencies. You can do this by typing the following in to the command line:
 
 .. code-block:: bash
 
-    $ pip install ParticleSpy
+    $ conda install ParticleSpy
+	$ pip install ParticleSpy
 
 
 Installing from Github
@@ -38,13 +39,13 @@ In order to use ParticleSpy you must first import the api by entering the follow
 
 .. code-block:: python
 
-    >>> import ParticleSpy.api as ps
+    >>> import particlespy.api as ps
 
 You are then able to start using the functionality of ParticleSpy. If you already have an image loaded as a Hyperspy signal object you can now use the SegUI function to choose segmentation parameters.
 
 .. code-block:: python
 
-    >>> ps.SegUI(image)
+    >>> ps.seg_ui(image)
 
 This will pop up a QT window in which you can try different segmentation parameters. Once you are happy with the parameters press Update one last time in order to save the current parameters. You can then load these parameters in 
 to a parameters object by doing the following:
@@ -58,7 +59,7 @@ You can now use the chosen parameters to do your particle analysis:
 
 .. code-block:: python
 
-    >>> particles = ps.ParticleAnalysis(image,params)
+    >>> particles = ps.particle_analysis(image,params)
 
 The variable particles is now assigned to a particle list object which contains data on all of the segmented particles.
 
