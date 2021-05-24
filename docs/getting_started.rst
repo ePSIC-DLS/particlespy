@@ -79,4 +79,4 @@ Once saved, a particles list can be loaded from a saved file by using the :py:me
     >>> particles = ps.load(filename)
 
 
-For further examples of using the package you can view the example Jupyter notebook `here <https://github.com/TomSlater/ParticleSpy/blob/master/ParticleSpy/Basic%20Example.ipynb>`_. 
+For further examples of using the package you can view the example Jupyter notebook `here <https://github.com/ePSIC-DLS/particlespy_examples/blob/main/Basic%20Example.ipynb>`_. 
