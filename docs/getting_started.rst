@@ -14,8 +14,8 @@ The easiest way to install the latest stable build of ParticleSpy is either via 
 
 .. code-block:: bash
 
-    $ conda install ParticleSpy
-	$ pip install ParticleSpy
+    $ conda install particlespy
+	$ pip install particlespy
 
 
 Installing from Github
