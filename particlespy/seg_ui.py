@@ -202,7 +202,7 @@ class Application(QMainWindow):
         self.setCentralWidget(self.tabs)
         
         #Tab 2
-        self.canvas = Canvas(self.pixmap2)
+        self.canvas = Canvas(self.pixmap2,self.canvas_size)
         #self.canvas = Drawer(self.pixmap2)
         
         self.getarrayb = QPushButton('Save Segmentation',self)
@@ -219,7 +219,7 @@ class Application(QMainWindow):
 
         self.mask = np.zeros([self.canvas_size,self.canvas_size,3])
         self.classifier = GaussianNB()
-        self.tsparams = trainableParameters()
+        self.tsparams = trainable_parameters()
         self.filter_kernels = ['Gaussian','Diff. Gaussians','Median','Minimum','Maximum','Sobel','Hessian','Laplacian','M-Sum','M-Mean','M-Standard Deviation','M-Median','M-Minimum','M-Maximum']
 
         lay3 = QHBoxLayout()
@@ -531,11 +531,11 @@ class Application(QMainWindow):
             self.tsparams.membrane[6] = not self.tsparams.membrane[6]
 
     def change_sigma(self):
-        self.tsparams.setGlobalSigma(self.spinb1.value())
+        self.tsparams.set_global_sigma(self.spinb1.value())
     def change_high_sigma(self):
         self.tsparams.diff_gaussian[3] = self.spinb2.value()
     def change_disk(self):
-        self.tsparams.setGlobalDiskSize(self.spinb3.value())
+        self.tsparams.set_global_disk_size(self.spinb3.value())
 
     def classifier_choice(self):
         if str(self.comboBox.currentText()) == "Random Forest":
@@ -551,7 +551,7 @@ class Application(QMainWindow):
         
         array = self.canvas2.array
         self.mask = np.array(Image.fromarray(array).resize((self.image.shape[1],self.image.shape[0])))
-        self.trained_mask, self.classifier = ClusterTrained(self.im_hs, self.mask, self.classifier, self.tsparams)
+        self.trained_mask, self.classifier = cluster_trained(self.im_hs, self.mask, self.classifier, self.tsparams)
         
         self.canvas2.clearCanvas()
         if self.trained_mask.any() != 0:
