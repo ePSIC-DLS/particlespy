@@ -327,7 +327,7 @@ class parameters(object):
         
         self.store['store_maps'] = store_maps
     
-    def save(self,filename=os.path.dirname(inspect.getfile(process))+'/Parameters/parameters_current.hdf5'):
+    def save(self,filename=os.path.dirname(inspect.getfile(process))+'/parameters/parameters_current.hdf5'):
         f = h5py.File(filename,'w')
         
         segment = f.create_group("segment")
@@ -353,7 +353,7 @@ class parameters(object):
         
         f.close()
         
-    def load(self,filename=os.path.dirname(inspect.getfile(process))+'/Parameters/parameters_current.hdf5'):
+    def load(self,filename=os.path.dirname(inspect.getfile(process))+'/parameters/parameters_current.hdf5'):
         f = h5py.File(filename,'r')
         
         segment = f["segment"]
