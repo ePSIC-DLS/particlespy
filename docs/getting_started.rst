@@ -10,7 +10,7 @@ Installing ParticleSpy
 Install ParticleSpy
 -------------------
 
-The easiest way to install the latest stable build of ParticleSpy is either via conda or pip. This will install the package and its dependencies. You can do this by typing the following in to the command line:
+The easiest way to install the latest stable build of ParticleSpy is either via conda or pip. This will install the package and its dependencies. You can do this by typing one of the following in to the command line:
 
 .. code-block:: bash
 
