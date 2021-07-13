@@ -30,7 +30,7 @@ you can use the following command to install the package.
 
 .. code-block:: bash
 
-    $ pip install -e git+https://github.com/ePSIC-DLS/ParticleSpy
+    $ pip install -e git+https://github.com/ePSIC-DLS/particlespy
 
 Using ParticleSpy
 =================
