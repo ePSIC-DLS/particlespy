@@ -13,7 +13,7 @@ install_requires=["hyperspy",
 setuptools.setup(
     name="particlespy",
     package_dir={'particlespy':'particlespy'},
-    version="0.5.2",
+    version="0.6.0",
     author="Thomas Slater",
     author_email="tjaslater@gmail.com",
     description="A package to perform particle segmentation and analysis",
