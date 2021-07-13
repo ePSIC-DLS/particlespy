@@ -5,20 +5,20 @@ Plotting and Saving
 *******************
 
 One of the main benefits of ParticleSpy is the ability to plot particle properties natively.
-The main method for plotting particle properties is :py:meth:`~.Particle_list.plot`.
+The main method for plotting particle properties is :py:meth:`~.particle_list.plot`.
 This method plots either a histogram of any specified property or a scatter plot of two properties, as long as you have added these properties to each particle (either automatically or manually).
 
 An example of plotting a histogram of particle areas in shown here:
 
 .. code-block:: python
 
-    >>> particles = ps.ParticleAnalysis(data, params, mask=generated_mask)
+    >>> particles = ps.particle_analysis(data, params, mask=generated_mask)
     >>> particles.plot('area', bins = 20)
 
 .. image:: _static/area_dist.png
     :align: center
 
-In the above code it is possible to plot particle area because this is automatically calculated in the ParticleAnalysis function.
+In the above code it is possible to plot particle area because this is automatically calculated in the particle_analysis function.
 
 To plot a scatter plot of two properties you simply need to specify two properties in the arguments:
 
@@ -31,7 +31,7 @@ To plot a scatter plot of two properties you simply need to specify two properti
 
 It is also possible to plot a 3D scatter plot of three properties by specifying three properties in the argument.
     
-Plotting of more than one Particle_list can be done using the top level :py:meth:`~.api.plot` function:
+Plotting of more than one particle_list can be done using the top level :py:meth:`~.api.plot` function:
 
 .. code-block:: python
 

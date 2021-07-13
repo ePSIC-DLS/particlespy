@@ -7,19 +7,19 @@ Time Series
 ParticleSpy is able to segment particles over a series of images and to track how properties evolve over time.
 We use the trackpy library in order to relatively quickly track particles through an image series.
 
-In order to peform particle analysis on an image series the :py:meth:`~.ParticleAnalysisSeries` function is used:
+In order to peform particle analysis on an image series the :py:meth:`~.particle_analysis_series` function is used:
 
 .. code-block:: python
 
-    >>> particles = ps.ParticleAnalysisSeries(data, params)
+    >>> particles = ps.particle_analysis_series(data, params)
 
-This provides the exact same functionality as :py:meth:`~.ParticleAnalysis` but also assigns a frame number to each particle.
+This provides the exact same functionality as :py:meth:`~.particle_analysis` but also assigns a frame number to each particle.
 
-In order to track particles over a time series, the :py:meth:`~.timeseriesanalysis` function can be used:
+In order to track particles over a time series, the :py:meth:`~.time_series_analysis` function can be used:
 
 .. code-block:: python
 
-    >>> time_series = ps.timeseriesanalysis(particles)
+    >>> time_series = ps.time_series_analysis(particles)
 
 This function returns a pandas dataframe whose format is that of a trajectories object in trackpy.
 

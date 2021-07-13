@@ -1,5 +1,4 @@
-ParticleSpy/__pycache__/
-ParticleSpy/Parameters/
+particlespy/__pycache__/
 particlespy.egg-info/
-ParticleSpy/__pycache__/*.pyc
+particlespy/__pycache__/*.pyc
 .vscode/settings.json

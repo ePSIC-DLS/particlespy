@@ -9,7 +9,7 @@ One important aspect of ParticleSpy are the properties associated with each Part
 Native Properties
 -----------------
 
-When using the :py:meth:`~.ParticleAnalysis` function ParticleSpy is able to calculate a number of "native" properties listed in the table below.
+When using the :py:meth:`~.particle_analysis` function ParticleSpy is able to calculate a number of "native" properties listed in the table below.
 
 .. table:: Particle properties
 
@@ -45,7 +45,7 @@ When using the :py:meth:`~.ParticleAnalysis` function ParticleSpy is able to cal
 Adding Properties
 -----------------
 
-In addition to the "native" properties it is possible to add any additional properties using the :py:meth:`~.Particle.set_property` function.
+In addition to the "native" properties it is possible to add any additional properties using the :py:meth:`~.particle.set_property` function.
 
 .. code-block:: python
 
