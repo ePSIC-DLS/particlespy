@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Particle Analysis &mdash; ParticleSpy 0.5.2 documentation</title>
+  <title>Particle Analysis &mdash; ParticleSpy 0.6.0 documentation</title>
   
 
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -63,7 +66,7 @@
             
             
               <div class="version">
-                0.5.2
+                0.6.0
               </div>
             
           
@@ -88,7 +91,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="segmentation.html">Segmentation</a></li>
@@ -173,17 +176,17 @@
 <span id="id1"></span><h1>Particle Analysis<a class="headerlink" href="#particle-analysis" title="Permalink to this headline">¶</a></h1>
 <p>Once you have chosen your segmentation parameters and have successfully prepared a parameters object you can use this to perform Particle Analysis.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">hyperspy.api</span> <span class="k">as</span> <span class="nn">hs</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">hs</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;ParticleSpy/Data/JEOL HAADF Image.dm4&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">hs</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;particlespy/data/JEOL HAADF Image.dm4&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">parameters</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">params</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">ParticleAnalysis</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">particle_analysis</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Particle Analysis will run the segmentation on your data and calculate a number of parameters for each particle.</p>
 <p>The calculated parameters include:</p>
 <ul class="simple">
 <li><p>Area (“area”)</p></li>
-<li><p>Equivalent circular diameter (“”)</p></li>
+<li><p>Equivalent circular diameter (“equivalent circular diameter”)</p></li>
 <li><p>Major and minor axes lengths (“major axis length” and “minor axis length”)</p></li>
 <li><p>Circularity (“circularity”)</p></li>
 <li><p>Eccentricity (“eccentricity”)</p></li>
@@ -202,7 +205,7 @@
 <h2>Combining Particles from Multiple Images<a class="headerlink" href="#combining-particles-from-multiple-images" title="Permalink to this headline">¶</a></h2>
 <p>It is possible to analyse particles from multiple images by passing a previously populated Particle_list object to <code class="xref py py-meth docutils literal notranslate"><span class="pre">ParticleAnalysis()</span></code> instead of returning a new Particle_list.
 For example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ps</span><span class="o">.</span><span class="n">ParticleAnalysis</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">particles</span><span class="o">=</span><span class="n">particles</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ps</span><span class="o">.</span><span class="n">particle_analysis</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">particles</span><span class="o">=</span><span class="n">particles</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -220,7 +223,7 @@ The only requirement is that the navigation dimensions of the additional data ar
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">image</span><span class="p">,</span><span class="n">eds_si</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">params</span><span class="o">.</span><span class="n">generate_eds</span><span class="p">(</span><span class="n">eds_method</span><span class="o">=</span><span class="s1">&#39;CL&#39;</span><span class="p">,</span><span class="n">elements</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Pt&#39;</span><span class="p">,</span><span class="s1">&#39;Au&#39;</span><span class="p">],</span><span class="n">factors</span><span class="o">=</span><span class="p">[</span><span class="mf">1.7</span><span class="p">,</span><span class="mf">1.9</span><span class="p">],</span><span class="n">store_maps</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">ParticleAnalysis</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">particle_analysis</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -230,18 +233,18 @@ The only requirement is that the navigation dimensions of the additional data ar
 In order to use a pre-generated mask it is possible to pass a mask argument to <code class="xref py py-meth docutils literal notranslate"><span class="pre">ParticleAnalysis()</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">generated_mask</span> <span class="o">=</span> <span class="n">hs</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;maskfile&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">load</span><span class="p">()</span> <span class="c1"># This isn&#39;t used if you load a pre-generated mask but you still have to pass it.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">ParticleAnalysis</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">generated_mask</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">particle_analysis</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">generated_mask</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>If you have used the manual segmentation editor in <code class="xref py py-meth docutils literal notranslate"><span class="pre">SegUI()</span></code> you can simply pass ‘UI’ as the mask argument.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">ParticleAnalysis</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="s1">&#39;UI&#39;</span><span class="p">)</span>
+<p>If you have used the manual segmentation editor in <code class="xref py py-meth docutils literal notranslate"><span class="pre">seg_ui()</span></code> you can simply pass ‘UI’ as the mask argument.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">particle_analysis</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="s1">&#39;UI&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="cluster-particles-based-on-properties">
 <h2>Cluster Particles Based on Properties<a class="headerlink" href="#cluster-particles-based-on-properties" title="Permalink to this headline">¶</a></h2>
 <p>It is possible to do clustering of particles based on their properties.
-This can be done using the <a class="reference internal" href="source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle_list.cluster_particles" title="ParticleSpy.ptcl_class.Particle_list.cluster_particles"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cluster_particles()</span></code></a> function.
+This can be done using the <code class="xref py py-meth docutils literal notranslate"><span class="pre">cluster_particles()</span></code> function.
 Clustering uses the scikit-learn package, with the ability to use Kmeans, DBSCAN and OPTICS methods.
 For example, if you wanted to separate the particles in to two clusters based on their area and ADF intensity, you could do:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">clustered_particles</span> <span class="o">=</span> <span class="n">particles</span><span class="o">.</span><span class="n">cluster_particles</span><span class="p">(</span><span class="n">properties</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;area&#39;</span><span class="p">,</span><span class="s1">&#39;intensity&#39;</span><span class="p">],</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -254,7 +257,7 @@ For example, if you wanted to separate the particles in to two clusters based on
 <div class="section" id="normalize-particle-image-sizes">
 <h2>Normalize Particle Image Sizes<a class="headerlink" href="#normalize-particle-image-sizes" title="Permalink to this headline">¶</a></h2>
 <p>Sometimes further processing requires that all particle images have the same dimensions.
-In ParticleSpy this can be readily achieved using the <a class="reference internal" href="source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle_list.normalize_boxing" title="ParticleSpy.ptcl_class.Particle_list.normalize_boxing"><code class="xref py py-meth docutils literal notranslate"><span class="pre">normalize_boxing()</span></code></a> function.
+In ParticleSpy this can be readily achieved using the <code class="xref py py-meth docutils literal notranslate"><span class="pre">normalize_boxing()</span></code> function.
 The function will set all image dimensions to the largest x and y values in the particle list.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span><span class="o">.</span><span class="n">normalize_boxing</span><span class="p">()</span>
 </pre></div>

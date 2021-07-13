@@ -1,7 +1,7 @@
-ParticleSpy
+particlespy
 ===========
 
 .. toctree::
    :maxdepth: 4
 
-   ParticleSpy
+   particlespy

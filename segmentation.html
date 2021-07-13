@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Segmentation &mdash; ParticleSpy 0.5.2 documentation</title>
+  <title>Segmentation &mdash; ParticleSpy 0.6.0 documentation</title>
   
 
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -63,7 +66,7 @@
             
             
               <div class="version">
-                0.5.2
+                0.6.0
               </div>
             
           
@@ -88,7 +91,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Segmentation</a><ul>
@@ -178,7 +181,7 @@
 <div class="section" id="using-a-pre-segmented-mask">
 <h2>Using a Pre-Segmented Mask<a class="headerlink" href="#using-a-pre-segmented-mask" title="Permalink to this headline">¶</a></h2>
 <p>The most straightforward method is to supply ParticleSpy with a pre-segmented mask (boolean image).</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ParticleAnalysis</span><span class="p">(</span><span class="n">acquisition</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">mask</span> <span class="o">=</span> <span class="n">numpy</span> <span class="n">array</span> <span class="n">containg</span> <span class="n">mask</span> <span class="n">data</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ps</span><span class="o">.</span><span class="n">particle_analysis</span><span class="p">(</span><span class="n">acquisition</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">mask</span> <span class="o">=</span> <span class="n">numpy</span> <span class="n">array</span> <span class="n">containg</span> <span class="n">mask</span> <span class="n">data</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>In this way other software (e.g. ImageJ) could be used to perform segmentation which is then used by ParticleSpy to segment particles.</p>
@@ -188,7 +191,7 @@
 <p>ParticleSpy can also perform its own segmentation either using automated functions from scikit-image or using a fully manual approach.
 In order to assist with both methods, ParticleSpy provides a Segmentation User Interface.
 This can be launched from a python kernel using the <code class="xref py py-meth docutils literal notranslate"><span class="pre">SegUI()</span></code> function.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SegUI</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ps</span><span class="o">.</span><span class="n">seg_ui</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="section" id="parameter-picking-for-automated-segmentation">
@@ -275,18 +278,18 @@ Doing so will ruin the segmentation and you will have to reload SegUI.</p>
 <h2>Filter-Based Clustering and Segmentation<a class="headerlink" href="#filter-based-clustering-and-segmentation" title="Permalink to this headline">¶</a></h2>
 <p>ParticleSpy can also segment images by clustering over different filter kernels.
 This is done by calling:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ClusterLearn</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">methods</span> <span class="o">=</span> <span class="n">name</span> <span class="n">of</span> <span class="n">clustering</span> <span class="n">algorithm</span><span class="p">,</span> <span class="n">desired</span> <span class="n">feature</span> <span class="n">sets</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ps</span><span class="o">.</span><span class="n">cluster_learn</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">methods</span> <span class="o">=</span> <span class="n">name</span> <span class="n">of</span> <span class="n">clustering</span> <span class="n">algorithm</span><span class="p">,</span> <span class="n">desired</span> <span class="n">feature</span> <span class="n">sets</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This returns a segmentation mask of the image.
-This can be carried out for a sequence of images using <code class="docutils literal notranslate"><span class="pre">ClusterLearnSeries</span></code>.</p>
+This can be carried out for a sequence of images using <code class="docutils literal notranslate"><span class="pre">cluster_learn_series</span></code>.</p>
 <p>In future versions, this will most likely be updated to be selected via a GUI or with a list of presets.</p>
 </div>
 <div class="section" id="trainable-segmentation">
 <h2>Trainable Segmentation<a class="headerlink" href="#trainable-segmentation" title="Permalink to this headline">¶</a></h2>
 <p>Using the Segmentation User Interface, trainable segmentation can be performed using the ‘Training’ tab in the the top bar.</p>
 <img alt="_images/TrainUI.png" class="align-center" src="_images/TrainUI.png" />
-<p>Labels can be drawn onto the image using the tools on the left hand side:</p>
+<p>Labels can be drawn onto the image using the tools at the top-left :</p>
 <ul class="simple">
 <li><p>The freehand tool operates by pressing and holding the left mouse button to draw lines.</p></li>
 <li><p>The line tool operates by left clicking twice, which produces a line between them, which is automatically added to the set of labels.</p></li>
@@ -294,14 +297,17 @@ This can be carried out for a sequence of images using <code class="docutils lit
 </ul>
 <p>As with manual segmentation, any enclosed region can be labelled by right clicking within it.
 This can be done in multiple colours, by selecting the desired colour before labelling a region.</p>
-<p>Once areas have been labelled, training can be begun using the ‘Update’, followed by the ‘Train Classifier’ Button.
-When this finishes the labels will be shown on top of the image in the user interface, this can take up to several minutes.
-The classifier can then be retrained by pressing the ‘Clear’ button and drawing on any additional features.</p>
+<p>Different filter kernels and classifiers can be chosen using the dropdowns and tick boxes.
+The filter kernel parameters can also be altered using the Sigma, High Sigma and Disk Size parameters.
+Once areas have been labelled, training can be begun using the ‘Update’ and ‘Train Classifier’ Button.</p>
+<p>When this finishes the labels will be shown on top of the image in the user interface, this can take up to several minutes.
+The classifier can then be retrained with additional pixels by by clearing the canvas of the displayed segmentation with <cite>Clear Canvas</cite>, and redrawing previous training labels with <cite>redraw training labels</cite>.
+the <cite>clear training labels</cite> can be used to delete the existing labels in memory, visible or not.</p>
 <p>Using the classifier generated, multiple images can be segmented. An example is shown in the following code:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">folder</span> <span class="o">=</span> <span class="s1">&#39;path fo folder of images to segment&#39;</span>
-<span class="n">first</span> <span class="o">=</span> <span class="n">hs</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/first image in folder&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">folder</span><span class="p">))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">folder</span> <span class="o">=</span> <span class="s1">&#39;folder path of images to segment&#39;</span>
+<span class="n">first</span> <span class="o">=</span> <span class="n">hs</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">folder</span><span class="si">}</span><span class="s1">/first image in folder&#39;</span><span class="p">)</span>
 
-<span class="n">out</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">SegUI</span><span class="p">(</span><span class="n">first</span><span class="p">)</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">Seg_ui</span><span class="p">(</span><span class="n">first</span><span class="p">)</span>
 <span class="n">clf</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">classifier</span>
 
 <span class="n">params</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">parameters</span><span class="p">()</span>
@@ -311,11 +317,29 @@ The classifier can then be retrained by pressing the ‘Clear’ button and draw
 <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
     <span class="n">imagefile</span> <span class="o">=</span> <span class="n">hs</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span><span class="n">image</span><span class="p">))</span>
     <span class="n">l</span> <span class="o">=</span> <span class="n">imagefile</span><span class="o">.</span><span class="n">data</span>
-    <span class="n">mask_im</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">ClassifierSegment</span><span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span>
+    <span class="n">mask_im</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">classifier_segment</span><span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span>
 
-    <span class="n">particles</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">ParticleAnalysis</span><span class="p">(</span><span class="n">imagefile</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span><span class="n">particles</span><span class="o">=</span><span class="n">particles</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask_im</span><span class="p">)</span>
+    <span class="n">particles</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">particle_analysis</span><span class="p">(</span><span class="n">imagefile</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span><span class="n">particles</span><span class="o">=</span><span class="n">particles</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask_im</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Trainable Segmentation can also be performed using an existing segmentation mask to train the classifier before further classification.
+This is shown in the example below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sklearn.naive_bayes</span> <span class="kn">import</span> <span class="n">GaussianNB</span>
+<span class="kn">import</span> <span class="nn">particlespy.api</span> <span class="k">as</span> <span class="nn">ps</span>
+
+<span class="n">image</span> <span class="o">=</span> <span class="n">hs</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;image path&quot;</span><span class="p">)</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;mask path&quot;</span><span class="p">))</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">toggle_channels</span><span class="p">(</span><span class="n">mask</span><span class="p">[:,:,:</span><span class="mi">3</span><span class="p">],</span> <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">])</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">GaussianNB</span><span class="p">()</span>
+
+<span class="n">_</span><span class="p">,</span> <span class="n">clf</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">cluster_trained</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">clf</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This classifier can then be used to segment images.
+The function <code class="docutils literal notranslate"><span class="pre">ps.toggle_channels</span></code> is used to convert an RGB image into a 2D indexed array of labels.
+This can also be used to convert the output of the <code class="docutils literal notranslate"><span class="pre">classifier_segment</span></code> into RGB images which can be exported.</p>
 </div>
 </div>
 

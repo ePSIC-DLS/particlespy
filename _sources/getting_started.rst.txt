@@ -10,11 +10,12 @@ Installing ParticleSpy
 Install ParticleSpy
 -------------------
 
-The easiest way to install the latest stable build of ParticleSpy is via pip. This will install the package and its dependencies. You can do this by typing the following in to the command line:
+The easiest way to install the latest stable build of ParticleSpy is either via conda or pip. This will install the package and its dependencies. You can do this by typing one of the following in to the command line:
 
 .. code-block:: bash
 
-    $ pip install ParticleSpy
+    $ conda install particlespy
+	$ pip install particlespy
 
 
 Installing from Github
@@ -29,7 +30,7 @@ you can use the following command to install the package.
 
 .. code-block:: bash
 
-    $ pip install -e git+https://github.com/ePSIC-DLS/ParticleSpy
+    $ pip install -e git+https://github.com/ePSIC-DLS/particlespy
 
 Using ParticleSpy
 =================
@@ -38,13 +39,13 @@ In order to use ParticleSpy you must first import the api by entering the follow
 
 .. code-block:: python
 
-    >>> import ParticleSpy.api as ps
+    >>> import particlespy.api as ps
 
 You are then able to start using the functionality of ParticleSpy. If you already have an image loaded as a Hyperspy signal object you can now use the SegUI function to choose segmentation parameters.
 
 .. code-block:: python
 
-    >>> ps.SegUI(image)
+    >>> ps.seg_ui(image)
 
 This will pop up a QT window in which you can try different segmentation parameters. Once you are happy with the parameters press Update one last time in order to save the current parameters. You can then load these parameters in 
 to a parameters object by doing the following:
@@ -58,7 +59,7 @@ You can now use the chosen parameters to do your particle analysis:
 
 .. code-block:: python
 
-    >>> particles = ps.ParticleAnalysis(image,params)
+    >>> particles = ps.particle_analysis(image,params)
 
 The variable particles is now assigned to a particle list object which contains data on all of the segmented particles.
 
@@ -78,4 +79,4 @@ Once saved, a particles list can be loaded from a saved file by using the :py:me
     >>> particles = ps.load(filename)
 
 
-For further examples of using the package you can view the example Jupyter notebook `here <https://github.com/TomSlater/ParticleSpy/blob/master/ParticleSpy/Basic%20Example.ipynb>`_. 
+For further examples of using the package you can view the example Jupyter notebook `here <https://github.com/ePSIC-DLS/particlespy_examples/blob/main/Basic%20Example.ipynb>`_. 

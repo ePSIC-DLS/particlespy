@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>ParticleSpy.ParticleAnalysis &mdash; ParticleSpy 0.5.2 documentation</title>
+  <title>particlespy.particle_analysis &mdash; ParticleSpy 0.6.0 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -61,7 +64,7 @@
             
             
               <div class="version">
-                0.5.2
+                0.6.0
               </div>
             
           
@@ -86,7 +89,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../segmentation.html">Segmentation</a></li>
@@ -143,7 +146,7 @@
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
-      <li>ParticleSpy.ParticleAnalysis</li>
+      <li>particlespy.particle_analysis</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -158,7 +161,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for ParticleSpy.ParticleAnalysis</h1><div class="highlight"><pre>
+  <h1>Source code for particlespy.particle_analysis</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Created on Tue Jul 31 13:35:23 2018</span>
@@ -166,15 +169,15 @@
 <span class="sd">@author: qzo13262</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">ParticleSpy.segptcls</span> <span class="kn">import</span> <span class="n">process</span>
+<span class="kn">from</span> <span class="nn">particlespy.segptcls</span> <span class="kn">import</span> <span class="n">process</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">ParticleSpy.ptcl_class</span> <span class="kn">import</span> <span class="n">Particle</span><span class="p">,</span> <span class="n">Particle_list</span>
-<span class="kn">from</span> <span class="nn">ParticleSpy.custom_kernels</span> <span class="kn">import</span> <span class="n">membrane_projection</span>
+<span class="kn">from</span> <span class="nn">particlespy.ptcl_class</span> <span class="kn">import</span> <span class="n">particle</span><span class="p">,</span> <span class="n">particle_list</span>
+<span class="kn">from</span> <span class="nn">particlespy.custom_kernels</span> <span class="kn">import</span> <span class="n">membrane_projection</span>
 <span class="kn">from</span> <span class="nn">skimage</span> <span class="kn">import</span> <span class="n">filters</span><span class="p">,</span> <span class="n">morphology</span>
 <span class="kn">from</span> <span class="nn">skimage.measure</span> <span class="kn">import</span> <span class="n">label</span><span class="p">,</span> <span class="n">regionprops</span><span class="p">,</span> <span class="n">perimeter</span>
 <span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">preprocessing</span>
 <span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">DBSCAN</span><span class="p">,</span> <span class="n">KMeans</span>
-<span class="kn">import</span> <span class="nn">ParticleSpy.find_zoneaxis</span> <span class="k">as</span> <span class="nn">zone</span>
+<span class="kn">import</span> <span class="nn">particlespy.find_zoneaxis</span> <span class="k">as</span> <span class="nn">zone</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">h5py</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
@@ -182,7 +185,7 @@
 <span class="kn">import</span> <span class="nn">trackpy</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
-<div class="viewcode-block" id="ParticleAnalysis"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.ParticleAnalysis">[docs]</a><span class="k">def</span> <span class="nf">ParticleAnalysis</span><span class="p">(</span><span class="n">acquisition</span><span class="p">,</span><span class="n">parameters</span><span class="p">,</span><span class="n">particles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">mask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">))):</span>
+<div class="viewcode-block" id="particle_analysis"><a class="viewcode-back" href="../../source/ParticleSpy.html#particlespy.particle_analysis.particle_analysis">[docs]</a><span class="k">def</span> <span class="nf">particle_analysis</span><span class="p">(</span><span class="n">acquisition</span><span class="p">,</span><span class="n">parameters</span><span class="p">,</span><span class="n">particles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">mask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">))):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Perform segmentation and analysis of images of particles.</span>
 <span class="sd">    </span>
@@ -207,7 +210,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">if</span> <span class="n">particles</span><span class="o">==</span><span class="kc">None</span><span class="p">:</span>
-        <span class="n">particles</span><span class="o">=</span><span class="n">Particle_list</span><span class="p">()</span>
+        <span class="n">particles</span><span class="o">=</span><span class="n">particle_list</span><span class="p">()</span>
     
     <span class="c1">#Check if input is list of signal objects or single one</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">acquisition</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
@@ -216,7 +219,7 @@
         <span class="n">image</span> <span class="o">=</span> <span class="n">acquisition</span>
     
     <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;UI&#39;</span><span class="p">:</span>
-        <span class="n">labeled</span> <span class="o">=</span> <span class="n">label</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">process</span><span class="p">))</span><span class="o">+</span><span class="s1">&#39;/Parameters/manual_mask.npy&#39;</span><span class="p">)[:,:,</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">labeled</span> <span class="o">=</span> <span class="n">label</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">process</span><span class="p">))</span><span class="o">+</span><span class="s1">&#39;/parameters/manual_mask.npy&#39;</span><span class="p">)[:,:,</span><span class="mi">0</span><span class="p">])</span>
         <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labeled</span><span class="p">))</span>
         <span class="c1">#plt.imshow(labeled)</span>
         <span class="c1">#morphology.remove_small_objects(labeled,30,in_place=True)</span>
@@ -228,7 +231,7 @@
         <span class="n">labeled</span> <span class="o">=</span> <span class="n">label</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
         
     <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">regionprops</span><span class="p">(</span><span class="n">labeled</span><span class="p">):</span> <span class="c1">#&#39;count&#39; start with 1, 0 is background</span>
-        <span class="n">p</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">()</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">particle</span><span class="p">()</span>
         
         <span class="n">p_im</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
         <span class="n">p_im</span><span class="p">[</span><span class="n">labeled</span><span class="o">==</span><span class="n">region</span><span class="o">.</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">labeled</span><span class="o">==</span><span class="n">region</span><span class="o">.</span><span class="n">label</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">labeled</span><span class="o">==</span><span class="n">region</span><span class="o">.</span><span class="n">label</span><span class="p">])</span>
@@ -334,7 +337,7 @@
         
     <span class="k">return</span><span class="p">(</span><span class="n">particles</span><span class="p">)</span></div>
     
-<div class="viewcode-block" id="ParticleAnalysisSeries"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.ParticleAnalysisSeries">[docs]</a><span class="k">def</span> <span class="nf">ParticleAnalysisSeries</span><span class="p">(</span><span class="n">image_series</span><span class="p">,</span><span class="n">parameters</span><span class="p">,</span><span class="n">particles</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="particle_analysis_series"><a class="viewcode-back" href="../../source/ParticleSpy.html#particlespy.particle_analysis.particle_analysis_series">[docs]</a><span class="k">def</span> <span class="nf">particle_analysis_series</span><span class="p">(</span><span class="n">image_series</span><span class="p">,</span><span class="n">parameters</span><span class="p">,</span><span class="n">particles</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Perform segmentation and analysis of times series of particles.</span>
 <span class="sd">    </span>
@@ -355,23 +358,23 @@
 <span class="sd">    Particle_list object</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
-    <span class="n">particles</span> <span class="o">=</span> <span class="n">Particle_list</span><span class="p">()</span>
+    <span class="n">particles</span> <span class="o">=</span> <span class="n">particle_list</span><span class="p">()</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">image_series</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">image</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">image_series</span><span class="p">):</span>
-            <span class="n">ParticleAnalysis</span><span class="p">(</span><span class="n">image</span><span class="p">,</span><span class="n">parameters</span><span class="p">,</span><span class="n">particles</span><span class="p">)</span>
+            <span class="n">particle_analysis</span><span class="p">(</span><span class="n">image</span><span class="p">,</span><span class="n">parameters</span><span class="p">,</span><span class="n">particles</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">particles</span><span class="o">.</span><span class="n">list</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">particle</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;frame&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">particle</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">image</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">image_series</span><span class="o">.</span><span class="n">inav</span><span class="p">):</span>
-            <span class="n">ParticleAnalysis</span><span class="p">(</span><span class="n">image</span><span class="p">,</span><span class="n">parameters</span><span class="p">,</span><span class="n">particles</span><span class="p">)</span>
+            <span class="n">particle_analysis</span><span class="p">(</span><span class="n">image</span><span class="p">,</span><span class="n">parameters</span><span class="p">,</span><span class="n">particles</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">particles</span><span class="o">.</span><span class="n">list</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">particle</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;frame&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">particle</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
     
     <span class="k">return</span><span class="p">(</span><span class="n">particles</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="timeseriesanalysis"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.timeseriesanalysis">[docs]</a><span class="k">def</span> <span class="nf">timeseriesanalysis</span><span class="p">(</span><span class="n">particles</span><span class="p">,</span><span class="n">max_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">memory</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">properties</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;area&#39;</span><span class="p">]):</span>
+<div class="viewcode-block" id="time_series_analysis"><a class="viewcode-back" href="../../source/ParticleSpy.html#particlespy.particle_analysis.time_series_analysis">[docs]</a><span class="k">def</span> <span class="nf">time_series_analysis</span><span class="p">(</span><span class="n">particles</span><span class="p">,</span><span class="n">max_dist</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">memory</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">properties</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;area&#39;</span><span class="p">]):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Perform tracking of particles for times series data.</span>
 
@@ -402,7 +405,7 @@
     <span class="n">t</span> <span class="o">=</span> <span class="n">trackpy</span><span class="o">.</span><span class="n">link</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">max_dist</span><span class="p">,</span><span class="n">memory</span><span class="o">=</span><span class="n">memory</span><span class="p">)</span>
     <span class="k">return</span><span class="p">(</span><span class="n">t</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="store_image"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.store_image">[docs]</a><span class="k">def</span> <span class="nf">store_image</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span><span class="n">image</span><span class="p">,</span><span class="n">params</span><span class="p">):</span>
+<div class="viewcode-block" id="store_image"><a class="viewcode-back" href="../../source/ParticleSpy.html#particlespy.particle_analysis.store_image">[docs]</a><span class="k">def</span> <span class="nf">store_image</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span><span class="n">image</span><span class="p">,</span><span class="n">params</span><span class="p">):</span>
     <span class="n">ii</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
             
     <span class="n">box_x_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">ii</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -420,7 +423,7 @@
         <span class="n">p_boxed</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">isig</span><span class="p">[(</span><span class="n">box_y_min</span><span class="p">):(</span><span class="n">box_y_max</span><span class="p">),(</span><span class="n">box_x_min</span><span class="p">):(</span><span class="n">box_x_max</span><span class="p">)]</span>
     <span class="n">particle</span><span class="o">.</span><span class="n">store_im</span><span class="p">(</span><span class="n">p_boxed</span><span class="p">)</span></div>
     
-<div class="viewcode-block" id="store_maps"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.store_maps">[docs]</a><span class="k">def</span> <span class="nf">store_maps</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span><span class="n">ac</span><span class="p">,</span><span class="n">params</span><span class="p">):</span>
+<div class="viewcode-block" id="store_maps"><a class="viewcode-back" href="../../source/ParticleSpy.html#particlespy.particle_analysis.store_maps">[docs]</a><span class="k">def</span> <span class="nf">store_maps</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span><span class="n">ac</span><span class="p">,</span><span class="n">params</span><span class="p">):</span>
     <span class="n">maps</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="n">get_lines_intensity</span><span class="p">()</span>
     <span class="n">particle</span><span class="o">.</span><span class="n">maps_gen</span><span class="p">()</span>
     
@@ -439,7 +442,7 @@
             <span class="n">p_boxed</span> <span class="o">=</span> <span class="n">el_map</span><span class="o">.</span><span class="n">inav</span><span class="p">[(</span><span class="n">box_y_min</span><span class="p">):(</span><span class="n">box_y_max</span><span class="p">),(</span><span class="n">box_x_min</span><span class="p">):(</span><span class="n">box_x_max</span><span class="p">)]</span>
         <span class="n">particle</span><span class="o">.</span><span class="n">store_map</span><span class="p">(</span><span class="n">p_boxed</span><span class="p">,</span><span class="n">p_boxed</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">Sample</span><span class="o">.</span><span class="n">elements</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
         
-<div class="viewcode-block" id="store_spectrum"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.store_spectrum">[docs]</a><span class="k">def</span> <span class="nf">store_spectrum</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span><span class="n">ac</span><span class="p">,</span><span class="n">stype</span><span class="p">):</span>
+<div class="viewcode-block" id="store_spectrum"><a class="viewcode-back" href="../../source/ParticleSpy.html#particlespy.particle_analysis.store_spectrum">[docs]</a><span class="k">def</span> <span class="nf">store_spectrum</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span><span class="n">ac</span><span class="p">,</span><span class="n">stype</span><span class="p">):</span>
     <span class="n">ac_particle</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">*</span><span class="n">particle</span><span class="o">.</span><span class="n">mask</span>
     <span class="n">ac_particle</span> <span class="o">=</span> <span class="n">ac_particle</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
     <span class="n">ac_particle_spectrum</span> <span class="o">=</span> <span class="n">ac_particle</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
@@ -449,16 +452,16 @@
         <span class="n">ac_particle_spectrum</span><span class="o">.</span><span class="n">set_signal_type</span><span class="p">(</span><span class="n">stype</span><span class="p">)</span>
     <span class="n">particle</span><span class="o">.</span><span class="n">store_spectrum</span><span class="p">(</span><span class="n">ac_particle_spectrum</span><span class="p">,</span><span class="n">stype</span><span class="p">)</span></div>
         
-<div class="viewcode-block" id="get_composition"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.get_composition">[docs]</a><span class="k">def</span> <span class="nf">get_composition</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span><span class="n">params</span><span class="p">):</span>
+<div class="viewcode-block" id="get_composition"><a class="viewcode-back" href="../../source/ParticleSpy.html#particlespy.particle_analysis.get_composition">[docs]</a><span class="k">def</span> <span class="nf">get_composition</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span><span class="n">params</span><span class="p">):</span>
     <span class="n">bw</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">spectrum</span><span class="p">[</span><span class="s1">&#39;EDS_TEM&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">estimate_background_windows</span><span class="p">(</span><span class="n">line_width</span><span class="o">=</span><span class="p">[</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">])</span>
     <span class="n">intensities</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">spectrum</span><span class="p">[</span><span class="s1">&#39;EDS_TEM&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_lines_intensity</span><span class="p">(</span><span class="n">background_windows</span><span class="o">=</span><span class="n">bw</span><span class="p">)</span>
     <span class="n">atomic_percent</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">spectrum</span><span class="p">[</span><span class="s1">&#39;EDS_TEM&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">quantification</span><span class="p">(</span><span class="n">intensities</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">eds</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">],</span><span class="n">factors</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">eds</span><span class="p">[</span><span class="s1">&#39;factors&#39;</span><span class="p">])</span>
     <span class="n">particle</span><span class="o">.</span><span class="n">store_composition</span><span class="p">(</span><span class="n">atomic_percent</span><span class="p">)</span></div>
     
-<div class="viewcode-block" id="parameters"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.parameters">[docs]</a><span class="k">class</span> <span class="nc">parameters</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="parameters"><a class="viewcode-back" href="../../source/ParticleSpy.html#particlespy.particle_analysis.parameters">[docs]</a><span class="k">class</span> <span class="nc">parameters</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A parameters object.&quot;&quot;&quot;</span>
     
-<div class="viewcode-block" id="parameters.generate"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.parameters.generate">[docs]</a>    <span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">threshold</span><span class="o">=</span><span class="s1">&#39;otsu&#39;</span><span class="p">,</span><span class="n">watershed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">watershed_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<div class="viewcode-block" id="parameters.generate"><a class="viewcode-back" href="../../source/ParticleSpy.html#particlespy.particle_analysis.parameters.generate">[docs]</a>    <span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">threshold</span><span class="o">=</span><span class="s1">&#39;otsu&#39;</span><span class="p">,</span><span class="n">watershed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">watershed_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                  <span class="n">watershed_erosion</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">invert</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">min_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">store_im</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">pad</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">rb_kernel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">gaussian</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">local_size</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">segment</span> <span class="o">=</span> <span class="p">{}</span>
@@ -479,7 +482,7 @@
         
         <span class="bp">self</span><span class="o">.</span><span class="n">generate_eds</span><span class="p">()</span></div>
         
-<div class="viewcode-block" id="parameters.generate_eds"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.parameters.generate_eds">[docs]</a>    <span class="k">def</span> <span class="nf">generate_eds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">eds_method</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">elements</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">factors</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<div class="viewcode-block" id="parameters.generate_eds"><a class="viewcode-back" href="../../source/ParticleSpy.html#particlespy.particle_analysis.parameters.generate_eds">[docs]</a>    <span class="k">def</span> <span class="nf">generate_eds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">eds_method</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">elements</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">factors</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                      <span class="n">store_maps</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eds</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eds</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">eds_method</span>
@@ -488,7 +491,7 @@
         
         <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="p">[</span><span class="s1">&#39;store_maps&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">store_maps</span></div>
     
-<div class="viewcode-block" id="parameters.save"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.parameters.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">process</span><span class="p">))</span><span class="o">+</span><span class="s1">&#39;/Parameters/parameters_current.hdf5&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="parameters.save"><a class="viewcode-back" href="../../source/ParticleSpy.html#particlespy.particle_analysis.parameters.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">process</span><span class="p">))</span><span class="o">+</span><span class="s1">&#39;/parameters/parameters_current.hdf5&#39;</span><span class="p">):</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
         
         <span class="n">segment</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;segment&quot;</span><span class="p">)</span>
@@ -514,7 +517,7 @@
         
         <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
         
-<div class="viewcode-block" id="parameters.load"><a class="viewcode-back" href="../../source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.parameters.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">process</span><span class="p">))</span><span class="o">+</span><span class="s1">&#39;/Parameters/parameters_current.hdf5&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="parameters.load"><a class="viewcode-back" href="../../source/ParticleSpy.html#particlespy.particle_analysis.parameters.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">process</span><span class="p">))</span><span class="o">+</span><span class="s1">&#39;/parameters/parameters_current.hdf5&#39;</span><span class="p">):</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
         
         <span class="n">segment</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;segment&quot;</span><span class="p">]</span>
@@ -543,6 +546,78 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">eds</span><span class="p">[</span><span class="s1">&#39;factors&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">eds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;factors&#39;</span><span class="p">]</span>
         
         <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="trainable_parameters"><a class="viewcode-back" href="../../source/ParticleSpy.html#particlespy.particle_analysis.trainable_parameters">[docs]</a><span class="k">class</span> <span class="nc">trainable_parameters</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A parameters object for trainable segmentation.&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">gaussian</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">diff_gaussian</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">,[</span><span class="kc">False</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span><span class="mi">1</span><span class="p">,</span><span class="mi">16</span><span class="p">],</span>
+                      <span class="n">median</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">,[</span><span class="kc">False</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span><span class="mi">20</span><span class="p">],</span> <span class="n">minimum</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">,[</span><span class="kc">False</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span><span class="mi">20</span><span class="p">],</span> 
+                      <span class="n">maximum</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">,[</span><span class="kc">False</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span><span class="mi">20</span><span class="p">],</span> <span class="n">sobel</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">,[</span><span class="kc">True</span><span class="p">,</span><span class="mi">1</span><span class="p">]],</span>
+                      <span class="n">hessian</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">,[</span><span class="kc">False</span><span class="p">,</span><span class="mi">1</span><span class="p">]],</span> <span class="n">laplacian</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">,[</span><span class="kc">False</span><span class="p">,</span><span class="mi">1</span><span class="p">]],</span>
+                      <span class="n">membrane</span> <span class="o">=</span> <span class="p">[[</span><span class="kc">False</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span><span class="kc">True</span><span class="p">,</span><span class="kc">False</span><span class="p">,</span><span class="kc">False</span><span class="p">,</span><span class="kc">False</span><span class="p">,</span><span class="kc">False</span><span class="p">,</span><span class="kc">False</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gaussian</span> <span class="o">=</span> <span class="n">gaussian</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diff_gaussian</span> <span class="o">=</span> <span class="n">diff_gaussian</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">median</span> <span class="o">=</span> <span class="n">median</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minimum</span> <span class="o">=</span> <span class="n">minimum</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maximum</span> <span class="o">=</span> <span class="n">maximum</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sobel</span> <span class="o">=</span> <span class="n">sobel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hessian</span> <span class="o">=</span> <span class="n">hessian</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">laplacian</span> <span class="o">=</span> <span class="n">laplacian</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">membrane</span> <span class="o">=</span> <span class="n">membrane</span>
+    
+<div class="viewcode-block" id="trainable_parameters.set_global_sigma"><a class="viewcode-back" href="../../source/ParticleSpy.html#particlespy.particle_analysis.trainable_parameters.set_global_sigma">[docs]</a>    <span class="k">def</span> <span class="nf">set_global_sigma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gaussian</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigma</span>        
+        <span class="bp">self</span><span class="o">.</span><span class="n">diff_gaussian</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigma</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">median</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigma</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minimum</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigma</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maximum</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigma</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sobel</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigma</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hessian</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigma</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">laplacian</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigma</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">membrane</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigma</span></div>
+
+<div class="viewcode-block" id="trainable_parameters.set_global_disk_size"><a class="viewcode-back" href="../../source/ParticleSpy.html#particlespy.particle_analysis.trainable_parameters.set_global_disk_size">[docs]</a>    <span class="k">def</span> <span class="nf">set_global_disk_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">disk_size</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">median</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">disk_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minimum</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">disk_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maximum</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">disk_size</span></div>
+
+<div class="viewcode-block" id="trainable_parameters.set_global_prefilter"><a class="viewcode-back" href="../../source/ParticleSpy.html#particlespy.particle_analysis.trainable_parameters.set_global_prefilter">[docs]</a>    <span class="k">def</span> <span class="nf">set_global_prefilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diff_gaussian</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span><span class="n">sigma</span><span class="p">]</span>        
+        <span class="bp">self</span><span class="o">.</span><span class="n">median</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span><span class="n">sigma</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minimum</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span><span class="n">sigma</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maximum</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span><span class="n">sigma</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sobel</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span><span class="n">sigma</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hessian</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span><span class="n">sigma</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">laplacian</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span><span class="n">sigma</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">membrane</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span><span class="n">sigma</span><span class="p">]</span>        </div>
+
+<div class="viewcode-block" id="trainable_parameters.set_gaussian"><a class="viewcode-back" href="../../source/ParticleSpy.html#particlespy.particle_analysis.trainable_parameters.set_gaussian">[docs]</a>    <span class="k">def</span> <span class="nf">set_gaussian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gaussian</span><span class="o">=</span><span class="p">[</span><span class="n">enabled</span><span class="p">,</span><span class="n">sigma</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="trainable_parameters.set_diff_gaussian"><a class="viewcode-back" href="../../source/ParticleSpy.html#particlespy.particle_analysis.trainable_parameters.set_diff_gaussian">[docs]</a>    <span class="k">def</span> <span class="nf">set_diff_gaussian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">prefilter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prefilter_sigma</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">low_sigma</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">high_sigma</span><span class="o">=</span><span class="mi">16</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diff_gaussian</span><span class="o">=</span><span class="p">[</span><span class="n">enabled</span><span class="p">,[</span><span class="n">prefilter</span><span class="p">,</span><span class="n">prefilter_sigma</span><span class="p">],</span><span class="n">low_sigma</span><span class="p">,</span><span class="n">high_sigma</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="trainable_parameters.set_median"><a class="viewcode-back" href="../../source/ParticleSpy.html#particlespy.particle_analysis.trainable_parameters.set_median">[docs]</a>    <span class="k">def</span> <span class="nf">set_median</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">prefilter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prefilter_sigma</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">disk_size</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">median</span><span class="o">=</span><span class="p">[</span><span class="n">enabled</span><span class="p">,[</span><span class="n">prefilter</span><span class="p">,</span><span class="n">prefilter_sigma</span><span class="p">],</span><span class="n">disk_size</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="trainable_parameters.set_minimum"><a class="viewcode-back" href="../../source/ParticleSpy.html#particlespy.particle_analysis.trainable_parameters.set_minimum">[docs]</a>    <span class="k">def</span> <span class="nf">set_minimum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">prefilter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prefilter_sigma</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">disk_size</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minimum</span><span class="o">=</span><span class="p">[</span><span class="n">enabled</span><span class="p">,[</span><span class="n">prefilter</span><span class="p">,</span><span class="n">prefilter_sigma</span><span class="p">],</span><span class="n">disk_size</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="trainable_parameters.set_maximum"><a class="viewcode-back" href="../../source/ParticleSpy.html#particlespy.particle_analysis.trainable_parameters.set_maximum">[docs]</a>    <span class="k">def</span> <span class="nf">set_maximum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">prefilter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prefilter_sigma</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">disk_size</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maximum</span><span class="o">=</span><span class="p">[</span><span class="n">enabled</span><span class="p">,[</span><span class="n">prefilter</span><span class="p">,</span><span class="n">prefilter_sigma</span><span class="p">],</span><span class="n">disk_size</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="trainable_parameters.set_sobel"><a class="viewcode-back" href="../../source/ParticleSpy.html#particlespy.particle_analysis.trainable_parameters.set_sobel">[docs]</a>    <span class="k">def</span> <span class="nf">set_sobel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">prefilter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prefilter_sigma</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sobel</span><span class="o">=</span><span class="p">[</span><span class="n">enabled</span><span class="p">,[</span><span class="n">prefilter</span><span class="p">,</span><span class="n">prefilter_sigma</span><span class="p">]]</span></div>
+
+<div class="viewcode-block" id="trainable_parameters.set_hessian"><a class="viewcode-back" href="../../source/ParticleSpy.html#particlespy.particle_analysis.trainable_parameters.set_hessian">[docs]</a>    <span class="k">def</span> <span class="nf">set_hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">prefilter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prefilter_sigma</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hessian</span><span class="o">=</span><span class="p">[</span><span class="n">enabled</span><span class="p">,[</span><span class="n">prefilter</span><span class="p">,</span><span class="n">prefilter_sigma</span><span class="p">]]</span></div>
+
+<div class="viewcode-block" id="trainable_parameters.set_laplacian"><a class="viewcode-back" href="../../source/ParticleSpy.html#particlespy.particle_analysis.trainable_parameters.set_laplacian">[docs]</a>    <span class="k">def</span> <span class="nf">set_laplacian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">prefilter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prefilter_sigma</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">laplacian</span><span class="o">=</span><span class="p">[</span><span class="n">enabled</span><span class="p">,[</span><span class="n">prefilter</span><span class="p">,</span><span class="n">prefilter_sigma</span><span class="p">]]</span></div>
+
+<div class="viewcode-block" id="trainable_parameters.set_membrane"><a class="viewcode-back" href="../../source/ParticleSpy.html#particlespy.particle_analysis.trainable_parameters.set_membrane">[docs]</a>    <span class="k">def</span> <span class="nf">set_membrane</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">prefilter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prefilter_sigma</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span><span class="n">summ</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span><span class="n">mean</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">stddev</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">maximum</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">minimum</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">median</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">membrane</span><span class="o">=</span><span class="p">[[</span><span class="n">prefilter</span><span class="p">,</span> <span class="n">prefilter_sigma</span><span class="p">],</span> <span class="n">summ</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">stddev</span><span class="p">,</span> <span class="n">maximum</span><span class="p">,</span> <span class="n">minimum</span><span class="p">,</span> <span class="n">median</span><span class="p">]</span></div></div>
 </pre></div>
 
            </div>

@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Getting started &mdash; ParticleSpy 0.5.2 documentation</title>
+  <title>Getting started &mdash; ParticleSpy 0.6.0 documentation</title>
   
 
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -63,7 +66,7 @@
             
             
               <div class="version">
-                0.5.2
+                0.6.0
               </div>
             
           
@@ -88,7 +91,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Getting started</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#installing-particlespy">Installing ParticleSpy</a><ul>
@@ -177,8 +180,9 @@
 <h2>Installing ParticleSpy<a class="headerlink" href="#installing-particlespy" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="install-particlespy">
 <h3>Install ParticleSpy<a class="headerlink" href="#install-particlespy" title="Permalink to this headline">¶</a></h3>
-<p>The easiest way to install the latest stable build of ParticleSpy is via pip. This will install the package and its dependencies. You can do this by typing the following in to the command line:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pip install ParticleSpy
+<p>The easiest way to install the latest stable build of ParticleSpy is either via conda or pip. This will install the package and its dependencies. You can do this by typing one of the following in to the command line:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ conda install particlespy
+    $ pip install particlespy
 </pre></div>
 </div>
 </div>
@@ -189,7 +193,7 @@ Full instructions for Hyperpsy installation can be found at
 <a class="reference external" href="http://hyperspy.org/hyperspy-doc/v1.3/user_guide/install.html">http://hyperspy.org/hyperspy-doc/v1.3/user_guide/install.html</a>.</p>
 <p>You then need to install from the git repository using git. If you have git installed
 you can use the following command to install the package.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pip install -e git+https://github.com/ePSIC-DLS/ParticleSpy
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pip install -e git+https://github.com/ePSIC-DLS/particlespy
 </pre></div>
 </div>
 </div>
@@ -197,11 +201,11 @@ you can use the following command to install the package.</p>
 <div class="section" id="using-particlespy">
 <h2>Using ParticleSpy<a class="headerlink" href="#using-particlespy" title="Permalink to this headline">¶</a></h2>
 <p>In order to use ParticleSpy you must first import the api by entering the following in a python console / Jupyter notebook:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">ParticleSpy.api</span> <span class="k">as</span> <span class="nn">ps</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">particlespy.api</span> <span class="k">as</span> <span class="nn">ps</span>
 </pre></div>
 </div>
 <p>You are then able to start using the functionality of ParticleSpy. If you already have an image loaded as a Hyperspy signal object you can now use the SegUI function to choose segmentation parameters.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ps</span><span class="o">.</span><span class="n">SegUI</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ps</span><span class="o">.</span><span class="n">seg_ui</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This will pop up a QT window in which you can try different segmentation parameters. Once you are happy with the parameters press Update one last time in order to save the current parameters. You can then load these parameters in
@@ -211,7 +215,7 @@ to a parameters object by doing the following:</p>
 </pre></div>
 </div>
 <p>You can now use the chosen parameters to do your particle analysis:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">ParticleAnalysis</span><span class="p">(</span><span class="n">image</span><span class="p">,</span><span class="n">params</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">particle_analysis</span><span class="p">(</span><span class="n">image</span><span class="p">,</span><span class="n">params</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The variable particles is now assigned to a particle list object which contains data on all of the segmented particles.</p>
@@ -222,11 +226,11 @@ to a parameters object by doing the following:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Once saved, a particles list can be loaded from a saved file by using the <a class="reference internal" href="source/ParticleSpy.html#ParticleSpy.ParticleAnalysis.parameters.load" title="ParticleSpy.ParticleAnalysis.parameters.load"><code class="xref py py-meth docutils literal notranslate"><span class="pre">load()</span></code></a> function.</p>
+<p>Once saved, a particles list can be loaded from a saved file by using the <a class="reference internal" href="source/ParticleSpy.html#particlespy.particle_analysis.parameters.load" title="particlespy.particle_analysis.parameters.load"><code class="xref py py-meth docutils literal notranslate"><span class="pre">load()</span></code></a> function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>For further examples of using the package you can view the example Jupyter notebook <a class="reference external" href="https://github.com/TomSlater/ParticleSpy/blob/master/ParticleSpy/Basic%20Example.ipynb">here</a>.</p>
+<p>For further examples of using the package you can view the example Jupyter notebook <a class="reference external" href="https://github.com/ePSIC-DLS/particlespy_examples/blob/main/Basic%20Example.ipynb">here</a>.</p>
 </div>
 </div>
 

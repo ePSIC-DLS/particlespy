@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Particle Properties &mdash; ParticleSpy 0.5.2 documentation</title>
+  <title>Particle Properties &mdash; ParticleSpy 0.6.0 documentation</title>
   
 
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -61,7 +64,7 @@
             
             
               <div class="version">
-                0.5.2
+                0.6.0
               </div>
             
           
@@ -86,7 +89,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="segmentation.html">Segmentation</a></li>
@@ -165,7 +168,7 @@
 <p>One important aspect of ParticleSpy are the properties associated with each Particle object.</p>
 <div class="section" id="native-properties">
 <h2>Native Properties<a class="headerlink" href="#native-properties" title="Permalink to this headline">¶</a></h2>
-<p>When using the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ParticleAnalysis()</span></code> function ParticleSpy is able to calculate a number of “native” properties listed in the table below.</p>
+<p>When using the <code class="xref py py-meth docutils literal notranslate"><span class="pre">particle_analysis()</span></code> function ParticleSpy is able to calculate a number of “native” properties listed in the table below.</p>
 <table class="docutils align-default" id="id1">
 <caption><span class="caption-text">Particle properties</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
 <colgroup>
@@ -227,7 +230,7 @@ box surrounding the particle.</p></td>
 </div>
 <div class="section" id="adding-properties">
 <h2>Adding Properties<a class="headerlink" href="#adding-properties" title="Permalink to this headline">¶</a></h2>
-<p>In addition to the “native” properties it is possible to add any additional properties using the <a class="reference internal" href="source/ParticleSpy.html#ParticleSpy.ptcl_class.Particle.set_property" title="ParticleSpy.ptcl_class.Particle.set_property"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_property()</span></code></a> function.</p>
+<p>In addition to the “native” properties it is possible to add any additional properties using the <a class="reference internal" href="source/ParticleSpy.html#particlespy.ptcl_class.particle.set_property" title="particlespy.ptcl_class.particle.set_property"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_property()</span></code></a> function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span><span class="o">.</span><span class="n">list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;property name&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">)</span>
 </pre></div>
 </div>

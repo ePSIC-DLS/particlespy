@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Time Series &mdash; ParticleSpy 0.5.2 documentation</title>
+  <title>Time Series &mdash; ParticleSpy 0.6.0 documentation</title>
   
 
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -62,7 +65,7 @@
             
             
               <div class="version">
-                0.5.2
+                0.6.0
               </div>
             
           
@@ -87,7 +90,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="segmentation.html">Segmentation</a></li>
@@ -165,13 +168,13 @@
 <span id="id1"></span><h1>Time Series<a class="headerlink" href="#time-series" title="Permalink to this headline">¶</a></h1>
 <p>ParticleSpy is able to segment particles over a series of images and to track how properties evolve over time.
 We use the trackpy library in order to relatively quickly track particles through an image series.</p>
-<p>In order to peform particle analysis on an image series the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ParticleAnalysisSeries()</span></code> function is used:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">ParticleAnalysisSeries</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+<p>In order to peform particle analysis on an image series the <code class="xref py py-meth docutils literal notranslate"><span class="pre">particle_analysis_series()</span></code> function is used:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">particle_analysis_series</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This provides the exact same functionality as <code class="xref py py-meth docutils literal notranslate"><span class="pre">ParticleAnalysis()</span></code> but also assigns a frame number to each particle.</p>
-<p>In order to track particles over a time series, the <code class="xref py py-meth docutils literal notranslate"><span class="pre">timeseriesanalysis()</span></code> function can be used:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">time_series</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">timeseriesanalysis</span><span class="p">(</span><span class="n">particles</span><span class="p">)</span>
+<p>This provides the exact same functionality as <code class="xref py py-meth docutils literal notranslate"><span class="pre">particle_analysis()</span></code> but also assigns a frame number to each particle.</p>
+<p>In order to track particles over a time series, the <code class="xref py py-meth docutils literal notranslate"><span class="pre">time_series_analysis()</span></code> function can be used:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">time_series</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">time_series_analysis</span><span class="p">(</span><span class="n">particles</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This function returns a pandas dataframe whose format is that of a trajectories object in trackpy.</p>
