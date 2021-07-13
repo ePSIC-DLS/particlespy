@@ -9,10 +9,10 @@ Once you have chosen your segmentation parameters and have successfully prepared
 .. code-block:: python
 
     >>> import hyperspy.api as hs
-    >>> data = hs.load('ParticleSpy/Data/JEOL HAADF Image.dm4')
+    >>> data = hs.load('particlespy/data/JEOL HAADF Image.dm4')
     >>> params = ps.parameters()
     >>> params.load()
-    >>> particles = ps.ParticleAnalysis(data, params)
+    >>> particles = ps.particle_analysis(data, params)
 
 Particle Analysis will run the segmentation on your data and calculate a number of parameters for each particle.
 
@@ -20,7 +20,7 @@ The calculated parameters include:
 
 * Area ("area")
 
-* Equivalent circular diameter ("")
+* Equivalent circular diameter ("equivalent circular diameter")
 
 * Major and minor axes lengths ("major axis length" and "minor axis length")
 
@@ -54,7 +54,7 @@ For example:
 
 .. code-block:: python
 
-    >>> ps.ParticleAnalysis(data, params, particles=particles)
+    >>> ps.particle_analysis(data, params, particles=particles)
 
 Spectrum Analysis
 -----------------
@@ -76,7 +76,7 @@ In addition, Particle Analysis can do the following processing on EDS data:
     >>> data = [image,eds_si]
     >>> params = ps.parameters.load()
     >>> params.generate_eds(eds_method='CL',elements=['Pt','Au'],factors=[1.7,1.9],store_maps=False)
-    >>> particles = ps.ParticleAnalysis(data, params)
+    >>> particles = ps.particle_analysis(data, params)
 
 Particle Segmentation with a Pre-Generated Mask
 -----------------------------------------------
@@ -88,13 +88,13 @@ In order to use a pre-generated mask it is possible to pass a mask argument to :
 
     >>> generated_mask = hs.load('maskfile')
     >>> params = ps.parameters.load() # This isn't used if you load a pre-generated mask but you still have to pass it.
-    >>> particles = ps.ParticleAnalysis(data, params, mask=generated_mask)
+    >>> particles = ps.particle_analysis(data, params, mask=generated_mask)
 
-If you have used the manual segmentation editor in :py:meth:`~.SegUI` you can simply pass 'UI' as the mask argument.
+If you have used the manual segmentation editor in :py:meth:`~.seg_ui` you can simply pass 'UI' as the mask argument.
 
 .. code-block:: python
     
-    >>> particles = ps.ParticleAnalysis(data, params, mask='UI')
+    >>> particles = ps.particle_analysis(data, params, mask='UI')
 
 Cluster Particles Based on Properties
 -------------------------------------

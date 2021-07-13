@@ -4,82 +4,82 @@ ParticleSpy package
 Submodules
 ----------
 
-ParticleSpy.ParticleAnalysis module
+particlespy.particle_analysis module
 -----------------------------------
 
-.. automodule:: ParticleSpy.ParticleAnalysis
+.. automodule:: particlespy.particle_analysis
     :members:
     :undoc-members:
     :show-inheritance:
 
-ParticleSpy.SegUI module
+particlespy.seg_ui module
 ------------------------
 
-.. automodule:: ParticleSpy.SegUI
+.. automodule:: particlespy.seg_ui
     :members:
     :undoc-members:
     :show-inheritance:
 
-ParticleSpy.api module
+particlespy.api module
 ----------------------
 
-.. automodule:: ParticleSpy.api
+.. automodule:: particlespy.api
     :members:
     :undoc-members:
     :show-inheritance:
 
-ParticleSpy.find\_zoneaxis module
+particlespy.find\_zoneaxis module
 ---------------------------------
 
-.. automodule:: ParticleSpy.find_zoneaxis
+.. automodule:: particlespy.find_zoneaxis
     :members:
     :undoc-members:
     :show-inheritance:
 
-ParticleSpy.particle\_io module
+particlespy.particle\_io module
 -------------------------------
 
-.. automodule:: ParticleSpy.particle_io
+.. automodule:: particlespy.particle_io
     :members:
     :undoc-members:
     :show-inheritance:
 
-ParticleSpy.particle\_load module
+particlespy.particle\_load module
 ---------------------------------
 
-.. automodule:: ParticleSpy.particle_load
+.. automodule:: particlespy.particle_load
     :members:
     :undoc-members:
     :show-inheritance:
 
-ParticleSpy.particle\_save module
+particlespy.particle\_save module
 ---------------------------------
 
-.. automodule:: ParticleSpy.particle_save
+.. automodule:: particlespy.particle_save
     :members:
     :undoc-members:
     :show-inheritance:
 
-ParticleSpy.ptcl\_class module
+particlespy.ptcl\_class module
 ------------------------------
 
-.. automodule:: ParticleSpy.ptcl_class
+.. automodule:: particlespy.ptcl_class
     :members:
     :undoc-members:
     :show-inheritance:
 
-ParticleSpy.radial\_profile module
+particlespy.radial\_profile module
 ----------------------------------
 
-.. automodule:: ParticleSpy.radial_profile
+.. automodule:: particlespy.radial_profile
     :members:
     :undoc-members:
     :show-inheritance:
 
-ParticleSpy.segptcls module
+particlespy.segptcls module
 ---------------------------
 
-.. automodule:: ParticleSpy.segptcls
+.. automodule:: particlespy.segptcls
     :members:
     :undoc-members:
     :show-inheritance:
@@ -88,7 +88,7 @@ ParticleSpy.segptcls module
 Module contents
 ---------------
 
-.. automodule:: ParticleSpy
+.. automodule:: particlespy
     :members:
     :undoc-members:
     :show-inheritance:

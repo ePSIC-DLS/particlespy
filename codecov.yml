@@ -26,5 +26,5 @@ comment:
   require_changes: no
 
 ignore:
-  - "**/SegUI.py"
+  - "**/seg_ui.py"
   - "**/find_zoneaxis.py"

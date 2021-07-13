@@ -23,7 +23,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=install_requires,
     package_data={
-        'ParticleSpy':
+        'particlespy':
         [
             'parameters/*'
         ],
