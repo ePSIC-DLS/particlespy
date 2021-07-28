@@ -44,8 +44,7 @@ class Application(QMainWindow):
         self.prev_params.generate()
         
         offset = 50
-        self.canvas_size = [int(self.image.shape[0]/self.image.shape[1]*height), height]
-        
+        self.canvas_size = [height,int(self.image.shape[1]/self.image.shape[0]*height)]
         self.layout = QHBoxLayout(self)
         
         # Initialize tab screen
@@ -70,7 +69,7 @@ class Application(QMainWindow):
         self.label = QLabel(self)
         qi = QImage(self.image.data, self.image.shape[1], self.image.shape[0], self.image.shape[1], QImage.Format_Grayscale8)
         pixmap = QPixmap(qi)
-        self.pixmap2 = pixmap.scaled(self.canvas_size[0], self.canvas_size[1], Qt.KeepAspectRatio)
+        self.pixmap2 = pixmap.scaled(self.canvas_size[1], self.canvas_size[0], Qt.KeepAspectRatio)
         self.label.setPixmap(self.pixmap2)
         self.label.setGeometry(10,10,self.pixmap2.width(),self.pixmap2.height())
         
@@ -656,7 +655,7 @@ class Canvas(QLabel):
         qi = QImage(thicc_labels.data, thicc_labels.shape[1], thicc_labels.shape[0], 4*thicc_labels.shape[1], QImage.Format_ARGB32_Premultiplied)
         
         pixmap = QPixmap(qi)
-        pixmap = pixmap.scaled(self.canvas_size[0], self.canvas_size[1], Qt.KeepAspectRatio)
+        pixmap = pixmap.scaled(self.canvas_size[1], self.canvas_size[0], Qt.KeepAspectRatio)
         painter = QPainter(self.pixmap())
         painter.setOpacity(0.5)
         painter.drawPixmap(0,0,pixmap)
@@ -715,16 +714,14 @@ class Canvas(QLabel):
         b = image.bits()
         b.setsize(self.canvas_size[0] * self.canvas_size[1] * 4)
         arr = np.frombuffer(b, np.uint8)
-        arr = arr.reshape((self.canvas_size[0], self.canvas_size[1], 4)).copy() # this line
-        
+        arr = arr.reshape((self.canvas_size[0], self.canvas_size[1], 4)).copy()
 
         OGimage = self.OGpixmap.toImage()
         c = OGimage.bits()
         c.setsize(self.canvas_size[0] * self.canvas_size[1] * 4)
         
         c = np.frombuffer(c, np.uint8).copy()
-        print(c.shape)
-        OGim = np.reshape(c, (self.canvas_size[1], self.canvas_size[0], 4))
+        OGim = np.reshape(c, (self.canvas_size[0], self.canvas_size[1], 4))
         OGim = np.flip(OGim, axis=2)
 
         arr = arr.astype(np.int32)
