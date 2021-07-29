@@ -380,7 +380,6 @@ class Application(QMainWindow):
         im = im-np.min(im)
         image = np.uint8(255*im/np.max(im))
         self.image = image
-        print(image.shape)
         
     def getparams(self):
         self.params = parameters()
@@ -450,7 +449,7 @@ class Application(QMainWindow):
             qi = QImage(labels.data, labels.shape[1], labels.shape[0], labels.shape[1], QImage.Format_Indexed8)
         #qi = QImage(imchoice.data, imchoice.shape[1], imchoice.shape[0], imchoice.shape[1], QImage.Format_Indexed8)
         pixmap = QPixmap(qi)
-        pixmap2 = pixmap.scaled(self.canvas_size, self.canvas_size, Qt.KeepAspectRatio)
+        pixmap2 = pixmap.scaled(self.canvas_size[1], self.canvas_size[0], Qt.KeepAspectRatio)
         self.label.setPixmap(pixmap2)
         
         self.prev_params.load()
