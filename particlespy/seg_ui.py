@@ -44,8 +44,7 @@ class Application(QMainWindow):
         self.prev_params.generate()
         
         offset = 50
-        self.canvas_size = height
-        
+        self.canvas_size = [height,int(self.image.shape[1]/self.image.shape[0]*height)]
         self.layout = QHBoxLayout(self)
         
         # Initialize tab screen
@@ -70,7 +69,7 @@ class Application(QMainWindow):
         self.label = QLabel(self)
         qi = QImage(self.image.data, self.image.shape[1], self.image.shape[0], self.image.shape[1], QImage.Format_Grayscale8)
         pixmap = QPixmap(qi)
-        self.pixmap2 = pixmap.scaled(self.canvas_size, self.canvas_size, Qt.KeepAspectRatio)
+        self.pixmap2 = pixmap.scaled(self.canvas_size[1], self.canvas_size[0], Qt.KeepAspectRatio)
         self.label.setPixmap(self.pixmap2)
         self.label.setGeometry(10,10,self.pixmap2.width(),self.pixmap2.height())
         
@@ -217,7 +216,7 @@ class Application(QMainWindow):
         #Tab 3
       
 
-        self.mask = np.zeros([self.canvas_size,self.canvas_size,3])
+        self.mask = np.zeros([self.canvas_size[0],self.canvas_size[1],3])
         self.classifier = GaussianNB()
         self.tsparams = trainable_parameters()
         self.filter_kernels = ['Gaussian','Diff. Gaussians','Median','Minimum','Maximum','Sobel','Hessian','Laplacian','M-Sum','M-Mean','M-Standard Deviation','M-Median','M-Minimum','M-Maximum']
@@ -450,7 +449,7 @@ class Application(QMainWindow):
             qi = QImage(labels.data, labels.shape[1], labels.shape[0], labels.shape[1], QImage.Format_Indexed8)
         #qi = QImage(imchoice.data, imchoice.shape[1], imchoice.shape[0], imchoice.shape[1], QImage.Format_Indexed8)
         pixmap = QPixmap(qi)
-        pixmap2 = pixmap.scaled(self.canvas_size, self.canvas_size, Qt.KeepAspectRatio)
+        pixmap2 = pixmap.scaled(self.canvas_size[1], self.canvas_size[0], Qt.KeepAspectRatio)
         self.label.setPixmap(pixmap2)
         
         self.prev_params.load()
@@ -613,7 +612,7 @@ class Canvas(QLabel):
         self.penType = self.brush_tools[0]
         self.lineCount = 0
 
-        self.array = np.zeros((self.canvas_size,self.canvas_size,3),dtype=np.uint8)
+        self.array = np.zeros((self.canvas_size[0],self.canvas_size[1],3),dtype=np.uint8)
 
     def set_pen_color(self, c):
         self.color_index = c
@@ -631,13 +630,13 @@ class Canvas(QLabel):
         self.lineCount = 0
 
         painter = QPainter(self.pixmap())
-        painter.eraseRect(0,0,self.canvas_size,self.canvas_size)
+        painter.eraseRect(0,0,self.canvas_size[0],self.canvas_size[1])
         painter.drawPixmap(0,0,self.OGpixmap)
         painter.end()
         self.update()
 
     def clearLabels(self):
-        self.array = np.zeros((self.canvas_size,self.canvas_size,3), dtype=np.uint8)
+        self.array = np.zeros((self.canvas_size[0],self.canvas_size[1],3), dtype=np.uint8)
 
     def redrawLabels(self):
         array = toggle_channels(self.array)
@@ -655,7 +654,7 @@ class Canvas(QLabel):
         qi = QImage(thicc_labels.data, thicc_labels.shape[1], thicc_labels.shape[0], 4*thicc_labels.shape[1], QImage.Format_ARGB32_Premultiplied)
         
         pixmap = QPixmap(qi)
-        pixmap = pixmap.scaled(self.canvas_size, self.canvas_size, Qt.KeepAspectRatio)
+        pixmap = pixmap.scaled(self.canvas_size[1], self.canvas_size[0], Qt.KeepAspectRatio)
         painter = QPainter(self.pixmap())
         painter.setOpacity(0.5)
         painter.drawPixmap(0,0,pixmap)
@@ -712,13 +711,16 @@ class Canvas(QLabel):
     def flood(self, e):
         image = self.pixmap().toImage()
         b = image.bits()
-        b.setsize(self.canvas_size * self.canvas_size * 4)
-        arr = np.frombuffer(b, np.uint8).reshape((self.canvas_size, self.canvas_size, 4))
-        
+        b.setsize(self.canvas_size[0] * self.canvas_size[1] * 4)
+        arr = np.frombuffer(b, np.uint8)
+        arr = arr.reshape((self.canvas_size[0], self.canvas_size[1], 4)).copy()
+
         OGimage = self.OGpixmap.toImage()
-        b = OGimage.bits()
-        b.setsize(self.canvas_size * self.canvas_size * 4)
-        OGim = np.frombuffer(b, np.uint8).reshape((self.canvas_size, self.canvas_size, 4))
+        c = OGimage.bits()
+        c.setsize(self.canvas_size[0] * self.canvas_size[1] * 4)
+        
+        c = np.frombuffer(c, np.uint8).copy()
+        OGim = np.reshape(c, (self.canvas_size[0], self.canvas_size[1], 4))
         OGim = np.flip(OGim, axis=2)
 
         arr = arr.astype(np.int32)
@@ -744,7 +746,6 @@ class Canvas(QLabel):
         
         qi = QImage(paint_arr.data, paint_arr.shape[1], paint_arr.shape[0], 4*paint_arr.shape[1], QImage.Format_ARGB32_Premultiplied)
         pixmap = QPixmap(qi)
-        
         painter = QPainter(self.pixmap())
         painter.setOpacity(0.5)
         painter.drawPixmap(0,0,pixmap)
