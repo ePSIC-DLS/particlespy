@@ -18,6 +18,8 @@ def create_features(image, parameters=None):
     ----------
     image : greyscale image for segmentation
     trainable segmentation parameters
+    
+    parameters : trainable parameters object for setting filter kernels and their parameters
 
     Returns
     -------
@@ -261,7 +263,7 @@ def classifier_segment(classifier, image, parameters = None):
 
     Returns
     -------
-    mask of labels (1channel)
+    mask of labels (1 channel, indexed)
     """
     features = create_features(image, parameters=parameters)
     features = np.rot90(np.rot90(features, axes=(2,0)), axes=(1,2))
@@ -275,6 +277,19 @@ def classifier_segment(classifier, image, parameters = None):
 
 
 def toggle_channels(image, colors = ['#A30015', '#6DA34D', '#51E5FF', '#BD2D87', '#F5E663']):
+    """
+    changes a 3 channel RGB image into a 1 channel indexed image, and vice versa
+    
+    Parameters
+    ----------
+    image : 1/3 channel image for conversion
+    colors : ordered list of colors to index labels by
+    
+    Returns
+    ----------
+    toggled 1/3 channel image
+    
+    """
     #colors are in RGB format
     shape = image.shape
 
@@ -293,12 +308,43 @@ def toggle_channels(image, colors = ['#A30015', '#6DA34D', '#51E5FF', '#BD2D87',
     return toggled
 
 def remove_large_objects(ar, max_size=200, connectivity=1, in_place=False):
+    """Remove objects larger than the specified size.
 
+    Expects ar to be an array with labeled objects, and removes objects
+    larger than max_size. If `ar` is bool, the image is first labeled.
+    This leads to potentially different behavior for bool and 0-and-1
+    arrays.
+
+    Parameters
+    ----------
+    ar : ndarray (arbitrary shape, int or bool type)
+        The array containing the objects of interest. If the array type is
+        int, the ints must be non-negative.
+    max_size : int, optional (default: 200)
+        The largest allowable object size.
+    connectivity : int, {1, 2, ..., ar.ndim}, optional (default: 1)
+        The connectivity defining the neighborhood of a pixel. Used during
+        labelling if `ar` is bool.
+    in_place : bool, optional (default: False)
+        If ``True``, remove the objects in the input array itself.
+        Otherwise, make a copy.
+
+    Raises
+    ------
+    TypeError
+        If the input array is of an invalid type, such as float or string.
+    ValueError
+        If the input array contains negative values.
+
+    Returns
+    -------
+    out : ndarray, same shape and type as input `ar`
+        The input array with small connected components removed.
         # Raising type error if not int or bool
     if not (ar.dtype == bool or np.issubdtype(ar.dtype, np.integer)):
         raise TypeError("Only bool or integer image types are supported. "
                         "Got %s." % ar.dtype)
-
+    """
     if in_place:
         out = ar
     else:

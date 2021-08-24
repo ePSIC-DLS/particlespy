@@ -395,7 +395,7 @@ class trainable_parameters(object):
                       maximum = [True,[False,1],20], sobel = [True,[True,1]],
                       hessian = [False,[False,1]], laplacian = [False,[False,1]],
                       membrane = [[False,1],True,False,False,False,False,False],  
-                      custom = [False,[False,1],[[1,0,1],[1,0,1],[1,0,1]]]):
+                      custom = [False,[False,1],[[0,0,0],[0,1,0],[0,0,0]]]):
         self.gaussian = gaussian
         self.diff_gaussian = diff_gaussian 
         self.median = median
@@ -462,4 +462,4 @@ class trainable_parameters(object):
         self.membrane=[[prefilter, prefilter_sigma], summ, mean, stddev, maximum, minimum, median]
         
     def set_custom(self, enabled=True, prefilter = False, prefilter_sigma = 1, conv_matrix=[[0,0,0],[0,1,0],[0,0,0]]):
-        self.custom = custom = [enabled,[prefilter,prefilter_sigma],conv_matrix]
+        self.custom = [enabled,[prefilter,prefilter_sigma],conv_matrix]
