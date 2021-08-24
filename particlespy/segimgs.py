@@ -5,7 +5,8 @@ from skimage.exposure import rescale_intensity
 from skimage.measure import label, perimeter, regionprops
 from sklearn import preprocessing
 
-from particlespy.custom_kernels import laplacian, membrane_projection
+from particlespy.custom_kernels import (custom_kernel, laplacian,
+                                        membrane_projection)
 from particlespy.particle_analysis import trainable_parameters
 
 
@@ -90,11 +91,10 @@ def create_features(image, parameters=None):
 
     if parameters.laplacian[0]:
         par = parameters.laplacian
+        blur = image
         if par[1][0]:
             blur = filters.gaussian(image,par[1][1])
-            new_layer = np.reshape(laplacian(blur),shape)
-        else:
-            new_layer = np.reshape(filters.laplacian(image),shape)
+        new_layer = np.reshape(laplacian(blur),shape)
         image_stack = np.concatenate((image_stack, new_layer), axis=2)
 
     if True in parameters.membrane[1:]:
@@ -109,6 +109,14 @@ def create_features(image, parameters=None):
         if par[1:] == [1,1,1,1,1,1]:
             mem_layers = np.squeeze(mem_layers)
         image_stack = np.append(image_stack, mem_layers, axis=2)
+    
+    if parameters.custom[0]:
+        par = parameters.custom
+        blur = image
+        if par[1][0]:
+            blur = filters.gaussian(image,par[1][1])
+        new_layer = np.reshape(custom_kernel(blur,np.asarray(par[2])), shape)
+        image_stack = np.append(image_stack, new_layer, axis=2)
     
     return image_stack[:,:,1:]
 

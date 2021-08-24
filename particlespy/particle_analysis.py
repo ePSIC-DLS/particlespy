@@ -5,21 +5,24 @@ Created on Tue Jul 31 13:35:23 2018
 @author: qzo13262
 """
 
-from particlespy.segptcls import process
-import numpy as np
-from particlespy.ptcl_class import particle, particle_list
-from particlespy.custom_kernels import membrane_projection
-from skimage import filters, morphology
-from skimage.measure import label, regionprops, perimeter
-from sklearn import preprocessing
-from sklearn.cluster import DBSCAN, KMeans
-import particlespy.find_zoneaxis as zone
-import warnings
-import h5py
 import inspect
+import os
+import warnings
+
+import h5py
+import numpy as np
 import pandas as pd
 import trackpy
-import os
+from skimage import filters, morphology
+from skimage.measure import label, perimeter, regionprops
+from sklearn import preprocessing
+from sklearn.cluster import DBSCAN, KMeans
+
+import particlespy.find_zoneaxis as zone
+from particlespy.custom_kernels import membrane_projection
+from particlespy.ptcl_class import particle, particle_list
+from particlespy.segptcls import process
+
 
 def particle_analysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
     """
@@ -27,8 +30,8 @@ def particle_analysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
     
     Parameters
     ----------
-    acquisition: Hyperpsy signal object or list of hyperspy signal objects.
-        Hyperpsy signal object containing a nanoparticle image or a list of signal
+    acquisition: Hyperspy signal object or list of hyperspy signal objects.
+        Hyperspy signal object containing a nanoparticle image or a list of signal
          objects that contains an image at position 0 and other datasets following.
     parameters: Dictionary of parameters
         The parameters can be input manually in to a dictionary or can be generated
@@ -391,7 +394,8 @@ class trainable_parameters(object):
                       median = [True,[False,1],20], minimum = [True,[False,1],20], 
                       maximum = [True,[False,1],20], sobel = [True,[True,1]],
                       hessian = [False,[False,1]], laplacian = [False,[False,1]],
-                      membrane = [[False,1],True,False,False,False,False,False]):
+                      membrane = [[False,1],True,False,False,False,False,False],  
+                      custom = [False,[False,1],[[1,0,1],[1,0,1],[1,0,1]]]):
         self.gaussian = gaussian
         self.diff_gaussian = diff_gaussian 
         self.median = median
@@ -401,6 +405,7 @@ class trainable_parameters(object):
         self.hessian = hessian
         self.laplacian = laplacian
         self.membrane = membrane
+        self.custom = custom
     
     def set_global_sigma(self, sigma):
         self.gaussian[1] = sigma        
@@ -426,7 +431,8 @@ class trainable_parameters(object):
         self.sobel[1] = [True,sigma]
         self.hessian[1] = [True,sigma]
         self.laplacian[1] = [True,sigma]
-        self.membrane[0] = [True,sigma]        
+        self.membrane[0] = [True,sigma]
+        self.custom[1] = [True,sigma]        
 
     def set_gaussian(self,enabled = True, sigma = 1):
         self.gaussian=[enabled,sigma]
@@ -452,5 +458,8 @@ class trainable_parameters(object):
     def set_laplacian(self,enabled = True, prefilter=True, prefilter_sigma = 1):
         self.laplacian=[enabled,[prefilter,prefilter_sigma]]
 
-    def set_membrane(self,enabled = True, prefilter=True, prefilter_sigma = 1,summ = True,mean = True, stddev = True, maximum = True, minimum = True, median = True):
+    def set_membrane(self, prefilter=True, prefilter_sigma = 1,summ = True,mean = True, stddev = True, maximum = True, minimum = True, median = True):
         self.membrane=[[prefilter, prefilter_sigma], summ, mean, stddev, maximum, minimum, median]
+        
+    def set_custom(self, enabled=True, prefilter = False, prefilter_sigma = 1, conv_matrix=[[0,0,0],[0,1,0],[0,0,0]]):
+        self.custom = custom = [enabled,[prefilter,prefilter_sigma],conv_matrix]
