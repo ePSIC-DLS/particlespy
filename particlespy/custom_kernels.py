@@ -57,7 +57,7 @@ def laplacian(image):
 
     Returns
     -------
-    feature_stack: Numy Array
+    feature_stack: Numpy Array
     6 membrane projection features
 
     """
@@ -74,7 +74,7 @@ def custom_kernel(image, kernel):
 
     Returns
     -------
-    feature_stack: Numy Array
+    feature_stack: Numpy Array
     6 membrane projection features
 
     """
