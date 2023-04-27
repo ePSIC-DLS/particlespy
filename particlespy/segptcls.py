@@ -58,7 +58,7 @@ def process(im, param):
     labels = clear_border(labels)
 
     if param.segment["min_size"]!=0:
-        remove_small_objects(labels,param.segment["min_size"],in_place=True)
+        labels = remove_small_objects(labels,param.segment["min_size"])
         
     return(labels)
     
