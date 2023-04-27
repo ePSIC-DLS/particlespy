@@ -131,5 +131,5 @@ def rolling_ball(img,kernelsize=0):
     if kernelsize == 0:
         new_img = img
     else:
-        new_img = white_tophat(rescale_intensity(img, out_range = (-1,1)),selem=square(kernelsize))
+        new_img = img - white_tophat(rescale_intensity(img, out_range = (-1,1)),footprint=square(kernelsize))
     return (new_img)
