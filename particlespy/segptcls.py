@@ -121,8 +121,7 @@ def p_watershed(thresh_image,min_size,erosion):
         eroded_image=thresh_image
     
     distance = ndi.distance_transform_edt(eroded_image)
-    local_maxi = peak_local_max(distance, indices=False, footprint=np.ones((min_size, min_size)),
-                            labels=thresh_image)
+    local_maxi = peak_local_max(distance, footprint=np.ones((min_size, min_size)), labels=thresh_image)
     markers = ndi.label(local_maxi)[0]
     labels = watershed(-distance, markers, mask=thresh_image)
     return(labels)
