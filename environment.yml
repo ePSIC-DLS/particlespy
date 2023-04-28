@@ -8,4 +8,4 @@ dependencies:
  - scikit-learn>=0.21
  - trackpy
  - numpy>=1.16.5
- - PyQt5>=5.14.0
+ - pyqt>=5.14.0
