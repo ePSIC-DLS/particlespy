@@ -1,6 +1,6 @@
 from particlespy import api as ps
 import numpy.testing as nptest
-import generate_test_data as gen_test
+import particlespy.tests.generate_test_data as gen_test
 import os
 
 def test_load_particles():
