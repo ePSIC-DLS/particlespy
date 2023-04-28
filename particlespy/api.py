@@ -68,3 +68,6 @@ def plot(particle_lists,prop_list=['area'],**kwargs):
                     break
         
         plt.show()
+
+def test():
+    print('Test')
