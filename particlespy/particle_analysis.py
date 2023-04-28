@@ -107,7 +107,7 @@ def particle_analysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         p.set_axes_lengths(cal_axes_lengths,diam_units)
         
         #Set shape measures
-        peri = image.axes_manager[0].scale*perimeter(maskp,neighbourhood=4)
+        peri = image.axes_manager[0].scale*perimeter(maskp,neighborhood=4)
         circularity = 4*3.14159265*p.properties['area']['value']/(peri**2)
         p.set_circularity(circularity)
         eccentricity = region.eccentricity
