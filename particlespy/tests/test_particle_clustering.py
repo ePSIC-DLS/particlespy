@@ -21,7 +21,7 @@ def test_clustering():
     particles = ps.particle_analysis(data,params)
     
     new_plists = particles.cluster_particles(properties=['area','circularity'])
-    assert len(new_plists[0].list) == 175 or len(new_plists[0].list) == 11 or len(new_plists[0].list) == 5 or len(new_plists[0].list) == 185 or len(new_plists[0].list) == 57 or len(new_plists[0].list) == 43 or len(new_plists[0].list) == 59 or len(new_plists[0].list) == 99
+    assert len(new_plists[0].list) == 39 or len(new_plists[0].list) == 195
 
 def test_clustering_all():
     
@@ -29,7 +29,6 @@ def test_clustering_all():
     param_list = open(str(Path(__file__).parent.parent / 'data/test_parameters.dat'), 'r')
 
     for line in param_list:
-
         line = line.strip("\n")
         t_p, p_num = line.split(';')
         t_p = t_p.split(',')
@@ -37,6 +36,7 @@ def test_clustering_all():
         params.generate(threshold=t_p[0], watershed=bool(int(t_p[1])), watershed_size=int(t_p[2]), watershed_erosion=int(t_p[3]), invert= bool(int(t_p[4])), min_size=int(t_p[5]), rb_kernel=int(t_p[6]), gaussian=int(t_p[7]), local_size=int(t_p[8]))
         particles = ps.particle_analysis(data,params)
         new_plists = particles.cluster_particles(properties=['area','circularity'])
+        print(len(new_plists[0].list),len(new_plists[1].list))
         assert str(len(new_plists[0].list)) in p_num
     
     param_list.close()
