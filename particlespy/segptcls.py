@@ -58,7 +58,7 @@ def process(im, param):
     labels = clear_border(labels)
 
     if param.segment["min_size"]!=0:
-        remove_small_objects(labels,param.segment["min_size"],in_place=True)
+        labels = remove_small_objects(labels,param.segment["min_size"])
         
     return(labels)
     
@@ -121,9 +121,11 @@ def p_watershed(thresh_image,min_size,erosion):
         eroded_image=thresh_image
     
     distance = ndi.distance_transform_edt(eroded_image)
-    local_maxi = peak_local_max(distance, indices=False, footprint=np.ones((min_size, min_size)),
-                            labels=thresh_image)
-    markers = ndi.label(local_maxi)[0]
+    coords = peak_local_max(distance, footprint=np.ones((min_size, min_size)), labels=thresh_image)
+    mask = np.zeros(distance.shape, dtype=bool)
+    mask[tuple(coords.T)] = True
+    markers, _ = ndi.label(mask)
+    #markers = ndi.label(local_maxi)[0]
     labels = watershed(-distance, markers, mask=thresh_image)
     return(labels)
     
@@ -131,5 +133,6 @@ def rolling_ball(img,kernelsize=0):
     if kernelsize == 0:
         new_img = img
     else:
-        new_img = white_tophat(rescale_intensity(img, out_range = (-1,1)),selem=square(kernelsize))
+        new_img = img - white_tophat(rescale_intensity(img, out_range = (-1,1)),footprint=square(kernelsize))
     return (new_img)
+
