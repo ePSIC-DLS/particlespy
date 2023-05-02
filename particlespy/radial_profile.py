@@ -118,6 +118,7 @@ def plot_profile(dist_count_dic, scale, units, mark_radius=False, radius=1.0, sa
         Default : None
     """
         
+    plt.figure()
     plt.xlabel('Distance from particle centre ('+units+')')
     plt.ylabel('Normalised intensity (counts)')
     

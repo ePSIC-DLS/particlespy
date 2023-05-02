@@ -6,7 +6,7 @@ Created on Wed Nov 28 14:15:18 2018
 """
 
 import numpy.testing as nptest
-import generate_test_data as gen_test
+import particlespy.tests.generate_test_data as gen_test
 from particlespy import particle_analysis
 from particlespy.ptcl_class import particle
 
