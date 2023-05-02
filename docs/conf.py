@@ -24,9 +24,9 @@ copyright = '2021, ePSIC'
 author = 'ePSIC'
 
 # The short X.Y version
-version = '0.6.0'
+version = '0.6.2'
 # The full version, including alpha/beta/rc tags
-release = '0.6.0'
+release = '0.6.2'
 
 
 # -- General configuration ---------------------------------------------------
