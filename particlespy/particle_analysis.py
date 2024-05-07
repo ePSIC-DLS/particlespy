@@ -226,17 +226,20 @@ def time_series_analysis(particles,max_dist=1,memory=3,properties=['area']):
 
     Returns
     -------
-    Pandas DataFrame of tracjectories.
+    Pandas DataFrame of trajectories.
 
     """
-    df = pd.DataFrame(columns=['y','x']+properties+['frame'])
+    
+    list_for_dataframe = []
     for particle in particles.list:
         pd_dict = {'x':particle.properties['x']['value'],
                    'y':particle.properties['y']['value']}
         for property in properties:
             pd_dict.update({property:particle.properties[property]['value']})
         pd_dict.update({'frame':particle.properties['frame']['value']})
-        df = df.append([pd_dict])
+        list_for_dataframe.append(pd_dict)
+
+    df = pd.DataFrame(list_for_dataframe, columns=['y','x']+properties+['frame'])
         
     t = trackpy.link(df,max_dist,memory=memory)
     return(t)
