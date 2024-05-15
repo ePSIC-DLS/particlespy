@@ -55,7 +55,7 @@ def particle_analysis(acquisition,parameters,particles=None,mask=np.zeros((1))):
         image = acquisition
     
     if str(mask) == 'UI':
-        labeled = label(np.load(os.path.dirname(inspect.getfile(process))+'/parameters/manual_mask.npy')[:,:,0])
+        labeled = label(np.load(os.path.dirname(inspect.getfile(process))+'/parameters/manual_mask.npy')[:,:,0]>0)
         print(len(labeled))
         #plt.imshow(labeled)
         #morphology.remove_small_objects(labeled,30,in_place=True)
