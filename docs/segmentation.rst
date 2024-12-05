@@ -148,7 +148,7 @@ This can be done in multiple colours, by selecting the desired colour before lab
 
 Different filter kernels and classifiers can be chosen using the dropdowns and tick boxes. 
 The filter kernel parameters can also be altered using the Sigma, High Sigma and Disk Size parameters.
-Once areas have been labelled, training can be begun using the 'Update' and 'Train Classifier' Button.
+Once areas have been labelled, training can begin using the 'Train Classifier' Button.
 
 When this finishes the labels will be shown on top of the image in the user interface, this can take up to several minutes.
 The classifier can then be retrained with additional pixels by by clearing the canvas of the displayed segmentation with `Clear Canvas`, and redrawing previous training labels with `redraw training labels`.
@@ -182,9 +182,9 @@ This is shown in the example below:
 
 .. code-block:: python
 
-    from PIL import Image
     import numpy as np
     from sklearn.naive_bayes import GaussianNB
+    import hyperspy.api as hs
     import particlespy.api as ps
 
     image = hs.load("image path")
@@ -195,5 +195,5 @@ This is shown in the example below:
     _, clf = ps.cluster_trained(image, mask, clf)
 
 This classifier can then be used to segment images.
-The function ``ps.toggle_channels`` is used to convert an RGB image into a 2D indexed array of labels. 
+The function ``ps.toggle_channels`` is used to convert an RGB image into a 1 channel 2D indexed array of labels. 
 This can also be used to convert the output of the ``classifier_segment`` into RGB images which can be exported.

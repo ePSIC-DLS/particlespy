@@ -225,8 +225,6 @@ class Application(QMainWindow):
         im_lay = QVBoxLayout()
                
         self.button_lay = QVBoxLayout()
-        self.button_lay.setSpacing(0)
-        self.button_lay.setContentsMargins(0,0,0,0)
 
         lay3.addLayout(self.button_lay)
         lay3.addLayout(im_lay)
@@ -258,20 +256,17 @@ class Application(QMainWindow):
         self.button_lay.addLayout(self.colour_lay)
         im_lay.addWidget(self.canvas2)
         
-        self.kerneltxt = QLabel(self)
-        self.kerneltxt.setText('Classifier')
-        self.button_lay.addWidget(self.kerneltxt)
-
-        self.clfBox = QComboBox(self)
-        self.clfBox.addItem("Random Forest")
-        self.clfBox.addItem("Nearest Neighbours")
-        self.clfBox.addItem("Naive Bayes")
-        self.clfBox.addItem("QDA")
-        self.clfBox.activated[str].connect(self.classifier_choice)
-        self.button_lay.addWidget(self.clfBox)
+        
+        
+        
+        
+        
+        
+        
         
         
         fk_lay = QVBoxLayout(self)
+        fk_lay.setVerticalSpacing(0)
         self.kerneltxt = QLabel(self)
         self.kerneltxt.setText('Filter Kernels')     
         fk_lay.addWidget(self.kerneltxt)
@@ -294,6 +289,25 @@ class Application(QMainWindow):
             fk_lay.addWidget(b)
             
         self.button_lay.addLayout(fk_lay)
+
+
+        self.clf_lay = QVBoxLayout()
+        self.kerneltxt = QLabel(self)
+        self.kerneltxt.setText('Classifier')
+        self.clf_lay.addWidget(self.kerneltxt)
+
+        self.clfBox = QComboBox(self)
+        self.clfBox.addItem("Random Forest")
+        self.clfBox.addItem("Nearest Neighbours")
+        self.clfBox.addItem("Naive Bayes")
+        self.clfBox.addItem("QDA")
+        self.clfBox.activated[str].connect(self.classifier_choice)
+        self.clf_lay.addWidget(self.clfBox)
+        
+        self.button_lay.addLayout(self.clf_lay)
+        
+
+
 
         fkp_lay = QVBoxLayout()
         self.ql1 = QLabel(self)

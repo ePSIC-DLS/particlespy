@@ -6,10 +6,11 @@ Created on Tues Oct 27 10:13 2020
 """
 
 import numpy as np
-from skimage.transform import rotate
-from skimage import filters
 from scipy.ndimage import convolve
+from skimage import filters
 from skimage.exposure import rescale_intensity
+from skimage.transform import rotate
+
 
 def membrane_projection(image):
     """
@@ -23,7 +24,8 @@ def membrane_projection(image):
 
     Returns
     -------
-    6 features for 
+    feature_stack: Numy Array
+    6 membrane projection features
 
     """
     kernel = np.zeros([19,19])
@@ -46,7 +48,35 @@ def membrane_projection(image):
     return feature_stack
 
 def laplacian(image):
-    kernel = np.array([[0,-1,0],[-1,4,-1],[0,-1,0]])
+    """
+    creates the laplacian feature
 
+    Parameters
+    ----------
+    image : greyscale image for feature creation.
+
+    Returns
+    -------
+    feature_stack: Numpy Array
+    6 membrane projection features
+
+    """
+    kernel = np.array([[0,-1,0],[-1,4,-1],[0,-1,0]])
+    return custom_kernel(kernel=kernel)
+
+def custom_kernel(image, kernel):
+    """
+    convolves an image with a custom kernel
+
+    Parameters
+    ----------
+    image : greyscale image for feature creation.
+
+    Returns
+    -------
+    feature_stack: Numpy Array
+    6 membrane projection features
+
+    """
     convolved = convolve(image,kernel)
     return convolved
