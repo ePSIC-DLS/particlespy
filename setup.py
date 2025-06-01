@@ -8,12 +8,12 @@ install_requires=["hyperspy>=1.7",
                   "scikit-learn>=0.21",
 				  "trackpy",
                   "numpy>=1.16.5",
-				  "PyQt5>=5.14.0"]
+				  "PyQt5>=5.14.0,<6.0"]
 
 setuptools.setup(
     name="particlespy",
     package_dir={'particlespy':'particlespy'},
-    version="0.6.2",
+    version="0.6.3",
     author="Thomas Slater",
     author_email="tjaslater@gmail.com",
     description="A package to perform particle segmentation and analysis",
