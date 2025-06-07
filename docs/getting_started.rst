@@ -31,7 +31,7 @@ Installing from Github
 
 If you would like to use a development version of ParticleSpy downloaded from Github you need to have a python environment with Hyperspy installed. 
 Full instructions for Hyperpsy installation can be found at 
-`http://hyperspy.org/hyperspy-doc/v1.3/user_guide/install.html <http://hyperspy.org/hyperspy-doc/v1.3/user_guide/install.html>`_.
+`https://hyperspy.org/hyperspy-doc/current/user_guide/install.html <https://hyperspy.org/hyperspy-doc/current/user_guide/install.html>`_.
 
 You then need to install from the git repository using git. If you have git installed 
 you can use the following command to install the package.
