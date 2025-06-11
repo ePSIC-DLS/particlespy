@@ -10,12 +10,20 @@ Installing ParticleSpy
 Install ParticleSpy
 -------------------
 
-The easiest way to install the latest stable build of ParticleSpy is either via conda or pip. This will install the package and its dependencies. You can do this by typing one of the following in to the command line:
+The easiest way to install the latest stable build of ParticleSpy is either via conda or pip. This will install the package and its dependencies.
+ParticleSpy uses PyQt and requires one either PyQt5 or PyQt6. You can do this by typing one of the following in to the command line, which
+will also install pyqt5:
 
 .. code-block:: bash
 
-    $ conda install particlespy
-	$ pip install particlespy
+    $ conda install particlespy pyqt
+    $ pip install particlespy PyQt5
+
+To install ParticleSpy with PyQt6 from pypi.org, use:
+
+.. code-block:: bash
+
+    $ pip install particlespy PyQt6
 
 
 Installing from Github
@@ -23,7 +31,7 @@ Installing from Github
 
 If you would like to use a development version of ParticleSpy downloaded from Github you need to have a python environment with Hyperspy installed. 
 Full instructions for Hyperpsy installation can be found at 
-`http://hyperspy.org/hyperspy-doc/v1.3/user_guide/install.html <http://hyperspy.org/hyperspy-doc/v1.3/user_guide/install.html>`_.
+`https://hyperspy.org/hyperspy-doc/current/user_guide/install.html <https://hyperspy.org/hyperspy-doc/current/user_guide/install.html>`_.
 
 You then need to install from the git repository using git. If you have git installed 
 you can use the following command to install the package.

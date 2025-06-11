@@ -10,3 +10,4 @@ dependencies:
  - trackpy
  - numpy>=1.16.5
  - pyqt>=5.14.0,<6.0
+ - qtpy
