@@ -12,12 +12,14 @@ import sys
 
 import numpy as np
 from PIL import Image
-from PyQt5.QtCore import QPoint, QRectF, QSize, Qt
-from PyQt5.QtGui import QColor, QImage, QPainter, QPalette, QPixmap
-from PyQt5.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QComboBox,
-                             QHBoxLayout, QLabel, QMainWindow, QPushButton,
-                             QSizePolicy, QSpinBox, QTabWidget, QVBoxLayout,
-                             QWidget)
+from qtpy.QtCore import QPoint, QRectF, QSize, Qt
+from qtpy.QtGui import QColor, QImage, QPainter, QPalette, QPixmap
+from qtpy.QtWidgets import (
+    QApplication, QButtonGroup, QCheckBox, QComboBox,
+    QHBoxLayout, QLabel, QMainWindow, QPushButton,
+    QSizePolicy, QSpinBox, QTabWidget, QVBoxLayout,
+    QWidget
+)
 from skimage.segmentation import flood, flood_fill, mark_boundaries
 from skimage.util import invert
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
@@ -109,7 +111,7 @@ class Application(QMainWindow):
         self.comboBox.addItem("Local+Global Otsu")
         self.comboBox.addItem("Niblack")
         self.comboBox.addItem("Sauvola")
-        self.comboBox.activated[str].connect(self.threshold_choice)
+        self.comboBox.currentTextChanged.connect(self.threshold_choice)
         self.comboBox.activated.connect(self.updateLocalSize)
         
         self.localtxt = QLabel(self)
@@ -160,7 +162,7 @@ class Application(QMainWindow):
         self.imBox.addItem("Image")
         self.imBox.addItem("Labels")
         
-        self.imBox.activated[str].connect(self.changeIm)
+        self.imBox.currentTextChanged.connect(self.changeIm)
 
         leftlay.addWidget(self.label)
         leftlay.addWidget(self.imagetxt)
@@ -267,7 +269,7 @@ class Application(QMainWindow):
         self.clfBox.addItem("Nearest Neighbours")
         self.clfBox.addItem("Naive Bayes")
         self.clfBox.addItem("QDA")
-        self.clfBox.activated[str].connect(self.classifier_choice)
+        self.clfBox.currentTextChanged.connect(self.classifier_choice)
         self.button_lay.addWidget(self.clfBox)
         
         
@@ -385,10 +387,10 @@ class Application(QMainWindow):
         self.params = parameters()
         self.params.generate()
         
-    def changeIm(self):
-        if str(self.imBox.currentText()) == "Image":
+    def changeIm(self, text):
+        if text == "Image":
             self.imflag = "Image"
-        if str(self.imBox.currentText()) == "Labels":
+        if text == "Labels":
             self.imflag = "Labels"
         
     def changeWatershed(self, state):
@@ -475,28 +477,28 @@ class Application(QMainWindow):
     def return_params(self,params):
         print(self.params.segment)
         
-    def threshold_choice(self):
-        if str(self.comboBox.currentText()) == "Otsu":
+    def threshold_choice(self, text):
+        if text == "Otsu":
             self.params.segment['threshold'] = "otsu"
-        elif str(self.comboBox.currentText()) == "Mean":
+        elif text == "Mean":
             self.params.segment['threshold'] = "mean"
-        elif str(self.comboBox.currentText()) == "Minimum":
+        elif text == "Minimum":
             self.params.segment['threshold'] = "minimum"
-        elif str(self.comboBox.currentText()) == "Yen":
+        elif text == "Yen":
             self.params.segment['threshold'] = "yen"
-        elif str(self.comboBox.currentText()) == "Isodata":
+        elif text == "Isodata":
             self.params.segment['threshold'] = "isodata"
-        elif str(self.comboBox.currentText()) == "Li":
+        elif text == "Li":
             self.params.segment['threshold'] = "li"
-        elif str(self.comboBox.currentText()) == "Local":
+        elif text == "Local":
             self.params.segment['threshold'] = "local"
-        elif str(self.comboBox.currentText()) == "Local Otsu":
+        elif text == "Local Otsu":
             self.params.segment['threshold'] = "local_otsu"
-        elif str(self.comboBox.currentText()) == "Local+Global Otsu":
+        elif text == "Local+Global Otsu":
             self.params.segment['threshold'] = "lg_otsu"
-        elif str(self.comboBox.currentText()) == "Niblack":
+        elif text == "Niblack":
             self.params.segment['threshold'] = "niblack"
-        elif str(self.comboBox.currentText()) == "Sauvola":
+        elif text == "Sauvola":
             self.params.segment['threshold'] = "sauvola"
 
     def toggle_fk(self, tool):
@@ -536,14 +538,14 @@ class Application(QMainWindow):
     def change_disk(self):
         self.tsparams.set_global_disk_size(self.spinb3.value())
 
-    def classifier_choice(self):
-        if str(self.comboBox.currentText()) == "Random Forest":
+    def classifier_choice(self, text):
+        if text == "Random Forest":
             self.classifier = RandomForestClassifier(n_estimators=200)
-        elif str(self.comboBox.currentText()) == "Nearest Neighbours":
+        elif text == "Nearest Neighbours":
             self.classifier = KNeighborsClassifier()
-        elif str(self.comboBox.currentText()) == "Naive Bayes":
+        elif text == "Naive Bayes":
             self.classifier = GaussianNB()
-        elif str(self.comboBox.currentText()) == "QDA":
+        elif text == "QDA":
             self.classifier = QuadraticDiscriminantAnalysis()
     
     def train_classifier(self):

@@ -3,12 +3,14 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-install_requires=["hyperspy>=1.7",
-                  "scikit-image>=0.17.1",
-                  "scikit-learn>=0.21",
-				  "trackpy",
-                  "numpy>=1.16.5",
-				  "PyQt5>=5.14.0,<6.0"]
+install_requires=[
+    "hyperspy>=1.7",
+    "scikit-image>=0.17.1",
+    "scikit-learn>=0.21",
+    "trackpy",
+    "numpy>=1.16.5",
+    "qtpy",
+]
 
 setuptools.setup(
     name="particlespy",
@@ -22,6 +24,10 @@ setuptools.setup(
     url="https://github.com/ePSIC-DLS/particlespy",
     packages=setuptools.find_packages(),
     install_requires=install_requires,
+    extras_require={
+        "pyqt5": ["PyQt5>=5.14.0"],
+        "pyqt6": ["PyQt6"],
+    },
     package_data={
         'particlespy':
         [
