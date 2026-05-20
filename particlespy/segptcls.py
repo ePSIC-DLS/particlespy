@@ -55,7 +55,8 @@ def process(im, param):
     if param.segment["watershed"]!=False:
         labels = p_watershed(labels,param.segment["watershed_size"],param.segment["watershed_erosion"])
         
-    labels = clear_border(labels)
+    if params.segment["clear_border"]!=False:
+        labels = clear_border(labels)
 
     if param.segment["min_size"]!=0:
         labels = remove_small_objects(labels,param.segment["min_size"])
