@@ -302,7 +302,7 @@ class parameters(object):
     
     def generate(self,threshold='otsu',watershed=False,watershed_size=0,
                  watershed_erosion=0,invert=False,min_size=0,store_im=False,
-                 pad=5,rb_kernel=0,gaussian=0,local_size=1):
+                 pad=5,rb_kernel=0,gaussian=0,local_size=1,clear_borders=True):
         self.segment = {}
         self.segment['threshold'] = threshold
         self.segment['watershed'] = watershed
@@ -313,6 +313,7 @@ class parameters(object):
         self.segment['rb_kernel'] = rb_kernel
         self.segment['gaussian'] = gaussian
         self.segment['local_size'] = local_size
+        self.segment['clear_borders'] = clear_borders
         
         self.store = {}
         self.store['store_im'] = store_im
@@ -346,6 +347,7 @@ class parameters(object):
         segment.attrs["rb_kernel"] = self.segment['rb_kernel']
         segment.attrs["gaussian"] = self.segment['gaussian']
         segment.attrs["local_size"] = self.segment['local_size']
+        segment.attrs["clear_borders"] = self.segment['clear_borders']
         store.attrs['store_im'] = self.store['store_im']
         store.attrs['pad'] = self.store['pad']
         store.attrs['store_maps'] = self.store['store_maps']
@@ -376,6 +378,7 @@ class parameters(object):
         self.segment['rb_kernel'] = segment.attrs["rb_kernel"]
         self.segment['gaussian'] = segment.attrs["gaussian"]
         self.segment['local_size'] = segment.attrs["local_size"]
+        self.segment['clear_borders'] = segment.attrs["clear_borders"]
         self.store['store_im'] = store.attrs['store_im']
         self.store['pad'] = store.attrs['pad']
         self.store['store_maps'] = store.attrs['store_maps']
